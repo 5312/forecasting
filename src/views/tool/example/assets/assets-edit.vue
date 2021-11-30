@@ -30,7 +30,7 @@
         <el-popover
           placement="bottom"
           width="600"
-          trigger="manual"
+          trigger="click"
           v-model="show"
         >
           <ele-pro-table
@@ -49,8 +49,6 @@
           </ele-pro-table>
           <el-input
             v-loading="popover"
-            @blur="show = false"
-            @focus="show = true"
             slot="reference"
             :maxlength="20"
             readonly=""
@@ -206,7 +204,7 @@ export default {
     // 赋值ID显示
     setId() {
       let val = this.form.score_id;
-
+      console.log(val);
       let title = "";
       if (typeof this.form.score_id == "number") {
         this.table_data.forEach(obj => {
