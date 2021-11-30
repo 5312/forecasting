@@ -34,16 +34,29 @@
       </el-form-item>
 
       <el-form-item label="评分ID:" label-width="120px" prop="score_id">
-        <el-input-number
+        <el-select v-model="form.score_id" placeholder="请选择活动区域">
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          >
+            <span style="float: left">{{ item.title }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{
+              item.id
+            }}</span>
+          </el-option>
+        </el-select>
+        <!-- <el-input-number
           :min="0"
           v-model="form.score_id"
           placeholder="请输入评分ID"
           controls-position="right"
           class="ele-fluid ele-text-left"
-        />
+        /> -->
       </el-form-item>
 
-      <el-form-item label="单位ID:" label-width="120px" prop="dept_id">
+      <!-- <el-form-item label="单位ID:" label-width="120px" prop="dept_id">
         <el-input-number
           :min="0"
           v-model="form.dept_id"
@@ -51,7 +64,7 @@
           controls-position="right"
           class="ele-fluid ele-text-left"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="引发隐患:" label-width="120px" prop="yinhuan_ids">
         <el-autocomplete
@@ -100,7 +113,20 @@
         label-width="120px"
         prop="riskdata_id"
       >
-        <el-autocomplete
+        <el-select v-model="form.score_id" placeholder="请选择活动区域">
+          <el-option
+            v-for="item in risk_arr"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          >
+            <span style="float: left">{{ item.title }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{
+              item.id
+            }}</span>
+          </el-option>
+        </el-select>
+        <!-- <el-autocomplete
           popper-class="my-autocomplete"
           v-model="form.riskdata_name"
           :fetch-suggestions="querySearch_risk"
@@ -111,7 +137,7 @@
           <template slot-scope="{ item }">
             <div class="name">{{ item.title }}</div>
           </template>
-        </el-autocomplete>
+        </el-autocomplete> -->
         <!-- <el-input-number
           :min="0"
           v-model="form.riskdata_id"
@@ -188,7 +214,9 @@ export default {
       // 提交状态
       loading: false,
       // 是否是修改
-      isUpdate: false
+      isUpdate: false,
+      risk_arr: [],
+      options: []
     };
   },
   watch: {
@@ -202,28 +230,47 @@ export default {
       }
     }
   },
-  mounted() {},
-  computed: {},
+  mounted() {
+    // 造成安全风险
+    this.safe_risk();
+    // 频次 -- 评分id
+    this.frequency();
+  },
   methods: {
-    /* 造成安全风险  */
-    querySearch_risk(queryString, cb) {
-      this.safe_risk().then(res => {
-        cb(res);
+    /* 频次 */
+    async frequency() {
+      const res = await this.$http.get("/score/list", {
+        params: {
+          itemId: 3,
+          itemcate_id: 28,
+          page: 1,
+          limit: 100
+        }
       });
+      if (res.data.code != 0) return;
+      this.options = res.data.data;
+      return res.data.data;
     },
-    handleSelect_risk(item) {
-      this.form.riskdata_id = item.id;
-      this.form.riskdata_name = item.title;
-    },
+    /* 造成安全风险  */
+    // querySearch_risk(queryString, cb) {
+    //   this.safe_risk().then(res => {
+    //     cb(res);
+    //   });
+    // },
+    // handleSelect_risk(item) {
+    //   this.form.riskdata_id = item.id;
+    //   this.form.riskdata_name = item.title;
+    // },
     async safe_risk() {
       const res = await this.$http.get("/riskdata/list", {
         params: {
           page: 1,
-          limit: 10
+          limit: 100
         }
       });
       if (res.data.code != 0) return;
       let data = res.data.data;
+      this.risk_arr = data;
       return data;
     },
     /* 威胁安全资源  */
