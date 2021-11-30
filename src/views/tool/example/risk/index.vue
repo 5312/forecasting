@@ -175,14 +175,13 @@ export default {
           minWidth: 100,
           align: "center"
         },
-
-        // {
-        //   prop: "dept_id",
-        //   label: "单位",
-        //   showOverflowTooltip: true,
-        //   minWidth: 100,
-        //   align: "center"
-        // },
+        {
+          prop: "score",
+          label: "分值(V)",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
 
         {
           prop: "yinhuan_ids",

@@ -33,8 +33,8 @@
         /> -->
       </el-form-item>
 
-      <el-form-item label="评分ID:" label-width="120px" prop="scoreId">
-        <el-select v-model="form.scoreId" placeholder="请选择活动区域">
+      <el-form-item label="评分ID:" label-width="120px" prop="score_id">
+        <el-select v-model="form.score_id" placeholder="请选择活动区域">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -66,8 +66,8 @@
         />
       </el-form-item> -->
 
-      <el-form-item label="引发隐患:" label-width="120px" prop="yinhuanIds">
-        <el-checkbox-group v-model="form.yinhuanIds">
+      <el-form-item label="引发隐患:" label-width="120px" prop="yinhuan_ids">
+        <el-checkbox-group v-model="form.yinhuan_ids">
           <el-checkbox
             v-for="(item, index) in danger_arr"
             name="yinhuanIds"
@@ -78,8 +78,8 @@
         </el-checkbox-group>
       </el-form-item>
 
-      <el-form-item label="威胁安全资源:" label-width="120px" prop="ziyuanIds">
-        <el-checkbox-group v-model="form.ziyuanIds">
+      <el-form-item label="威胁安全资源:" label-width="120px" prop="ziyuan_ids">
+        <el-checkbox-group v-model="form.ziyuan_ids">
           <el-checkbox
             v-for="(item, index) in threat_arr"
             name="ziyuanIds"
@@ -160,11 +160,11 @@ export default {
 
         deptId: [{ required: true, message: "请输入单位ID", trigger: "blur" }],
 
-        yinhuanIds: [
+        yinhuan_ids: [
           { required: true, message: "请输入引发隐患id", trigger: "change" }
         ],
 
-        ziyuanIds: [
+        ziyuan_ids: [
           { required: true, message: "请输入威胁安全资源id", trigger: "change" }
         ],
 
@@ -195,8 +195,8 @@ export default {
       // console.log(this.data);
       if (this.data) {
         let obj = this.data;
-        let danger = obj.yinhuanIds;
-        let safe = obj.ziyuanIds;
+        let danger = obj.yinhuan_ids;
+        let safe = obj.ziyuan_ids;
         // console.log(danger);
         let yinhuan_ids = danger
           ? Array.isArray(danger)
@@ -209,16 +209,16 @@ export default {
             : safe.split(",")
           : [];
 
-        obj.yinhuanIds = yinhuan_ids;
-        obj.ziyuanIds = ziyuan_ids;
+        obj.yinhuan_ids = yinhuan_ids;
+        obj.ziyuan_ids = ziyuan_ids;
 
         this.form = Object.assign({}, obj);
 
         this.isUpdate = true;
       } else {
         this.form = {
-          yinhuanIds: [],
-          ziyuanIds: []
+          yinhuan_ids: [],
+          ziyuan_ids: []
         };
         this.isUpdate = false;
       }
@@ -336,8 +336,8 @@ export default {
                 this.$message.success(res.data.msg);
                 if (!this.isUpdate) {
                   this.form = {
-                    yinhuanIds: [],
-                    ziyuanIds: []
+                    yinhuan_ids: [],
+                    ziyuan_ids: []
                   };
                 }
                 this.updateVisible(false);
@@ -358,8 +358,10 @@ export default {
     /* 参数处理 */
     params() {
       let params = this.form;
-      params.yinhuan_ids = params.yinhuanIds ? params.yinhuanIds.join(",") : "";
-      params.ziyuan_ids = params.ziyuanIds ? params.ziyuanIds.join(",") : "";
+      params.yinhuan_ids = params.yinhuan_ids
+        ? params.yinhuan_ids.join(",")
+        : "";
+      params.ziyuan_ids = params.ziyuan_ids ? params.ziyuan_ids.join(",") : "";
       // for (const key in params) {
       //   if (Object.hasOwnProperty.call(params, key)) {
       //     const element = params[key];
