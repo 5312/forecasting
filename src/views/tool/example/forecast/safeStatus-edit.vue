@@ -21,17 +21,20 @@
       >
         <!--  -->
         <!-- 操作列 -->
-        <template slot="action" slot-scope="{ row }">
+        <template slot="action" slot-scope="{ row }" :class="{
+          'bgc' : isForeCast == 1 ? true : false
+        }">
           <el-link
             type="primary"
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
+            :disabled="disabled"
             >添加
           </el-link>
         </template>
       </ele-pro-table>
-      <el-input type="textarea" placeholder="请输入" v-model="inner"></el-input>
+          <el-input type="textarea" placeholder="请输入" v-model="inner"></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="updateVisible(false)">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -71,13 +74,13 @@ export default {
           prop: "title",
           label: "名称",
           align: "center",
-          minWidth: 200,
+          minWidth: 120,
         },
         {
           prop: "sums",
           label: "数量",
-          width: 60,
-          align: "center",
+          width: 180,
+          align: "center"
         },
         {
           prop: "scoreTitle",
@@ -111,9 +114,11 @@ export default {
       load: false,
       data: [],
       where: {},
-      inner: "",
-      isFore: [],
-      isForeCast: "",
+      inner:"",
+      isFore:[],
+      isForeCast:"",
+      disabled:false,
+      num:1
     };
   },
   watch: {
@@ -131,15 +136,19 @@ export default {
       return array;
     },
   },
+  mounted(){
+    // console.log(this.props)
+  },
   methods: {
+   
     async index() {
       this.load = true;
+      console.log(this.forecast)
       const res = await this.$http.get("assets/list?", {
         params: {
           forecast_id: this.forecast,
           itemcate_id: this.params,
           itemcate_cid: "",
-          // forecast_id:this.form.id
         },
       });
       // console.log(res.data.data.isForecast)
@@ -147,32 +156,36 @@ export default {
       if (res.data.code == 0) {
         this.data = res.data.data;
       }
-      this.isFore = res.data.data;
+      this.isFore = res.data.data
       for (let y = 0; y < this.isFore.length; y++) {
         const element = this.isFore[y];
-        this.isForeCast = element.isForecast;
-        console.log(this.isForeCast);
+        this.isForeCast = element.isForecast
+        console.log(this.isForeCast)
+        if(this.isForeCast == 1) {
+          this.disabled = true
+        }
       }
     },
     async openEdit(row) {
       let param = row;
+      // console.log(this.forecast)
       Object.assign(param, {
         forecast_id: this.forecast,
         assets_id: row.id,
       });
       const res = await this.$http.post("/assetslibrary/add", param);
       if (res.data.code == 0) {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         this.$emit("saveTableData", this.selection);
       }
     },
     async save() {
       let params = { data: this.selection };
       console.log(JSON.stringify(params));
-      const inn = await this.$http.post("/assetslibrary/addall", {
-        inner: this.inner,
-      });
-      console.log(inn);
+      const inn = await this.$http.post("/assetslibrary/addall",{
+        inner:this.inner
+      })
+      console.log(inn)
       // return;
       const res = await this.$http.post("/assetslibrary/add", {
         forecast_id: this.forecast,
@@ -189,3 +202,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .bgc {
+    background-color: rgb(248, 188, 188);
+  }
+</style>

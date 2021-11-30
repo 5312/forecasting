@@ -15,8 +15,19 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item v-for="(x, y) in typeData" :key="y" :name="y">
           <template slot="title">
-            {{ x.name }}<i class="header-icon el-icon-info"></i>
-            <p id="score">{{score}}</p>
+            {{ x.name }}
+            <!-- <i class="header-icon el-icon-info"></i> -->
+            <p id="score"></p>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div>
+              <p class="score">
+                R
+                <span class="tit">{{ x.name }}</span>
+                &nbsp;
+                <span class="fen">{{ x.score }}</span>
+                <span class="scor">分</span>
+              </p>
+            </div>
           </template>
           <ele-pro-table
             v-if="x.show"
@@ -47,6 +58,14 @@
                 @click.stop="manualAdd()"
                 >手动添加</el-button
               >
+            </template>
+            <template slot="scortNum" slot-scope="{ row }">
+              <el-input-number
+                size="mini"
+                :min="1"
+                v-model="row.sums"
+                @change="add(row,y)"
+              ></el-input-number>
             </template>
             <!-- 操作列 -->
             <template slot="action" slot-scope="{ row }">
@@ -127,8 +146,9 @@ export default {
         {
           prop: "sums",
           label: "数量",
-          width: 60,
+          width: 180,
           align: "center",
+          slot: "scortNum",
         },
         {
           prop: "scoreTitle",
@@ -189,7 +209,7 @@ export default {
       // 当前打开的项
       tableIndex: null,
       // 评分
-      score:"8.0分"
+      score: 0,
     };
   },
   mounted() {},
@@ -197,6 +217,7 @@ export default {
     data() {
       if (this.data) {
         this.form = Object.assign({}, this.data);
+        // console.log(this.form)
         this.isUpdate = true;
       } else {
         this.form = {};
@@ -212,45 +233,20 @@ export default {
     },
   },
   computed: {
-    // 初始化富文本
-    initEditor() {
-      return {
-        height: 300,
-        branding: false,
-        skin_url: "/tinymce/skins/ui/oxide",
-        content_css: "/tinymce/skins/content/default/content.css",
-        language_url: "/tinymce/langs/zh_CN.js",
-        language: "zh_CN",
-        plugins:
-          "code print preview fullscreen paste searchreplace save autosave link autolink image imagetools media table codesample lists advlist hr charmap emoticons anchor directionality pagebreak quickbars nonbreaking visualblocks visualchars wordcount",
-        toolbar:
-          "fullscreen preview code | undo redo | forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | formatselect fontselect fontsizeselect | link image media emoticons charmap anchor pagebreak codesample | ltr rtl",
-        toolbar_drawer: "sliding",
-        images_upload_handler: (blobInfo, success, error) => {
-          let file = blobInfo.blob();
-          // 使用axios上传
-          const formData = new FormData();
-          formData.append("file", file, file.name);
-          this.$http
-            .post("/upload/uploadImage", formData)
-            .then((res) => {
-              if (res.data.code == 0) {
-                success(res.data.data.fileUrl);
-              } else {
-                error(res.data.msg);
-              }
-            })
-            .catch((e) => {
-              // console.error(e);
-              error(e.message);
-            });
-        },
-        file_picker_types: "media",
-        file_picker_callback: () => {},
-      };
-    },
+ 
   },
   methods: {
+    // 数量加减
+    add(row,y) {
+      this.$http
+        .put("/assetslibrary/upsums", {
+          id: row.id,
+          sums: row.sums,
+        })
+        .then((res) => {
+          this.reload(y)
+        });
+    },
     temp(arr) {
       let array = arr;
       if (!arr) return {};
@@ -270,8 +266,9 @@ export default {
       return col_arr;
     },
     parseData_left(res) {
-      // console.log(res)
       let parse = res.data;
+      // console.log(parse)
+      let num = 0
       for (let i = 0; i < parse.length; i++) {
         const element = parse[i];
         var ele = element.assets_json
@@ -282,6 +279,15 @@ export default {
         for (let j = 0; j < data.length; j++) {
           const obj = data[j];
           Object.assign(element, obj);
+        }
+        num += element.Scoresum*1
+      }
+      // 数据里 itemcate_id 值 是不是 手风琴类型的id
+      let list_id = parse[0].itemcate_id;
+      for (let i = 0; i < this.typeData.length; i++) {
+        const element = this.typeData[i];
+        if(element.id == list_id){
+          element.score = num
         }
       }
       return {
@@ -294,7 +300,6 @@ export default {
     },
     reload(i) {
       let table = `table${i}`;
-
       this.$refs[table][0].reload({ page: 1 });
     },
     addSafeStatus(x, y) {
@@ -349,27 +354,17 @@ export default {
             const d = await this.$http.get("/configdata/list", {
               params: {
                 configId: element.id,
-                forecast_id:this.form.id
+                forecast_id: this.form.id,
               },
             });
             element.temptlate = d.data.data;
             // 模板数据接口
-            const g = await this.$http.get("/assetslibrary/list/", {
-              params: element.where,
-            });
-            element.eleData = g.data.data;
-            // 数据接口
-            // const z = await this.$http.get("/assets/list", {
-            //   params: {
-            //     forecast_id:this.form.id,
-            //     itemcateid: element.id,
-            //     itemcatecid: null,
-            //   },
-            // });
-            // element.assData = z.data.data;
-            // console.log(element.assData);
+
             element.url = "/assetslibrary/list";
             element.show = true;
+            element.score = 0;
+
+          
             this.typeData.push(element);
           }
         }
@@ -427,5 +422,22 @@ export default {
 .ele-btn-icon {
   width: 80px;
   height: 40px;
+}
+.score {
+  font-size: 20px;
+}
+.tit {
+  font-size: 8px;
+  position: relative;
+  right: 5px;
+}
+.fen {
+  font-size: 20px;
+  font-style: italic;
+}
+.scor {
+  font-size: 14px;
+  position: relative;
+  left: 3px;
 }
 </style>
