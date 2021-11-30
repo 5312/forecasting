@@ -43,7 +43,7 @@
           >
             <span style="float: left">{{ item.title }}</span>
             <span style="float: right; color: #8492a6; font-size: 13px">{{
-              item.id
+              item.score
             }}</span>
           </el-option>
         </el-select>
@@ -192,13 +192,22 @@ export default {
   },
   watch: {
     data() {
-      console.log(this.data);
+      // console.log(this.data);
       if (this.data) {
         let obj = this.data;
-        let danger = this.data.yinhuanIds;
-        let safe = this.data.ziyuanIds;
-        let yinhuan_ids = danger ? danger.split(",") : [];
-        let ziyuan_ids = safe ? safe.split(",") : [];
+        let danger = obj.yinhuanIds;
+        let safe = obj.ziyuanIds;
+        // console.log(danger);
+        let yinhuan_ids = danger
+          ? Array.isArray(danger)
+            ? danger
+            : danger.split(",")
+          : [];
+        let ziyuan_ids = safe
+          ? Array.isArray(safe)
+            ? safe
+            : safe.split(",")
+          : [];
 
         obj.yinhuanIds = yinhuan_ids;
         obj.ziyuanIds = ziyuan_ids;
