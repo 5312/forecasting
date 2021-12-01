@@ -91,7 +91,12 @@
                 >删除
               </el-button>
             </template>
+            <!-- 扣分比例 -->
+            <template slot="percentage" slot-scope="{ row }">
+              {{ Number(row.Score) * 100 + "%" }}
+            </template>
             <!-- 操作列 -->
+
             <template slot="action" slot-scope="{ row }">
               <el-link
                 type="primary"
@@ -156,13 +161,13 @@ export default {
           fixed: "left"
         },
 
-        {
-          prop: "dept_id",
-          label: "单位ID",
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center"
-        },
+        // {
+        //   prop: "dept_id",
+        //   label: "单位ID",
+        //   showOverflowTooltip: true,
+        //   minWidth: 100,
+        //   align: "center"
+        // },
 
         // {
         //   prop: "itemcate_id",
@@ -182,18 +187,26 @@ export default {
 
         {
           prop: "title",
-          label: "隐患标题",
+          label: "隐患行为",
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 200,
           align: "center"
         },
 
         {
-          prop: "score_id",
+          prop: "scoreTitle",
           label: "评价标准",
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 200,
           align: "center"
+        },
+        {
+          prop: "Score",
+          label: "扣分比例(%)",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center",
+          slot: "percentage"
         },
 
         {
@@ -273,14 +286,14 @@ export default {
   computed: {
     where() {
       let where = {
-        item_id: ""
+        itemcate_id: ""
       };
       if (this.current_left) {
         if (this.current_left.pid == 0) {
-          where.item_id = this.current_left.id;
+          where.itemcate_id = this.current_left.id;
         } else {
-          where.item_id = this.current_left.pid;
-          where.item_cid = this.current_left.id;
+          where.itemcate_id = this.current_left.pid;
+          where.itemcate_cid = this.current_left.id;
         }
       }
       return where;
@@ -381,4 +394,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.dict-table ::v-deep .el-table__row {
+  cursor: pointer;
+}
+</style>
