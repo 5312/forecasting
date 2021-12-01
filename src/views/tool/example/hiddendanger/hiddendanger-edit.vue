@@ -42,12 +42,24 @@
       </el-form-item> -->
 
       <el-form-item label="隐患行为:" prop="title">
-        <el-input
+        <el-autocomplete
+          popper-class="my-autocomplete"
+          v-model="form.title"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入内容"
+          @select="handleSelect"
+        >
+          <i class="el-icon-edit el-input__icon" slot="suffix"> </i>
+          <template slot-scope="{ item }">
+            <div class="name">{{ item.title }}</div>
+          </template>
+        </el-autocomplete>
+        <!-- <el-input
           :maxlength="20"
           v-model="form.title"
           placeholder="请输入隐患标题"
           clearable
-        />
+        /> -->
       </el-form-item>
 
       <el-form-item label="评价标准:" prop="score_id">
@@ -86,12 +98,6 @@
             clearable
           />
         </el-popover>
-        <!-- <el-input
-          :maxlength="20"
-          v-model="form.score_id"
-          placeholder="请输入评价标准"
-          clearable
-        /> -->
       </el-form-item>
 
       <el-form-item label="排序:" prop="sort">
@@ -143,7 +149,13 @@ export default {
           { required: true, message: "请输入栏目", trigger: "blur" }
         ],
 
-        title: [{ required: true, message: "请输入隐患标题", trigger: "blur" }],
+        title: [
+          {
+            required: true,
+            message: "请输入隐患行为",
+            trigger: ["blur", "change"]
+          }
+        ],
 
         scoreId: [
           { required: true, message: "请输入评价标准", trigger: "blur" }
@@ -219,6 +231,29 @@ export default {
     }
   },
   methods: {
+    /* 标题 -- 威胁行为库 */
+    querySearch(queryString, cb) {
+      this.danger_do().then(res => {
+        cb(res);
+      });
+    },
+    handleSelect(item) {
+      this.form.title = item.title;
+    },
+    /* 隐患行为 */
+    async danger_do() {
+      const res = await this.$http.get("/hiddendangeraction/list", {
+        params: {
+          itemcate_id: this.data.itemcate_id,
+          itemcate_cid: this.data.itemcate_cid,
+          page: "1",
+          limit: "100"
+        }
+      });
+      if (res.data.code != 0) return;
+      let data = res.data.data;
+      return data;
+    },
     done(res) {
       this.table_data = res.data;
       this.popover = false;

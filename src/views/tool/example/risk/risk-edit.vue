@@ -305,8 +305,8 @@ export default {
     async threat_do() {
       const res = await this.$http.get("/riskaction/list", {
         params: {
-          page: "1",
-          limit: "11"
+          page: 1,
+          limit: 100
         }
       });
       if (res.data.code != 0) return;

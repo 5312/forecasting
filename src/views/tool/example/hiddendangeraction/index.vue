@@ -7,28 +7,28 @@
         label-width="77px"
         class="ele-form-search"
         @keyup.enter.native="reload"
-        @submit.native.prevent>
+        @submit.native.prevent
+      >
         <el-row :gutter="15">
-    
-      
-		<!-- 隐患行为 -->
-		<el-col :lg="6" :md="12">
-        <el-form-item label="隐患行为:">
-          <el-input
-            clearable
-            v-model="where.title"
-            placeholder="请输入隐患行为"/>
-        </el-form-item>
-		</el-col>
-      
-    
+          <!-- 隐患行为 -->
+          <el-col :lg="6" :md="12">
+            <el-form-item label="隐患行为:">
+              <el-input
+                clearable
+                v-model="where.title"
+                placeholder="请输入隐患行为"
+              />
+            </el-form-item>
+          </el-col>
+
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">
               <el-button
                 type="primary"
                 icon="el-icon-search"
                 class="ele-btn-icon"
-                @click="reload">查询
+                @click="reload"
+                >查询
               </el-button>
               <el-button @click="reset">重置</el-button>
             </div>
@@ -42,7 +42,8 @@
         :datasource="url"
         :columns="columns"
         :selection.sync="selection"
-        height="calc(100vh - 315px)">
+        height="calc(100vh - 315px)"
+      >
         <!-- 表头工具栏 -->
         <template slot="toolbar">
           <el-button
@@ -50,152 +51,141 @@
             type="primary"
             icon="el-icon-plus"
             class="ele-btn-icon"
-            @click="openEdit(null)">添加
+            @click="openEdit(null)"
+            >添加
           </el-button>
           <el-button
             size="small"
             type="danger"
             icon="el-icon-delete"
             class="ele-btn-icon"
-            @click="removeBatch">删除
+            @click="removeBatch"
+            >删除
           </el-button>
         </template>
         <!-- 操作列 -->
-        <template slot="action" slot-scope="{row}">
+        <template slot="action" slot-scope="{ row }">
           <el-link
             type="primary"
             :underline="false"
             icon="el-icon-edit"
-            @click="openEdit(row)">修改
+            @click="openEdit(row)"
+            >修改
           </el-link>
           <el-popconfirm
             class="ele-action"
             title="确定要删除此隐患行为库吗？"
-            @confirm="remove(row)">
+            @confirm="remove(row)"
+          >
             <el-link
               type="danger"
               slot="reference"
               :underline="false"
-              icon="el-icon-delete">删除
+              icon="el-icon-delete"
+              >删除
             </el-link>
           </el-popconfirm>
         </template>
-	
-		
-	
-		
-	
-		
-	
-		
-	
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
     <hiddendangeraction-edit
       :data="current"
       :visible.sync="showEdit"
-      @done="reload"/>
+      @done="reload"
+    />
   </div>
 </template>
 
 <script>
-import HiddendangeractionEdit from './hiddendangeraction-edit';
+import HiddendangeractionEdit from "./hiddendangeraction-edit";
 
 export default {
-  name: 'SystemHiddendangeraction',
+  name: "SystemHiddendangeraction",
   components: { HiddendangeractionEdit },
   data() {
     return {
       // 表格数据接口
-      url: '/hiddendangeraction/list',
+      url: "/hiddendangeraction/list",
       // 表格列配置
       columns: [
         {
-          columnKey: 'selection',
-          type: 'selection',
+          columnKey: "selection",
+          type: "selection",
           width: 45,
-          align: 'center',
+          align: "center",
           fixed: "left"
         },
         {
-          prop: 'id',
-          label: 'ID',
+          prop: "id",
+          label: "ID",
           width: 60,
-          align: 'center',
+          align: "center",
           showOverflowTooltip: true,
           fixed: "left"
         },
-	
-		
-		{
-          prop: 'itemcate_id',
-          label: '类别',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: 'center',
-        },
-		
-	
-		
-		{
-          prop: 'itemcate_cid',
-          label: '栏目',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: 'center',
-        },
-		
-	
-		
-		{
-          prop: 'title',
-          label: '隐患行为',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: 'center',
-        },
-		
-	
-		
-		{
-          prop: 'sort',
-          label: '排序',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: 'center',
-        },
-		
-	
+
         {
-          prop: 'createTime',
-          label: '创建时间',
-          sortable: 'custom',
+          prop: "ItemcateName",
+          label: "类别",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
+
+        {
+          prop: "ItemcatecName",
+          label: "栏目",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
+
+        {
+          prop: "title",
+          label: "隐患行为",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
+
+        {
+          prop: "sort",
+          label: "排序",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
+
+        {
+          prop: "createTime",
+          label: "创建时间",
+          sortable: "custom",
           showOverflowTooltip: true,
           minWidth: 160,
-          align: 'center',
+          align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
           }
         },
         {
-          prop: 'updateTime',
-          label: '更新时间',
-          sortable: 'custom',
+          prop: "updateTime",
+          label: "更新时间",
+          sortable: "custom",
           showOverflowTooltip: true,
           minWidth: 160,
-          align: 'center',
+          align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
           }
         },
         {
-          columnKey: 'action',
-          label: '操作',
+          columnKey: "action",
+          label: "操作",
           width: 150,
-          align: 'center',
+          align: "center",
           resizable: false,
-          slot: 'action',
+          slot: "action",
           fixed: "right"
         }
       ],
@@ -206,13 +196,13 @@ export default {
       // 当前编辑数据
       current: null,
       // 是否显示编辑弹窗
-      showEdit: false,
+      showEdit: false
     };
   },
   methods: {
     /* 刷新表格 */
     reload() {
-      this.$refs.table.reload({page: 1, where: this.where});
+      this.$refs.table.reload({ page: 1, where: this.where });
     },
     /* 重置搜索 */
     reset() {
@@ -226,31 +216,10 @@ export default {
     },
     /* 删除 */
     remove(row) {
-      const loading = this.$loading({lock: true});
-      this.$http.delete('/hiddendangeraction/delete/' + row.id).then(res => {
-        loading.close();
-        if (res.data.code === 0) {
-          this.$message.success(res.data.msg);
-          this.reload();
-        } else {
-          this.$message.error(res.data.msg);
-        }
-      }).catch(e => {
-        loading.close();
-        this.$message.error(e.message);
-      });
-    },
-    /* 批量删除 */
-    removeBatch() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$confirm('确定要删除选中的隐患行为库吗?', '提示', {
-        type: 'warning'
-      }).then(() => {
-        const loading = this.$loading({lock: true});
-        this.$http.delete('/hiddendangeraction/delete/' + this.selection.map(d => d.id).join(",")).then(res => {
+      const loading = this.$loading({ lock: true });
+      this.$http
+        .delete("/hiddendangeraction/delete/" + row.id)
+        .then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -258,25 +227,46 @@ export default {
           } else {
             this.$message.error(res.data.msg);
           }
-        }).catch(e => {
+        })
+        .catch(e => {
           loading.close();
           this.$message.error(e.message);
         });
-      }).catch(() => {
-      });
     },
-
-	
-
-	
-
-	
-
-	
-
+    /* 批量删除 */
+    removeBatch() {
+      if (!this.selection.length) {
+        this.$message.error("请至少选择一条数据");
+        return;
+      }
+      this.$confirm("确定要删除选中的隐患行为库吗?", "提示", {
+        type: "warning"
+      })
+        .then(() => {
+          const loading = this.$loading({ lock: true });
+          this.$http
+            .delete(
+              "/hiddendangeraction/delete/" +
+                this.selection.map(d => d.id).join(",")
+            )
+            .then(res => {
+              loading.close();
+              if (res.data.code === 0) {
+                this.$message.success(res.data.msg);
+                this.reload();
+              } else {
+                this.$message.error(res.data.msg);
+              }
+            })
+            .catch(e => {
+              loading.close();
+              this.$message.error(e.message);
+            });
+        })
+        .catch(() => {});
+    }
   }
-}
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
