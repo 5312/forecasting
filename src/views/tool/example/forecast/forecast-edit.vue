@@ -37,7 +37,7 @@
             :datasource="x.url"
             :toolbar="true"
             height="calc(100vh -800px)"
-            :page-size="100"
+            :page-size="150"
             :parse-data="parseData_left"
           >
             <!-- 表头工具栏 -->
@@ -100,6 +100,7 @@
       :params="params_id"
       :forecast="form.id"
       @saveTableData="saveTableData"
+      :column="colnums_all"
     ></SafeStatus>
     <Manual :visible.sync="man"></Manual>
   </el-dialog>
@@ -210,6 +211,8 @@ export default {
       tableIndex: null,
       // 评分
       score: 0,
+      // 完成 cols
+      colnums_all:[]
     };
   },
   mounted() {},
@@ -217,7 +220,6 @@ export default {
     data() {
       if (this.data) {
         this.form = Object.assign({}, this.data);
-        // console.log(this.form)
         this.isUpdate = true;
       } else {
         this.form = {};
@@ -243,10 +245,11 @@ export default {
           id: row.id,
           sums: row.sums,
         })
-        .then((res) => {
+        .then(() => {
           this.reload(y)
         });
     },
+    // 模板
     temp(arr) {
       let array = arr;
       if (!arr) return {};
@@ -261,13 +264,15 @@ export default {
         element.prop = element.code;
         element.label = element.title;
         element.align = "center";
+        element.width = 180;
         col_arr.push(element);
       }
       return col_arr;
     },
+    // 数据
     parseData_left(res) {
+      if(!res.data) return {code:0,data:[]}
       let parse = res.data;
-      // console.log(parse)
       let num = 0
       for (let i = 0; i < parse.length; i++) {
         const element = parse[i];
@@ -306,6 +311,15 @@ export default {
       this.tableIndex = x;
       // 添加安全资源
       if (this.tableIndex !== null) {
+        let arr = this.typeData[x].temptlate;
+        let array = this.defaultColumns
+        array = JSON.stringify(array);
+        array = JSON.parse(array)
+        for (let i = 0; i < arr.length; i++) {
+          const element = arr[i];
+          array.push(element)
+        }
+        this.colnums_all = array
         this.twoshow = true;
       }
       this.params_id = y;
@@ -322,7 +336,7 @@ export default {
       let i = this.tableIndex;
       this.reload(i);
       this.twoshow = false;
-      this.tableIndex = null;
+      // this.tableIndex = null;
     },
 
     async remove(row, index) {
