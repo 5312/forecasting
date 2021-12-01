@@ -43,6 +43,7 @@
 
       <el-form-item label="隐患行为:" prop="title">
         <el-autocomplete
+          style="width:100%;"
           popper-class="my-autocomplete"
           v-model="form.title"
           :fetch-suggestions="querySearch"

@@ -11,6 +11,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="威胁行为:" prop="title">
         <el-autocomplete
+          style="width:100%;"
           popper-class="my-autocomplete"
           v-model="form.title"
           :fetch-suggestions="querySearch"
@@ -34,7 +35,11 @@
       </el-form-item>
 
       <el-form-item label="评分ID:" label-width="120px" prop="score_id">
-        <el-select v-model="form.score_id" placeholder="请选择活动区域">
+        <el-select
+          v-model="form.score_id"
+          placeholder="请选择活动区域"
+          style="width:100%;"
+        >
           <el-option
             v-for="item in options"
             :key="item.id"

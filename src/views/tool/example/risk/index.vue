@@ -164,7 +164,7 @@ export default {
           prop: "title",
           label: "标题",
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 300,
           align: "center"
         },
 
