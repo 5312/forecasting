@@ -3,13 +3,13 @@
   <el-dialog
     :title="isUpdate ? '修改隐患调查' : '添加隐患调查'"
     :visible="visible"
-    width="460px"
+    width="660px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
-      <el-form-item label="单位ID:" prop="dept_id">
+      <!-- <el-form-item label="单位ID:" prop="dept_id">
         <el-input-number
           :min="0"
           v-model="form.dept_id"
@@ -39,9 +39,9 @@
           controls-position="right"
           class="ele-fluid ele-text-left"
         />
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="隐患标题:" prop="title">
+      <el-form-item label="隐患行为:" prop="title">
         <el-input
           :maxlength="20"
           v-model="form.title"
@@ -71,6 +71,9 @@
             :toolbar="false"
           >
             <template slot="toolbar"></template>
+            <template slot="percentage" slot-scope="{ row }">
+              {{ Number(row.score) * 100 + "%" }}
+            </template>
           </ele-pro-table>
           <!--   -->
           <el-input
@@ -162,8 +165,9 @@ export default {
         },
         {
           prop: "score",
-          label: "资源赋值(R)",
-          width: 100
+          label: "扣分比例(%)",
+          width: 100,
+          slot: "percentage"
         }
       ],
       current: null,
@@ -176,11 +180,12 @@ export default {
     },
     data() {
       // console.log(this.data);
+      let sort = this.data.sort ? this.data.sort : 0;
       if (this.data.isUpdate) {
-        this.form = Object.assign({ score_id: "" }, this.data);
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = true;
       } else {
-        this.form = Object.assign({ score_id: "" }, this.data);
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = false;
       }
     }

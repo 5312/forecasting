@@ -3,7 +3,7 @@
   <el-dialog
     :title="isUpdate ? '修改威胁库' : '添加威胁库'"
     :visible="visible"
-    width="460px"
+    width="660px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
@@ -47,13 +47,6 @@
             }}</span>
           </el-option>
         </el-select>
-        <!-- <el-input-number
-          :min="0"
-          v-model="form.score_id"
-          placeholder="请输入评分ID"
-          controls-position="right"
-          class="ele-fluid ele-text-left"
-        /> -->
       </el-form-item>
 
       <!-- <el-form-item label="单位ID:" label-width="120px" prop="deptId">
@@ -66,7 +59,11 @@
         />
       </el-form-item> -->
 
-      <el-form-item label="引发隐患:" label-width="120px" prop="yinhuan_ids">
+      <el-form-item
+        label="引发安全隐患:"
+        label-width="120px"
+        prop="yinhuan_ids"
+      >
         <el-checkbox-group v-model="form.yinhuan_ids">
           <el-checkbox
             v-for="(item, index) in danger_arr"
@@ -147,8 +144,9 @@ export default {
     return {
       // 表单数据
       form: {
-        yinhuanIds: [],
-        ziyuanIds: []
+        yinhuan_ids: [],
+        ziyuan_ids: [],
+        sort: 0
       },
       // 表单验证规则
       rules: {
@@ -192,8 +190,12 @@ export default {
   },
   watch: {
     data() {
-      // console.log(this.data);
+      console.log(this.data);
+      let sort = 0;
+
       if (this.data) {
+        sort = this.data.sort ? this.data.sort : 0;
+
         let obj = this.data;
         let danger = obj.yinhuan_ids;
         let safe = obj.ziyuan_ids;
@@ -212,11 +214,12 @@ export default {
         obj.yinhuan_ids = yinhuan_ids;
         obj.ziyuan_ids = ziyuan_ids;
 
-        this.form = Object.assign({}, obj);
+        this.form = Object.assign({ sort: sort }, obj);
 
         this.isUpdate = true;
       } else {
         this.form = {
+          sort: sort,
           yinhuan_ids: [],
           ziyuan_ids: []
         };
