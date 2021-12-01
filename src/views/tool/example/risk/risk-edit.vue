@@ -9,7 +9,7 @@
     @update:visible="updateVisible"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-      <el-form-item label="标题:" prop="title">
+      <el-form-item label="威胁行为:" prop="title">
         <el-autocomplete
           popper-class="my-autocomplete"
           v-model="form.title"
@@ -92,7 +92,11 @@
         label-width="120px"
         prop="riskdata_id"
       >
-        <el-select v-model="form.riskdata_id" placeholder="请选择活动区域">
+        <el-select
+          style="width:100%;"
+          v-model="form.riskdata_id"
+          placeholder="请选择活动区域"
+        >
           <el-option
             v-for="item in risk_arr"
             :key="item.id"

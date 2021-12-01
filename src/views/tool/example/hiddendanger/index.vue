@@ -38,11 +38,11 @@
             <el-row :gutter="15">
               <!-- 隐患标题 -->
               <el-col :lg="6" :md="12">
-                <el-form-item label="隐患标题:">
+                <el-form-item label="隐患行为:">
                   <el-input
                     clearable
                     v-model="where.title"
-                    placeholder="请输入隐患标题"
+                    placeholder="请输入隐患行为"
                   />
                 </el-form-item>
               </el-col>
@@ -59,6 +59,15 @@
                   <el-button @click="reset">重置</el-button>
                 </div>
               </el-col>
+            </el-row>
+            <el-row>
+              <div class="margin-bottom">
+                <el-breadcrumb separator="/">
+                  <el-breadcrumb-item v-for="(x, y) in titlelist" :key="y">{{
+                    x
+                  }}</el-breadcrumb-item>
+                </el-breadcrumb>
+              </div>
             </el-row>
           </el-form>
           <!-- 数据表格 -->
@@ -141,6 +150,8 @@ export default {
   components: { HiddendangerEdit },
   data() {
     return {
+      // 面包屑
+      titlelist: [],
       // 表格数据接口
       url: "/hiddendanger/list",
       // 表格列配置
@@ -277,8 +288,28 @@ export default {
     current_left(obj) {
       if (obj.pid == 0) {
         this.disabled = true;
+
+        // 面包屑
+        const array = this.left_data;
+        this.titlelist = [];
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index];
+          if (element.id == this.where.itemcate_id) {
+            this.titlelist.push(element.name);
+          }
+        }
       } else {
         this.disabled = false;
+
+        // 面包屑
+        const array = this.left_data;
+        this.titlelist = [obj.name];
+        for (let index = 0; index < array.length; index++) {
+          const element = array[index];
+          if (element.id == obj.pid) {
+            this.titlelist.unshift(element.name);
+          }
+        }
       }
       this.reload();
     }
@@ -397,5 +428,8 @@ export default {
 <style scoped>
 .dict-table ::v-deep .el-table__row {
   cursor: pointer;
+}
+.margin-bottom {
+  margin-bottom: 10px;
 }
 </style>
