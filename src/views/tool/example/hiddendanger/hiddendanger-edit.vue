@@ -3,13 +3,13 @@
   <el-dialog
     :title="isUpdate ? '修改隐患调查' : '添加隐患调查'"
     :visible="visible"
-    width="460px"
+    width="660px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
-      <el-form-item label="单位ID:" prop="dept_id">
+      <!-- <el-form-item label="单位ID:" prop="dept_id">
         <el-input-number
           :min="0"
           v-model="form.dept_id"
@@ -39,15 +39,28 @@
           controls-position="right"
           class="ele-fluid ele-text-left"
         />
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="隐患标题:" prop="title">
-        <el-input
+      <el-form-item label="隐患行为:" prop="title">
+        <el-autocomplete
+          style="width:100%;"
+          popper-class="my-autocomplete"
+          v-model="form.title"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入内容"
+          @select="handleSelect"
+        >
+          <i class="el-icon-edit el-input__icon" slot="suffix"> </i>
+          <template slot-scope="{ item }">
+            <div class="name">{{ item.title }}</div>
+          </template>
+        </el-autocomplete>
+        <!-- <el-input
           :maxlength="20"
           v-model="form.title"
           placeholder="请输入隐患标题"
           clearable
-        />
+        /> -->
       </el-form-item>
 
       <el-form-item label="评价标准:" prop="score_id">
@@ -71,6 +84,9 @@
             :toolbar="false"
           >
             <template slot="toolbar"></template>
+            <template slot="percentage" slot-scope="{ row }">
+              {{ Number(row.score) * 100 + "%" }}
+            </template>
           </ele-pro-table>
           <!--   -->
           <el-input
@@ -83,12 +99,6 @@
             clearable
           />
         </el-popover>
-        <!-- <el-input
-          :maxlength="20"
-          v-model="form.score_id"
-          placeholder="请输入评价标准"
-          clearable
-        /> -->
       </el-form-item>
 
       <el-form-item label="排序:" prop="sort">
@@ -140,7 +150,13 @@ export default {
           { required: true, message: "请输入栏目", trigger: "blur" }
         ],
 
-        title: [{ required: true, message: "请输入隐患标题", trigger: "blur" }],
+        title: [
+          {
+            required: true,
+            message: "请输入隐患行为",
+            trigger: ["blur", "change"]
+          }
+        ],
 
         scoreId: [
           { required: true, message: "请输入评价标准", trigger: "blur" }
@@ -162,8 +178,9 @@ export default {
         },
         {
           prop: "score",
-          label: "资源赋值(R)",
-          width: 100
+          label: "扣分比例(%)",
+          width: 100,
+          slot: "percentage"
         }
       ],
       current: null,
@@ -176,11 +193,12 @@ export default {
     },
     data() {
       // console.log(this.data);
+      let sort = this.data.sort ? this.data.sort : 0;
       if (this.data.isUpdate) {
-        this.form = Object.assign({ score_id: "" }, this.data);
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = true;
       } else {
-        this.form = Object.assign({ score_id: "" }, this.data);
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = false;
       }
     }
@@ -214,6 +232,29 @@ export default {
     }
   },
   methods: {
+    /* 标题 -- 威胁行为库 */
+    querySearch(queryString, cb) {
+      this.danger_do().then(res => {
+        cb(res);
+      });
+    },
+    handleSelect(item) {
+      this.form.title = item.title;
+    },
+    /* 隐患行为 */
+    async danger_do() {
+      const res = await this.$http.get("/hiddendangeraction/list", {
+        params: {
+          itemcate_id: this.data.itemcate_id,
+          itemcate_cid: this.data.itemcate_cid,
+          page: "1",
+          limit: "100"
+        }
+      });
+      if (res.data.code != 0) return;
+      let data = res.data.data;
+      return data;
+    },
     done(res) {
       this.table_data = res.data;
       this.popover = false;
