@@ -77,7 +77,7 @@
             type="primary"
             :underline="false"
             icon="el-icon-edit"
-            @click="openEdit(row)"
+            @click="danger(row)"
             >添加隐患因素
           </el-link>
 
@@ -85,7 +85,7 @@
             type="primary"
             :underline="false"
             icon="el-icon-edit"
-            @click="openEdit(row)"
+            @click="threaten(row)"
             >添加威胁因素
           </el-link>
 
@@ -112,11 +112,18 @@
         </template>
       </ele-pro-table>
     </el-card>
-    <!-- 编辑弹窗 -->
+    <!-- 安全分析编辑弹窗 -->
     <forecast-edit
       class="forecast"
       :data="current"
       :visible.sync="showEdit"
+      @done="reload"
+    />
+    <!-- 隐患编辑弹窗 -->
+    <danger-edit
+      class="danger"
+      :data="current"
+      :visible.sync="showDanger"
       @done="reload"
     />
   </div>
@@ -124,10 +131,11 @@
 
 <script>
 import ForecastEdit from "./forecast-edit";
+import DangerEdit from "./danger-edit"
 
 export default {
   name: "SystemForecast",
-  components: { ForecastEdit },
+  components: { ForecastEdit,DangerEdit },
   data() {
     return {
       // 表格数据接口
@@ -202,8 +210,10 @@ export default {
       selection: [],
       // 当前编辑数据
       current: null,
-      // 是否显示编辑弹窗
+      // 是否显示安全编辑弹窗
       showEdit: false,
+      // 是否显示隐患编辑弹窗
+      showDanger:false,
     };
   },
   methods: {
@@ -216,10 +226,15 @@ export default {
       this.where = {};
       this.reload();
     },
-    /* 显示编辑 */
+    /* 安全分析显示编辑 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
+    },
+    // 添加隐患显示编辑
+    danger(row) {
+      this.current = row;
+      this.showDanger = true;
     },
     /* 删除 */
     remove(row) {
@@ -277,6 +292,11 @@ export default {
 
 <style scoped>
 .forecast {
+  width: 100%;
+  height: 1000px;
+  margin-top: none;
+}
+.danger {
   width: 100%;
   height: 1000px;
   margin-top: none;

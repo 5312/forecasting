@@ -217,7 +217,6 @@ export default {
     data() {
       if (this.data) {
         this.form = Object.assign({}, this.data);
-        // console.log(this.form)
         this.isUpdate = true;
       } else {
         this.form = {};
@@ -243,7 +242,7 @@ export default {
           id: row.id,
           sums: row.sums,
         })
-        .then((res) => {
+        .then(() => {
           this.reload(y)
         });
     },
