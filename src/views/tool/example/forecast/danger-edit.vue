@@ -1,7 +1,7 @@
 <!-- 添加隐患因素编辑弹窗 -->
 <template>
   <el-dialog
-    :title="isUpdate ? '修改隐患因素' : '添加隐患因素'"
+    :title="isUpdate ? '添加隐患因素' : '修改隐患因素'"
     :visible="visible"
     width="1900px"
     :destroy-on-close="true"
@@ -43,6 +43,7 @@
                 style="float: right; padding: 3px 0"
                 type="primary"
                 @click.stop="manualAdd()"
+                v-if="showhead"
                 >手动添加</el-button
               >
             </template>
@@ -72,7 +73,7 @@
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
-      <el-button type="primary" @click="save" :loading="loading"
+      <el-button type="primary" @click="updateVisible(false)" :loading="loading"
         >保存
       </el-button>
     </div>
@@ -187,7 +188,8 @@ export default {
       // 评分
       score: 0,
       // 完成 cols
-      colnums_all:[]
+      colnums_all:[],
+      showhead:false
     };
   },
   mounted() {},

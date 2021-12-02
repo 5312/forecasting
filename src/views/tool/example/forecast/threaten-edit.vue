@@ -1,7 +1,7 @@
 <!-- 添加威胁调查编辑弹窗 -->
 <template>
   <el-dialog
-    :title="isUpdate ? '修改威胁调查' : '添加威胁调查'"
+    :title="isUpdate ? '添加威胁调查' : '修改威胁调查'"
     :visible="visible"
     width="1900px"
     :destroy-on-close="true"
@@ -37,18 +37,27 @@
             style="float: right; padding: 3px 0"
             type="primary"
             @click.stop="manualAdd()"
+            v-if="showheader"
             >手动添加</el-button
           >
         </template>
         <template slot="score" slot-scope="{ row }">
           {{ row.score * 100 }}%
         </template>
-        <!-- <template slot="yinhuan" slot-scope="{ row }">
-                {{row.yinhuanTitle.name}}
-            </template>
-            <template slot="ziyuan" slot-scope="{ row }">
-                {{row.ziyuanTitle.name}}
-            </template> -->
+       <template slot="danger" slot-scope="{ row }">
+          <div>
+            <div v-for="item in row.yinhuanTitle" :key="item.id">
+              {{ item.name }}
+            </div>
+          </div>
+        </template>
+        <template slot="safe" slot-scope="{ row }">
+          <div>
+            <div v-for="item in row.ziyuanTitle" :key="item.id">
+              {{ item.name }}
+            </div>
+          </div>
+        </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
           <el-popconfirm
@@ -70,7 +79,7 @@
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
-      <el-button type="primary" @click="save" :loading="loading"
+      <el-button type="primary" @click="updateVisible(false)" :loading="loading"
         >保存
       </el-button>
     </div>
@@ -141,14 +150,14 @@ export default {
           label: "引发隐患",
           align: "center",
           minWidth: 120,
-          //   slot:"yinhuan"
+            slot:"danger"
         },
         {
           prop: "ziyuan_ids",
           label: "威胁安全资源",
           align: "center",
           minWidth: 120,
-          //   slot:"ziyuan"
+            slot:"safe"
         },
         {
           prop: "riskdataTitle",
@@ -206,6 +215,7 @@ export default {
       score: 0,
       // 完成 cols
       colnums_all: [],
+      showheader:false
     };
   },
   watch: {

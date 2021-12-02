@@ -23,12 +23,23 @@
         <template slot="score" slot-scope="{ row }">
           {{ row.score * 100 }}%
         </template>
-        <!-- <template slot="yinhuan" slot-scope="{ row }">
-                {{row.yinhuanTitle.name}}
-            </template>
-            <template slot="ziyuan" slot-scope="{ row }">
-                {{row.ziyuanTitle.name}}
-            </template> -->
+         <template slot="score" slot-scope="{ row }">
+          {{ row.score * 100 }}%
+        </template>
+       <template slot="danger" slot-scope="{ row }">
+          <div>
+            <div v-for="item in row.yinhuanTitle" :key="item.id">
+              {{ item.name }}
+            </div>
+          </div>
+        </template>
+        <template slot="safe" slot-scope="{ row }">
+          <div>
+            <div v-for="item in row.ziyuanTitle" :key="item.id">
+              {{ item.name }}
+            </div>
+          </div>
+        </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
           <el-link

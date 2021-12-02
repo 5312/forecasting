@@ -19,7 +19,7 @@
         />
       </el-form-item>
       <el-form-item label="开始时间:" prop="time">
-        <el-date-picker v-model="form.forecastStime" type="date" placeholder="请选择任务开始时间">
+        <el-date-picker v-model="form.forecast_stime" type="date" placeholder="请选择任务开始时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="排序:" prop="sort">
