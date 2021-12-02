@@ -10,13 +10,13 @@
         @submit.native.prevent
       >
         <el-row :gutter="15">
-          <!-- 安全分析预测标题 -->
+          <!-- 隐患行为 -->
           <el-col :lg="6" :md="12">
-            <el-form-item label="预测标题:">
+            <el-form-item label="隐患行为:">
               <el-input
                 clearable
                 v-model="where.title"
-                placeholder="请输入安全分析预测标题"
+                placeholder="请输入隐患行为"
               />
             </el-form-item>
           </el-col>
@@ -51,7 +51,7 @@
             type="primary"
             icon="el-icon-plus"
             class="ele-btn-icon"
-            @click="add(null)"
+            @click="openEdit(null)"
             >添加
           </el-button>
           <el-button
@@ -70,35 +70,11 @@
             :underline="false"
             icon="el-icon-edit"
             @click="openEdit(row)"
-            >添加安全资源
-          </el-link>
-
-          <el-link
-            type="primary"
-            :underline="false"
-            icon="el-icon-edit"
-            @click="danger(row)"
-            >添加隐患因素
-          </el-link>
-
-          <el-link
-            type="primary"
-            :underline="false"
-            icon="el-icon-edit"
-            @click="threaten(row)"
-            >添加威胁因素
-          </el-link>
-
-          <el-link
-            type="primary"
-            :underline="false"
-            icon="el-icon-edit"
-            @click="add(row)"
             >修改
           </el-link>
           <el-popconfirm
             class="ele-action"
-            title="确定要删除此安全分析预测吗？"
+            title="确定要删除此隐患行为库吗？"
             @confirm="remove(row)"
           >
             <el-link
@@ -112,49 +88,25 @@
         </template>
       </ele-pro-table>
     </el-card>
-    <!-- 安全分析编辑弹窗 -->
-    <forecast-edit
-      class="forecast"
+    <!-- 编辑弹窗 -->
+    <hiddendangeraction-edit
       :data="current"
       :visible.sync="showEdit"
-      @done="reload"
-    />
-    <!-- 隐患编辑弹窗 -->
-    <danger-edit
-      class="danger"
-      :data="current"
-      :visible.sync="showDanger"
-      @done="reload"
-    />
-    <!-- 威胁调查弹窗 -->
-    <threaten-edit
-      class="threaten"
-      :data="current"
-      :visible.sync="showThreaten"
-      @done="reload"
-    />
-    <!-- 添加/修改安全分析预测弹窗 -->
-    <forecast-add
-     :data="current"
-      :visible.sync="showAdd"
       @done="reload"
     />
   </div>
 </template>
 
 <script>
-import ForecastEdit from "./forecast-edit";
-import DangerEdit from "./danger-edit";
-import ThreatenEdit from "./threaten-edit";
-import ForecastAdd from "./forecast-add"
+import HiddendangeractionEdit from "./hiddendangeraction-edit";
 
 export default {
-  name: "SystemForecast",
-  components: { ForecastEdit,DangerEdit,ThreatenEdit,ForecastAdd },
+  name: "SystemHiddendangeraction",
+  components: { HiddendangeractionEdit },
   data() {
     return {
       // 表格数据接口
-      url: "/forecast/list",
+      url: "/hiddendangeraction/list",
       // 表格列配置
       columns: [
         {
@@ -162,7 +114,7 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "id",
@@ -170,23 +122,31 @@ export default {
           width: 60,
           align: "center",
           showOverflowTooltip: true,
-          fixed: "left",
+          fixed: "left"
+        },
+
+        {
+          prop: "ItemcateName",
+          label: "类别",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
+        },
+
+        {
+          prop: "ItemcatecName",
+          label: "栏目",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center"
         },
 
         {
           prop: "title",
-          label: "安全分析预测标题",
+          label: "隐患行为",
           showOverflowTooltip: true,
           minWidth: 100,
-          align: "center",
-        },
-
-        {
-          prop: "forecast_stime",
-          label: "任务开始时间",
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center",
+          align: "center"
         },
 
         {
@@ -194,7 +154,7 @@ export default {
           label: "排序",
           showOverflowTooltip: true,
           minWidth: 100,
-          align: "center",
+          align: "center"
         },
 
         {
@@ -206,18 +166,28 @@ export default {
           align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          },
+          }
         },
-
+        {
+          prop: "updateTime",
+          label: "更新时间",
+          sortable: "custom",
+          showOverflowTooltip: true,
+          minWidth: 160,
+          align: "center",
+          formatter: (row, column, cellValue) => {
+            return this.$util.toDateString(cellValue);
+          }
+        },
         {
           columnKey: "action",
           label: "操作",
-          width: 500,
+          width: 150,
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right",
-        },
+          fixed: "right"
+        }
       ],
       // 表格搜索条件
       where: {},
@@ -225,14 +195,8 @@ export default {
       selection: [],
       // 当前编辑数据
       current: null,
-      // 是否显示安全编辑弹窗
-      showEdit: false,
-      // 是否显示隐患编辑弹窗
-      showDanger:false,
-      // 是否显示威胁调查弹窗
-      showThreaten:false,
-      // 添加/修改
-      showAdd:false
+      // 是否显示编辑弹窗
+      showEdit: false
     };
   },
   methods: {
@@ -245,35 +209,17 @@ export default {
       this.where = {};
       this.reload();
     },
-    /* 安全分析显示编辑 */
+    /* 显示编辑 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
-    },
-    // 添加隐患显示编辑
-    danger(row) {
-      // console.log(row)
-      this.current = row;
-      this.showDanger = true;
-    },
-    // 添加威胁显示编辑
-    threaten(row) {
-      // console.log(row)
-      this.current = row;
-      this.showThreaten = true;
-    },
-    // 添加/修改
-    add(row){
-      console.log(row)
-      this.current = row;
-      this.showAdd = true;
     },
     /* 删除 */
     remove(row) {
       const loading = this.$loading({ lock: true });
       this.$http
-        .delete("/forecast/delete/" + row.id)
-        .then((res) => {
+        .delete("/hiddendangeraction/delete/" + row.id)
+        .then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -282,7 +228,7 @@ export default {
             this.$message.error(res.data.msg);
           }
         })
-        .catch((e) => {
+        .catch(e => {
           loading.close();
           this.$message.error(e.message);
         });
@@ -293,16 +239,17 @@ export default {
         this.$message.error("请至少选择一条数据");
         return;
       }
-      this.$confirm("确定要删除选中的安全分析预测吗?", "提示", {
-        type: "warning",
+      this.$confirm("确定要删除选中的隐患行为库吗?", "提示", {
+        type: "warning"
       })
         .then(() => {
           const loading = this.$loading({ lock: true });
           this.$http
             .delete(
-              "/forecast/delete/" + this.selection.map((d) => d.id).join(",")
+              "/hiddendangeraction/delete/" +
+                this.selection.map(d => d.id).join(",")
             )
-            .then((res) => {
+            .then(res => {
               loading.close();
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -311,26 +258,15 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               loading.close();
               this.$message.error(e.message);
             });
         })
         .catch(() => {});
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style scoped>
-.forecast {
-  width: 100%;
-  height: 1000px;
-  margin-top: none;
-}
-.danger {
-  width: 100%;
-  height: 1000px;
-  margin-top: none;
-}
-</style>
+<style scoped></style>

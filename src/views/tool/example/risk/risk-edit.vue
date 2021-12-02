@@ -3,14 +3,31 @@
   <el-dialog
     :title="isUpdate ? '修改威胁库' : '添加威胁库'"
     :visible="visible"
-    width="460px"
+    width="660px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="82px">
-      <el-form-item label="标题:" prop="title">
-        <el-input
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+      <el-form-item label="威胁行为:" prop="title">
+        <el-autocomplete
+          style="width:100%;"
+          popper-class="my-autocomplete"
+          v-model="form.title"
+          :fetch-suggestions="querySearch"
+          placeholder="请输入内容"
+          @select="handleSelect"
+        >
+          <i class="el-icon-edit el-input__icon" slot="suffix">
+            <!-- @click="handleIconClick" -->
+          </i>
+          <template slot-scope="{ item }">
+            <div class="name">{{ item.title }}</div>
+            <!-- <span class="addr">{{ item.id }}</span> -->
+          </template>
+        </el-autocomplete>
+        <!-- <el-input
+>>>>>>> master
           :maxlength="20"
           v-model="form.title"
           placeholder="请输入标题"
@@ -29,9 +46,35 @@
       </el-form-item>
 
       <el-form-item label="单位ID:" prop="dept_id">
+=======
+        /> -->
+      </el-form-item>
+
+      <el-form-item label="评分ID:" label-width="120px" prop="score_id">
+        <el-select
+          v-model="form.score_id"
+          placeholder="请选择活动区域"
+          style="width:100%;"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          >
+            <span style="float: left">{{ item.title }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{
+              item.score
+            }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <!-- <el-form-item label="单位ID:" label-width="120px" prop="deptId">
+>>>>>>> master
         <el-input-number
           :min="0"
-          v-model="form.dept_id"
+          v-model="form.deptId"
           placeholder="请输入单位ID"
           controls-position="right"
           class="ele-fluid ele-text-left"
@@ -67,6 +110,60 @@
       </el-form-item>
 
       <el-form-item label="状态:" prop="status">
+=======
+      </el-form-item> -->
+
+      <el-form-item
+        label="引发安全隐患:"
+        label-width="120px"
+        prop="yinhuan_ids"
+      >
+        <el-checkbox-group v-model="form.yinhuan_ids">
+          <el-checkbox
+            v-for="(item, index) in danger_arr"
+            name="yinhuanIds"
+            :label="String(item.id)"
+            :key="index"
+            >{{ item.name }}</el-checkbox
+          >
+        </el-checkbox-group>
+      </el-form-item>
+
+      <el-form-item label="威胁安全资源:" label-width="120px" prop="ziyuan_ids">
+        <el-checkbox-group v-model="form.ziyuan_ids">
+          <el-checkbox
+            v-for="(item, index) in threat_arr"
+            name="ziyuanIds"
+            :label="String(item.id)"
+            :key="index"
+            >{{ item.name }}</el-checkbox
+          >
+        </el-checkbox-group>
+      </el-form-item>
+
+      <el-form-item
+        label="造成安全风险:"
+        label-width="120px"
+        prop="riskdata_id"
+      >
+        <el-select
+          style="width:100%;"
+          v-model="form.riskdata_id"
+          placeholder="请选择活动区域"
+        >
+          <el-option
+            v-for="item in risk_arr"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          >
+            <span style="float: left">{{ item.title }}</span>
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="状态:" prop="status" label-width="120px">
+>>>>>>> master
         <el-radio-group v-model="form.status">
           <el-radio :label="1">在用</el-radio>
 
@@ -105,103 +202,205 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({}, this.data),
+      form: {
+        yinhuan_ids: [],
+        ziyuan_ids: [],
+        sort: 0
+      },
       // 表单验证规则
       rules: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        title: [{ required: true, message: "请输入标题", trigger: "change" }],
 
-        scoreId: [{ required: true, message: "请输入评分ID", trigger: "blur" }],
+        scoreId: [
+          { required: true, message: "请输入评分ID", trigger: "change" }
+        ],
 
         deptId: [{ required: true, message: "请输入单位ID", trigger: "blur" }],
 
-        yinhuanIds: [
-          { required: true, message: "请输入引发隐患id", trigger: "blur" },
+        yinhuan_ids: [
+          { required: true, message: "请输入引发隐患id", trigger: "change" }
         ],
 
-        ziyuanIds: [
-          { required: true, message: "请输入威胁安全资源id", trigger: "blur" },
+        ziyuan_ids: [
+          { required: true, message: "请输入威胁安全资源id", trigger: "change" }
         ],
 
-        riskdataId: [
-          { required: true, message: "请输入造成安全风险id", trigger: "blur" },
+        riskdata_id: [
+          { required: true, message: "请输入造成安全风险id", trigger: "change" }
         ],
 
-        status: [{ required: true, message: "请选择状态", trigger: "blur" }],
+        status: [
+          { required: true, message: "请选择状态", trigger: ["blur", "change"] }
+        ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
+        sort: [
+          { required: true, message: "请输入排序", trigger: ["blur", "change"] }
+        ]
       },
       // 提交状态
       loading: false,
       // 是否是修改
       isUpdate: false,
+      threat_arr: [],
+      danger_arr: [],
+      risk_arr: [],
+      options: []
     };
   },
   watch: {
     data() {
+      console.log(this.data);
+      let sort = 0;
+
       if (this.data) {
-        this.form = Object.assign({}, this.data);
+        sort = this.data.sort ? this.data.sort : 0;
+
+        let obj = this.data;
+        let danger = obj.yinhuan_ids;
+        let safe = obj.ziyuan_ids;
+        // console.log(danger);
+        let yinhuan_ids = danger
+          ? Array.isArray(danger)
+            ? danger
+            : danger.split(",")
+          : [];
+        let ziyuan_ids = safe
+          ? Array.isArray(safe)
+            ? safe
+            : safe.split(",")
+          : [];
+
+        obj.yinhuan_ids = yinhuan_ids;
+        obj.ziyuan_ids = ziyuan_ids;
+
+        this.form = Object.assign({ sort: sort }, obj);
+
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {
+          sort: sort,
+          yinhuan_ids: [],
+          ziyuan_ids: []
+        };
         this.isUpdate = false;
       }
     },
   },
-  computed: {
-    // 初始化富文本
-    initEditor() {
-      return {
-        height: 300,
-        branding: false,
-        skin_url: "/tinymce/skins/ui/oxide",
-        content_css: "/tinymce/skins/content/default/content.css",
-        language_url: "/tinymce/langs/zh_CN.js",
-        language: "zh_CN",
-        plugins:
-          "code print preview fullscreen paste searchreplace save autosave link autolink image imagetools media table codesample lists advlist hr charmap emoticons anchor directionality pagebreak quickbars nonbreaking visualblocks visualchars wordcount",
-        toolbar:
-          "fullscreen preview code | undo redo | forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | formatselect fontselect fontsizeselect | link image media emoticons charmap anchor pagebreak codesample | ltr rtl",
-        toolbar_drawer: "sliding",
-        images_upload_handler: (blobInfo, success, error) => {
-          let file = blobInfo.blob();
-          // 使用axios上传
-          const formData = new FormData();
-          formData.append("file", file, file.name);
-          this.$http
-            .post("/upload/uploadImage", formData)
-            .then((res) => {
-              if (res.data.code == 0) {
-                success(res.data.data.fileUrl);
-              } else {
-                error(res.data.msg);
-              }
-            })
-            .catch((e) => {
-              console.error(e);
-              error(e.message);
-            });
-        },
-        file_picker_types: "media",
-        file_picker_callback: () => {},
-      };
-    },
+  mounted() {
+    // 威胁安全资源
+    this.threat();
+    // 引发隐患
+    this.danger();
+    // 造成安全风险
+    this.safe_risk();
+    // 频次 -- 评分id
+    this.frequency();
   },
   methods: {
+    /* 频次 */
+    async frequency() {
+      const res = await this.$http.get("/score/list", {
+        params: {
+          itemId: 3,
+          itemcate_id: 28,
+          page: 1,
+          limit: 100
+        }
+      });
+      if (res.data.code != 0) return;
+      this.options = res.data.data;
+      return res.data.data;
+    },
+    /* 造成安全风险  */
+    async safe_risk() {
+      const res = await this.$http.get("/riskdata/list", {
+        params: {
+          page: 1,
+          limit: 100
+        }
+      });
+      if (res.data.code != 0) return;
+      let data = res.data.data;
+      this.risk_arr = data;
+      return data;
+    },
+
+    async threat() {
+      const res = await this.$http.get("/itemcate/list", {
+        params: {
+          itemId: 1
+        }
+      });
+      if (res.data.code != 0) return;
+      let data = res.data.data;
+      this.threat_arr = this.getRootPid(data);
+    },
+    /* 引发隐患  */
+    async danger() {
+      const result = await this.$http.get("/itemcate/list", {
+        params: {
+          itemId: 2
+        }
+      });
+      if (result.data.code != 0) return;
+      let data = result.data.data;
+      /* 只取顶级 pid = 0 */
+      let arr = this.getRootPid(data);
+      this.danger_arr = arr;
+    },
+    /* 标题 -- 威胁行为库 */
+    querySearch(queryString, cb) {
+      this.threat_do().then(res => {
+        cb(res);
+      });
+    },
+    handleSelect(item) {
+      this.form.title = item.title;
+    },
+    async threat_do() {
+      const res = await this.$http.get("/riskaction/list", {
+        params: {
+          page: 1,
+          limit: 100
+        }
+      });
+      if (res.data.code != 0) return;
+      let data = res.data.data;
+      return data;
+    },
+
+    /* 通用方法 pid = 0  */
+    getRootPid(list) {
+      if (!list) return;
+      let array = [];
+      for (let i = 0; i < list.length; i++) {
+        const element = list[i];
+        if (element.pid == 0) {
+          array.push(element);
+        }
+      }
+      return array;
+    },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate((valid) => {
+      let _this = this;
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.loading = true;
+          const params = _this.params();
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/risk/update" : "/risk/add",
-            this.form
+            params
           )
-            .then((res) => {
+            .then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {
+                    yinhuan_ids: [],
+                    ziyuan_ids: []
+                  };
                 }
                 this.updateVisible(false);
                 this.$emit("done");
@@ -209,7 +408,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -218,13 +417,29 @@ export default {
         }
       });
     },
+    /* 参数处理 */
+    params() {
+      let params = this.form;
+      params.yinhuan_ids = params.yinhuan_ids
+        ? params.yinhuan_ids.join(",")
+        : "";
+      params.ziyuan_ids = params.ziyuan_ids ? params.ziyuan_ids.join(",") : "";
+      // for (const key in params) {
+      //   if (Object.hasOwnProperty.call(params, key)) {
+      //     const element = params[key];
+      //     if (element && element.join) {
+      //       params[key] = element.join(",");
+      //     }
+      //   }
+      // }
+      return params;
+    },
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="安全资源"
+      title="隐患因素"
       :visible="visible"
       width="800px"
       :destroy-on-close="true"
@@ -18,12 +18,17 @@
         :toolbar="false"
         :selection.sync="selection"
         height="calc(100vh - 420px)"
-        :parse-data="parseData_left"
       >
         <!-- 表格数据 -->
-        <template slot="scortNum" slot-scope="{ row }">
-          {{row.sums}}
+        <template slot="score" slot-scope="{ row }">
+          {{ row.score * 100 }}%
         </template>
+        <!-- <template slot="yinhuan" slot-scope="{ row }">
+                {{row.yinhuanTitle.name}}
+            </template>
+            <template slot="ziyuan" slot-scope="{ row }">
+                {{row.ziyuanTitle.name}}
+            </template> -->
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
           <el-link
@@ -35,7 +40,6 @@
           </el-link>
         </template>
       </ele-pro-table>
-      <el-input type="textarea" placeholder="请输入" v-model="inner"></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="updateVisible(false)">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -67,7 +71,8 @@ export default {
       isForeCast: "",
       disabled: false,
       num: 1,
-      sums:0
+      sums: 0,
+      ziyuanData:[],
     };
   },
   watch: {
@@ -85,7 +90,7 @@ export default {
     // 弹框内数据
     async index() {
       this.load = true;
-      const res = await this.$http.get("assets/list?", {
+      const res = await this.$http.get("/risk/list?", {
         params: {
           forecast_id: this.forecast,
           itemcate_id: this.params,
@@ -95,46 +100,31 @@ export default {
       this.load = false;
       if (res.data.code == 0) {
         this.data = res.data.data;
+        // console.log(this.data)
         for (let i = 0; i < this.data.length; i++) {
           const ele = this.data[i];
           if (ele.isForecast == 1) {
             this.data.splice(i, 1);
             i--;
           }
-        }
-        this.parseData_left()
-      }
-    },
-    parseData_left() {
-      if (!this.data) return { code: 0, data: [] };
-      let parse = this.data;
-      for (let i = 0; i < parse.length; i++) {
-        const element = parse[i];
-        var ele = element.assets_json
-          ? JSON.parse(element.assets_json)
-          : { data: [] };
-        let data = ele.data;
-        for (let j = 0; j < data.length; j++) {
-          const obj = data[j];
-          Object.assign(element, obj);
+        //   const eleData = ele.ziyuanTitle
+        //   for (let j = 0; j < eleData.length; j++) {
+        //       const element = eleData[j];
+        //       this.ziyuanData = element.name
+        //   }
+        //   console.log(this.ziyuanData)
+          
         }
       }
-        return {
-          btype: 0,
-          code: 0,
-          count: 0,
-          data: parse,
-          msg: "操作成功",
-        };
     },
     // 点击添加触发
     async openEdit(row) {
       let param = row;
       Object.assign(param, {
         forecast_id: this.forecast,
-        assets_id: row.id,
+        risk_id: row.id,
       });
-      const res = await this.$http.post("/assetslibrary/add", param);
+      const res = await this.$http.post("/risklibrary/add", param);
       if (res.data.code == 0) {
         this.$emit("saveTableData", this.selection);
       }
@@ -145,11 +135,7 @@ export default {
     async save() {
       let params = { data: this.selection };
       console.log(JSON.stringify(params));
-      const inn = await this.$http.post("/assetslibrary/addall", {
-        inner: this.inner,
-      });
-      console.log(inn);
-      const res = await this.$http.post("/assetslibrary/add", {
+      const res = await this.$http.post("/risklibrary/add", {
         forecast_id: this.forecast,
       });
       if (res.data.code == 0) {

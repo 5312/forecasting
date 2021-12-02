@@ -37,7 +37,7 @@
             :datasource="x.url"
             :toolbar="true"
             height="calc(100vh -800px)"
-            :page-size="100"
+            :page-size="150"
             :parse-data="parseData_left"
           >
             <!-- 表头工具栏 -->
@@ -64,7 +64,7 @@
                 size="mini"
                 :min="1"
                 v-model="row.sums"
-                @change="add(row,y)"
+                @change="add(row, y)"
               ></el-input-number>
             </template>
             <!-- 操作列 -->
@@ -100,6 +100,7 @@
       :params="params_id"
       :forecast="form.id"
       @saveTableData="saveTableData"
+      :column="colnums_all"
     ></SafeStatus>
     <Manual :visible.sync="man"></Manual>
   </el-dialog>
@@ -112,13 +113,13 @@ export default {
   name: "ForecastEdit",
   components: {
     SafeStatus,
-    Manual,
+    Manual
   },
   props: {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object,
+    data: Object
   },
   data() {
     return {
@@ -128,44 +129,44 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "id",
           label: "ID",
           width: 60,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "title",
           label: "名称",
           align: "center",
-          minWidth: 200,
+          minWidth: 200
         },
         {
           prop: "sums",
           label: "数量",
           width: 180,
           align: "center",
-          slot: "scortNum",
+          slot: "scortNum"
         },
         {
           prop: "scoreTitle",
           label: "评价标准",
           width: 300,
-          align: "center",
+          align: "center"
         },
         {
           prop: "Score",
           label: "资源赋值(R)",
           align: "center",
-          minWidth: 120,
+          minWidth: 120
         },
         {
           prop: "Scoresum",
           label: "总赋值",
-          align: "center",
+          align: "center"
         },
         {
           columnKey: "action",
@@ -174,8 +175,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right",
-        },
+          fixed: "right"
+        }
       ],
       // 表单数据
       form: Object.assign({}, this.data),
@@ -185,15 +186,15 @@ export default {
           {
             required: true,
             message: "请输入安全分析预测标题",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
 
         forecastStime: [
-          { required: true, message: "请输入任务开始时间", trigger: "blur" },
+          { required: true, message: "请输入任务开始时间", trigger: "blur" }
         ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       // 提交状态
       loading: false,
@@ -210,6 +211,8 @@ export default {
       tableIndex: null,
       // 评分
       score: 0,
+      // 完成 cols
+      colnums_all:[]
     };
   },
   mounted() {},
@@ -229,23 +232,22 @@ export default {
       } else {
         this.typeData = [];
       }
-    },
+    }
   },
-  computed: {
- 
-  },
+  computed: {},
   methods: {
     // 数量加减
-    add(row,y) {
+    add(row, y) {
       this.$http
         .put("/assetslibrary/upsums", {
           id: row.id,
-          sums: row.sums,
+          sums: row.sums
         })
         .then(() => {
           this.reload(y)
         });
     },
+    // 模板
     temp(arr) {
       let array = arr;
       if (!arr) return {};
@@ -260,14 +262,16 @@ export default {
         element.prop = element.code;
         element.label = element.title;
         element.align = "center";
+        element.width = 180;
         col_arr.push(element);
       }
       return col_arr;
     },
+    // 数据
     parseData_left(res) {
+      if(!res.data) return {code:0,data:[]}
       let parse = res.data;
-      // console.log(parse)
-      let num = 0
+      let num = 0;
       for (let i = 0; i < parse.length; i++) {
         const element = parse[i];
         var ele = element.assets_json
@@ -279,14 +283,14 @@ export default {
           const obj = data[j];
           Object.assign(element, obj);
         }
-        num += element.Scoresum*1
+        num += element.Scoresum * 1;
       }
       // 数据里 itemcate_id 值 是不是 手风琴类型的id
       let list_id = parse[0].itemcate_id;
       for (let i = 0; i < this.typeData.length; i++) {
         const element = this.typeData[i];
-        if(element.id == list_id){
-          element.score = num
+        if (element.id == list_id) {
+          element.score = num;
         }
       }
       return {
@@ -294,7 +298,7 @@ export default {
         code: 0,
         count: 0,
         data: parse,
-        msg: "操作成功",
+        msg: "操作成功"
       };
     },
     reload(i) {
@@ -305,6 +309,15 @@ export default {
       this.tableIndex = x;
       // 添加安全资源
       if (this.tableIndex !== null) {
+        let arr = this.typeData[x].temptlate;
+        let array = this.defaultColumns
+        array = JSON.stringify(array);
+        array = JSON.parse(array)
+        for (let i = 0; i < arr.length; i++) {
+          const element = arr[i];
+          array.push(element)
+        }
+        this.colnums_all = array
         this.twoshow = true;
       }
       this.params_id = y;
@@ -321,7 +334,7 @@ export default {
       let i = this.tableIndex;
       this.reload(i);
       this.twoshow = false;
-      this.tableIndex = null;
+      // this.tableIndex = null;
     },
 
     async remove(row, index) {
@@ -336,8 +349,8 @@ export default {
     async index() {
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 1,
-        },
+          item_id: 1
+        }
       });
       if (res.data.code == 0) {
         let array = res.data.data;
@@ -347,14 +360,14 @@ export default {
             element.where = {
               forecast_id: this.form.id,
               itemcateid: element.id,
-              itemcatecid: null,
+              itemcatecid: null
             };
             // 模板接口
             const d = await this.$http.get("/configdata/list", {
               params: {
                 configId: element.id,
-                forecast_id: this.form.id,
-              },
+                forecast_id: this.form.id
+              }
             });
             element.temptlate = d.data.data;
             // 模板数据接口
@@ -363,7 +376,6 @@ export default {
             element.show = true;
             element.score = 0;
 
-          
             this.typeData.push(element);
           }
         }
@@ -371,14 +383,14 @@ export default {
     },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.loading = true;
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/forecast/update" : "/forecast/add",
             this.form
           )
-            .then((res) => {
+            .then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -391,7 +403,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -404,8 +416,8 @@ export default {
     updateVisible(value) {
       this.$emit("update:visible", value);
     },
-    removeBatch() {},
-  },
+    removeBatch() {}
+  }
 };
 </script>
 

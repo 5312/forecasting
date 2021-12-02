@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="安全资源"
+      title="隐患因素"
       :visible="visible"
       width="800px"
       :destroy-on-close="true"
@@ -21,9 +21,9 @@
         :parse-data="parseData_left"
       >
         <!-- 表格数据 -->
-        <template slot="scortNum" slot-scope="{ row }">
-          {{row.sums}}
-        </template>
+            <template slot="score" slot-scope="{ row }">
+                {{row.Score*100}}%
+            </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
           <el-link
@@ -35,7 +35,6 @@
           </el-link>
         </template>
       </ele-pro-table>
-      <el-input type="textarea" placeholder="请输入" v-model="inner"></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="updateVisible(false)">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -85,7 +84,7 @@ export default {
     // 弹框内数据
     async index() {
       this.load = true;
-      const res = await this.$http.get("assets/list?", {
+      const res = await this.$http.get("/hiddendanger/list?", {
         params: {
           forecast_id: this.forecast,
           itemcate_id: this.params,
@@ -132,9 +131,9 @@ export default {
       let param = row;
       Object.assign(param, {
         forecast_id: this.forecast,
-        assets_id: row.id,
+        hiddendanger_id: row.id,
       });
-      const res = await this.$http.post("/assetslibrary/add", param);
+      const res = await this.$http.post("/hiddendangerlibrary/add", param);
       if (res.data.code == 0) {
         this.$emit("saveTableData", this.selection);
       }
@@ -145,11 +144,7 @@ export default {
     async save() {
       let params = { data: this.selection };
       console.log(JSON.stringify(params));
-      const inn = await this.$http.post("/assetslibrary/addall", {
-        inner: this.inner,
-      });
-      console.log(inn);
-      const res = await this.$http.post("/assetslibrary/add", {
+      const res = await this.$http.post("/hiddendangerlibrary/add", {
         forecast_id: this.forecast,
       });
       if (res.data.code == 0) {
