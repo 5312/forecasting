@@ -3,10 +3,11 @@
   <el-dialog
     :title="isUpdate ? '修改隐患调查' : '添加隐患调查'"
     :visible="visible"
-    width="660px"
+    width="760px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
+    :close-on-click-modal="false"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <!-- <el-form-item label="单位ID:" prop="dept_id">
