@@ -204,7 +204,7 @@ export default {
 
         {
           prop: "chart",
-          label: "图形",
+          label: "结果",
           showOverflowTooltip: true,
           minWidth: 100,
           align: "center",

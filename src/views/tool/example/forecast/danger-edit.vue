@@ -20,9 +20,9 @@
               <p class="score">
                 A
                 <span class="tit">{{ x.name }}</span>
-                <!-- &nbsp;
+                &nbsp;
                 <span class="fen">{{ x.score }}</span>
-                <span class="scor">分</span> -->
+                <span class="scor">分</span>
               </p>
             </div>
           </template>
@@ -35,6 +35,7 @@
             :toolbar="true"
             height="calc(100vh -800px)"
             :page-size="150"
+            :parse-data="parseData_left"
           >
             <!-- 表头工具栏 -->
             <template slot="toolbar">
@@ -162,13 +163,13 @@ export default {
           width: 200,
           align: "center"
         },
-        {
-          prop: "Score",
-          label: "扣分比例(%)",
-          align: "center",
-          minWidth: 120,
-          slot:"score"
-        },
+        // {
+        //   prop: "Score",
+        //   label: "扣分比例(%)",
+        //   align: "center",
+        //   minWidth: 120,
+        //   slot:"score"
+        // },
         {
           prop: "sort",
           label: "排序",
@@ -274,6 +275,38 @@ export default {
         col_arr.push(element);
       }
       return col_arr;
+    },
+    parseData_left(res) {
+      if(!res.data) return {code:0,data:[]}
+      let parse = res.data;
+      let num = 0;
+      for (let i = 0; i < parse.length; i++) {
+        const element = parse[i];
+        // var ele = element.assets_json? JSON.parse(element.assets_json)
+        //   : { data: [] };
+
+        // let data = ele.data;
+        // for (let j = 0; j < data.length; j++) {
+        //   const obj = data[j];
+        //   Object.assign(element, obj);
+        // }
+        num += element.Score * 1;
+      }
+      // 数据里 itemcate_id 值 是不是 手风琴类型的id
+      let list_id = parse[0].itemcate_id;
+      for (let i = 0; i < this.typeData.length; i++) {
+        const element = this.typeData[i];
+        if (element.id == list_id) {
+          element.score = num;
+        }
+      }
+      return {
+        btype: 0,
+        code: 0,
+        count: 0,
+        data: parse,
+        msg: "操作成功"
+      };
     },
     reload(i) {
       let table = `table${i}`;

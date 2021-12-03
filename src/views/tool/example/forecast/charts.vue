@@ -1,6 +1,6 @@
 <template >
   <el-dialog
-    title="软件预测一览表"
+    title="概况一览表"
     :visible="visible"
     :destroy-on-close="true"
     :lock-scroll="false"
@@ -49,7 +49,7 @@ export default {
       let Pie = echarts.init(id);
       Pie.setOption({
         title: {
-          text: "风险预测（饼图）",
+          text: "安全风险隐患",
           left: "center",
         },
         tooltip: {
@@ -61,7 +61,6 @@ export default {
         },
         series: [
           {
-            name: "Access From",
             type: "pie",
             radius: "50%",
             data: [
@@ -85,7 +84,7 @@ export default {
       let Column = echarts.init(id);
       Column.setOption({
         title: {
-          text: "风险预测（柱形图）",
+          text: "地面安全事故风险标准比照图",
           left: "center",
         },
         tooltip: {
@@ -123,16 +122,13 @@ export default {
     },
     // 饼图接口数据
     pieData() {
-      console.log(this.data.id);
-      this.$http
-        .get("/forecast/Infodata", {
-          params: {
-            forecast_id: this.data.id,
-          },
-        })
-        .then((res) => {
-          console.log(res.data.data);
-        });
+      this.$http.get("/forecast/infodata",{
+        // params:{
+          forecast_id: this.data.id
+        // }
+      }).then((res)=>{
+        console.log(res.data.data)
+      })
     },
     // // 柱形图接口数据
     //   columnData(){},

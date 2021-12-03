@@ -20,12 +20,6 @@
         height="calc(100vh - 420px)"
       >
         <!-- 表格数据 -->
-        <template slot="score" slot-scope="{ row }">
-          {{ row.score * 100 }}%
-        </template>
-         <template slot="score" slot-scope="{ row }">
-          {{ row.score * 100 }}%
-        </template>
        <template slot="danger" slot-scope="{ row }">
           <div>
             <div v-for="item in row.yinhuanTitle" :key="item.id">

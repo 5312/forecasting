@@ -41,9 +41,6 @@
             >手动添加</el-button
           >
         </template>
-        <template slot="score" slot-scope="{ row }">
-          {{ row.score * 100 }}%
-        </template>
        <template slot="danger" slot-scope="{ row }">
           <div>
             <div v-for="item in row.yinhuanTitle" :key="item.id">
@@ -139,11 +136,10 @@ export default {
           align: "center",
         },
         {
-          prop: "Score",
+          prop: "score",
           label: "分值(V)",
           align: "center",
           minWidth: 120,
-          slot: "score",
         },
         {
           prop: "yinhuan_ids",
