@@ -7,7 +7,7 @@
         <ele-pro-table
           ref="table_left"
           :where="where_left"
-          row-key="id"
+          :row-key="getrowkeys"
           :datasource="url_left"
           :columns="columns_left"
           highlight-current-row
@@ -18,6 +18,9 @@
           height="calc(100vh -  133px)"
           @done="done_left"
           :toolbar="false"
+          @row-click="rowclick"
+          stripe
+          :expand-row-keys="expand"
         >
           <!-- 标题列 -->
           <template slot="name" slot-scope="{ row }">
@@ -150,6 +153,9 @@ export default {
   components: { HiddendangerEdit },
   data() {
     return {
+      getrowkeys(row) {
+        return row.id;
+      },
       // 面包屑
       titlelist: [],
       // 表格数据接口
@@ -281,7 +287,8 @@ export default {
         }
       ],
       current_left: null,
-      disabled: true
+      disabled: true,
+      expand: [] //展开
     };
   },
   watch: {
@@ -331,6 +338,13 @@ export default {
     }
   },
   methods: {
+    rowclick(row) {
+      if (this.expand.includes(row.id)) {
+        this.expand = this.expand.filter(val => val !== row.id);
+      } else {
+        this.expand.push(row.id);
+      }
+    },
     parseData_left(res) {
       this.left_data = res.data;
       res.data = this.$util.toTreeData(res.data, "id", "pid");

@@ -27,7 +27,7 @@
           </template>
         </el-autocomplete>
         <!-- <el-input
->>>>>>> master
+
           :maxlength="20"
           v-model="form.title"
           placeholder="请输入标题"
@@ -45,8 +45,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="单位ID:" prop="dept_id">
-=======
+ 
         /> -->
       </el-form-item>
 
@@ -163,7 +162,6 @@
       </el-form-item>
 
       <el-form-item label="状态:" prop="status" label-width="120px">
->>>>>>> master
         <el-radio-group v-model="form.status">
           <el-radio :label="1">在用</el-radio>
 
@@ -197,7 +195,7 @@ export default {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object,
+    data: Object
   },
   data() {
     return {
@@ -284,7 +282,7 @@ export default {
         };
         this.isUpdate = false;
       }
-    },
+    }
   },
   mounted() {
     // 威胁安全资源

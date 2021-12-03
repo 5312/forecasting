@@ -187,7 +187,12 @@ export default {
     },
     data() {
       this.popover = true;
-      this.form = Object.assign({}, this.data);
+      this.form = Object.assign(
+        {
+          sort: 0
+        },
+        this.data
+      );
 
       if (this.data.id != "") {
         // 修改
