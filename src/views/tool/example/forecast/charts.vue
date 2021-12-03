@@ -7,7 +7,7 @@
     @update:visible="updateVisible"
   >
     <div id="pie" :style="{ width: '600px', height: '300px' }"></div>
-    <div id="column" :style="{ width: '600px', height: '300px' }"></div>
+    <div id="column" :style="{ width: '700px', height: '300px' }"></div>
   </el-dialog>
 </template>
 <script>
@@ -41,7 +41,7 @@ export default {
   },
   computed: {},
   mounted() {
-    console.log(this.data.id);
+    // console.log(this.data.id);
   },
   methods: {
     drawPie() {
@@ -49,7 +49,7 @@ export default {
       let Pie = echarts.init(id);
       Pie.setOption({
         title: {
-          text: "软件预测（饼图）",
+          text: "风险预测（饼图）",
           left: "center",
         },
         tooltip: {
@@ -65,11 +65,9 @@ export default {
             type: "pie",
             radius: "50%",
             data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
+              { value: 1048, name: "地面安全事故（人员受损）" },
+              { value: 735, name: "地面安全事故（装备受损）" },
+              { value: 580, name: "保密安全风险" },
             ],
             emphasis: {
               itemStyle: {
@@ -87,19 +85,37 @@ export default {
       let Column = echarts.init(id);
       Column.setOption({
         title: {
-          text: "软件预测（柱形图）",
+          text: "风险预测（柱形图）",
           left: "center",
         },
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          orient: "vertical",
+          left: "right",
+        },
         xAxis: {
+          axisLabel: {
+            interval: 0,
+            rotate: -10,
+            show: true,
+          },
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: [
+            "发生一般事故风险值（参照）",
+            "发生较大事故风险值（参照）",
+            "发生重大事故风险值（参照）",
+            "发生特大事故风险值（参照）",
+            "本次任务实际风险值",
+          ],
         },
         yAxis: {
           type: "value",
         },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: [120, 200, 150, 100,180],
             type: "bar",
           },
         ],
@@ -110,10 +126,12 @@ export default {
       console.log(this.data.id);
       this.$http
         .get("/forecast/Infodata", {
-          forecast_id: this.data.id,
+          params: {
+            forecast_id: this.data.id,
+          },
         })
         .then((res) => {
-          console.log(res);
+          console.log(res.data.data);
         });
     },
     // // 柱形图接口数据
