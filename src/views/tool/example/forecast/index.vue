@@ -286,7 +286,7 @@ export default {
     },
     // 图表
     tu(row) {
-      console.log(row);
+      // console.log(row);
       this.current = row;
       this.showChart = true;
     },

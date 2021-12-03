@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       // 表单数据
-      form: Object.assign({}, this.data),
+      form: Object.assign({sort:0}, this.data),
       // 表单验证规则
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
@@ -68,10 +68,10 @@ export default {
   watch: {
     data() {
       if (this.data) {
-        this.form = Object.assign({}, this.data);
+        this.form = Object.assign({sort:0}, this.data);
         this.isUpdate = true;
       } else {
-        this.form = {};
+        this.form = {sort:0};
         this.isUpdate = false;
       }
     },

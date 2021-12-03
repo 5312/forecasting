@@ -20,9 +20,9 @@
               <p class="score">
                 A
                 <span class="tit">{{ x.name }}</span>
-                &nbsp;
+                <!-- &nbsp;
                 <span class="fen">{{ x.score }}</span>
-                <span class="scor">分</span>
+                <span class="scor">分</span> -->
               </p>
             </div>
           </template>
@@ -157,11 +157,6 @@ export default {
           minWidth: 120
         },
         {
-          prop: "Scoresum",
-          label: "总赋值",
-          align: "center"
-        },
-        {
           prop: "scoreTitle",
           label: "评价标准",
           width: 200,
@@ -252,7 +247,7 @@ export default {
      // 数量加减
     add(row, y) {
       this.$http
-        .put("/assetslibrary/upsums", {
+        .put("/hiddendangerlibrary/upsums", {
           id: row.id,
           sums: row.sums
         })

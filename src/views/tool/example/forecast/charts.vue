@@ -23,27 +23,29 @@ export default {
   data() {
     return {
       // 饼图数据
-      pData:[],
+      pData: [],
       // 柱形图数据
-      cData:[],
+      cData: [],
     };
   },
   watch: {
     visible(e) {
       if (e) {
-       this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.drawPie();
-          this.drawColumn()
-       })
+          this.drawColumn();
+          this.pieData();
+        });
       }
     },
   },
-  computed: {
+  computed: {},
+  mounted() {
+    console.log(this.data.id);
   },
-  mounted() {},
   methods: {
     drawPie() {
-      let id = document.getElementById('pie')
+      let id = document.getElementById("pie");
       let Pie = echarts.init(id);
       Pie.setOption({
         title: {
@@ -80,15 +82,15 @@ export default {
         ],
       });
     },
-    drawColumn(){
-      let id = document.getElementById('column')
+    drawColumn() {
+      let id = document.getElementById("column");
       let Column = echarts.init(id);
       Column.setOption({
         title: {
           text: "软件预测（柱形图）",
           left: "center",
         },
-         xAxis: {
+        xAxis: {
           type: "category",
           data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         },
@@ -101,12 +103,21 @@ export default {
             type: "bar",
           },
         ],
-      })
+      });
     },
     // 饼图接口数据
-      pieData(){},
-    // 柱形图接口数据
-      columnData(){},
+    pieData() {
+      console.log(this.data.id);
+      this.$http
+        .get("/forecast/Infodata", {
+          forecast_id: this.data.id,
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    },
+    // // 柱形图接口数据
+    //   columnData(){},
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
