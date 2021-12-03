@@ -282,14 +282,6 @@ export default {
       let num = 0;
       for (let i = 0; i < parse.length; i++) {
         const element = parse[i];
-        // var ele = element.assets_json? JSON.parse(element.assets_json)
-        //   : { data: [] };
-
-        // let data = ele.data;
-        // for (let j = 0; j < data.length; j++) {
-        //   const obj = data[j];
-        //   Object.assign(element, obj);
-        // }
         num += element.Score * 1;
       }
       // 数据里 itemcate_id 值 是不是 手风琴类型的id
