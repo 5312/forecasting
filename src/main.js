@@ -12,6 +12,7 @@ import VueClipboard from 'vue-clipboard2';
 import i18n from './lang';
 import VueLazyload from 'vue-lazyload'
 
+
 Vue.config.productionTip = false;
 Vue.use(EleAdmin, {
   i18n: (key, value) => i18n.t(key, value)
@@ -19,6 +20,8 @@ Vue.use(EleAdmin, {
 Vue.use(permission);
 Vue.use(DialogDirective);
 Vue.use(VueClipboard);
+
+
 
 // 拉加载配置
 Vue.use(VueLazyload, {

@@ -15,7 +15,16 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item v-for="(x, y) in typeData" :key="y" :name="y">
           <template slot="title">
-            {{ x.name }}
+            <!-- {{ x.name }} -->
+            <div>
+              <p class="score">
+                A
+                <span class="tit">{{ x.name }}</span>
+                &nbsp;
+                <span class="fen">{{ x.score }}</span>
+                <span class="scor">分</span>
+              </p>
+            </div>
           </template>
           <ele-pro-table
             v-if="x.show"

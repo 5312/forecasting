@@ -63,6 +63,15 @@
             >删除
           </el-button>
         </template>
+        <template slot="chart" slot-scope="{ row }">
+          <el-link
+            type="primary"
+            :underline="false"
+            icon="el-icon-data-analysis"
+            @click="tu(row)"
+          >
+          </el-link>
+        </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
           <el-link
@@ -134,9 +143,12 @@
       @done="reload"
     />
     <!-- 添加/修改安全分析预测弹窗 -->
-    <forecast-add
-     :data="current"
-      :visible.sync="showAdd"
+    <forecast-add :data="current" :visible.sync="showAdd" @done="reload" />
+    <!-- 图表弹框 -->
+    <charts
+      class="chart"
+      :data="current"
+      :visible.sync="showChart"
       @done="reload"
     />
   </div>
@@ -146,11 +158,12 @@
 import ForecastEdit from "./forecast-edit";
 import DangerEdit from "./danger-edit";
 import ThreatenEdit from "./threaten-edit";
-import ForecastAdd from "./forecast-add"
+import ForecastAdd from "./forecast-add";
+import Charts from "./charts";
 
 export default {
   name: "SystemForecast",
-  components: { ForecastEdit,DangerEdit,ThreatenEdit,ForecastAdd },
+  components: { ForecastEdit, DangerEdit, ThreatenEdit, ForecastAdd, Charts },
   data() {
     return {
       // 表格数据接口
@@ -190,11 +203,12 @@ export default {
         },
 
         {
-          prop: "sort",
-          label: "排序",
+          prop: "chart",
+          label: "图形",
           showOverflowTooltip: true,
           minWidth: 100,
           align: "center",
+          slot: "chart",
         },
 
         {
@@ -228,11 +242,13 @@ export default {
       // 是否显示安全编辑弹窗
       showEdit: false,
       // 是否显示隐患编辑弹窗
-      showDanger:false,
+      showDanger: false,
       // 是否显示威胁调查弹窗
-      showThreaten:false,
-      // 添加/修改
-      showAdd:false
+      showThreaten: false,
+      // 添加/修改弹窗
+      showAdd: false,
+      // 图表弹窗
+      showChart: false,
     };
   },
   methods: {
@@ -263,10 +279,16 @@ export default {
       this.showThreaten = true;
     },
     // 添加/修改
-    add(row){
-      console.log(row)
+    add(row) {
+      // console.log(row)
       this.current = row;
       this.showAdd = true;
+    },
+    // 图表
+    tu(row) {
+      console.log(row);
+      this.current = row;
+      this.showChart = true;
     },
     /* 删除 */
     remove(row) {
@@ -332,5 +354,8 @@ export default {
   width: 100%;
   height: 1000px;
   margin-top: none;
+}
+.chart {
+  width: 100%;
 }
 </style>
