@@ -1,14 +1,13 @@
-<template>
+<template >
   <el-dialog
     title="软件预测一览表"
     :visible="visible"
-    width="460px"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
   >
-    <div id="pie" :style="{ width: '300px', height: '300px' }"></div>
-    <div id="column" :style="{ width: '300px', height: '300px' }"></div>
+    <div id="pie" :style="{ width: '600px', height: '300px' }"></div>
+    <div id="column" :style="{ width: '600px', height: '300px' }"></div>
   </el-dialog>
 </template>
 <script>
@@ -22,7 +21,12 @@ export default {
     data: Object,
   },
   data() {
-    return {};
+    return {
+      // 饼图数据
+      pData:[],
+      // 柱形图数据
+      cData:[],
+    };
   },
   watch: {
     visible(e) {
@@ -35,25 +39,15 @@ export default {
     },
   },
   computed: {
-    // pie() {
-    //   return {};
-    // },
-    // column() {
-    //   return {
-       
-    //   };
-    // },
   },
   mounted() {},
   methods: {
     drawPie() {
       let id = document.getElementById('pie')
-      // console.log(id);
       let Pie = echarts.init(id);
       Pie.setOption({
         title: {
-          text: "Referer of a Website",
-          subtext: "Fake Data",
+          text: "软件预测（饼图）",
           left: "center",
         },
         tooltip: {
@@ -88,9 +82,12 @@ export default {
     },
     drawColumn(){
       let id = document.getElementById('column')
-      // console.log(id);
       let Column = echarts.init(id);
       Column.setOption({
+        title: {
+          text: "软件预测（柱形图）",
+          left: "center",
+        },
          xAxis: {
           type: "category",
           data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -106,6 +103,10 @@ export default {
         ],
       })
     },
+    // 饼图接口数据
+      pieData(){},
+    // 柱形图接口数据
+      columnData(){},
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
@@ -113,3 +114,5 @@ export default {
   },
 };
 </script>
+<style scoped>
+</style>

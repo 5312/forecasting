@@ -56,6 +56,14 @@
                 >手动添加</el-button
               >
             </template>
+            <template slot="scortNum" slot-scope="{ row }">
+              <el-input-number
+                size="mini"
+                :min="1"
+                v-model="row.sums"
+                @change="add(row, y)"
+              ></el-input-number>
+            </template>
             <template slot="score" slot-scope="{ row }">
                 {{row.Score*100}}%
             </template>
@@ -136,6 +144,24 @@ export default {
           minWidth: 150
         },
         {
+          prop: "sums",
+          label: "数量",
+          width: 180,
+          align: "center",
+          slot: "scortNum"
+        },
+        {
+          prop: "Score",
+          label: "资源赋值(R)",
+          align: "center",
+          minWidth: 120
+        },
+        {
+          prop: "Scoresum",
+          label: "总赋值",
+          align: "center"
+        },
+        {
           prop: "scoreTitle",
           label: "评价标准",
           width: 200,
@@ -203,6 +229,7 @@ export default {
   },
   mounted() {},
   watch: {
+    
     data() {
       if (this.data) {
         this.form = Object.assign({}, this.data);
@@ -222,6 +249,17 @@ export default {
   },
   computed: {},
   methods: {
+     // 数量加减
+    add(row, y) {
+      this.$http
+        .put("/assetslibrary/upsums", {
+          id: row.id,
+          sums: row.sums
+        })
+        .then(() => {
+          this.reload(y)
+        });
+    },
     // 模板
     temp(arr) {
       let array = arr;
