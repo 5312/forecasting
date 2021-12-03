@@ -65,6 +65,7 @@
         </template>
         <template slot="chart" slot-scope="{ row }">
           <el-link
+            class="ico"
             type="primary"
             :underline="false"
             icon="el-icon-data-analysis"
@@ -357,5 +358,8 @@ export default {
 }
 .chart {
   width: 100%;
+}
+.ico {
+  font-size: 20px;
 }
 </style>

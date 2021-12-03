@@ -21,8 +21,8 @@
         :parse-data="parseData_left"
       >
         <!-- 表格数据 -->
-            <template slot="score" slot-scope="{ row }">
-                {{row.Score*100}}%
+            <template slot="scortNum" slot-scope="{ row }">
+                {{row.sums}}
             </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">

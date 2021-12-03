@@ -6,7 +6,7 @@
     :lock-scroll="false"
     @update:visible="updateVisible"
   >
-    <div id="pie" :style="{ width: '600px', height: '300px' }"></div>
+    <div id="pie" :style="{ width: '700px', height: '300px' }"></div>
     <div id="column" :style="{ width: '700px', height: '300px' }"></div>
   </el-dialog>
 </template>
@@ -23,27 +23,27 @@ export default {
   data() {
     return {
       // 饼图数据
-      pData: [],
+      pData: [{Pa:0.2812500092200936,Pb:0.020000000596046452,Pc:0,Pd:0}],
       // 柱形图数据
       cData: [],
-      num: 0,
-      num1: 0,
-      num2: 0,
-      num3: 0,
-      num4: 0,
-      num5: 0,
-      num6: 0,
-      num7: 0,
+      // num: 0,
+      // num1: 0,
+      // num2: 0,
+      num3: 145,
+      num4: 356,
+      num5: 234,
+      num6: 542,
+      num7: 543,
     };
   },
   watch: {
     visible(e) {
       if (e) {
         this.$nextTick(() => {
-          this.drawPie();
-          this.drawColumn();
           this.pieData();
           this.Mathnum();
+          this.drawPie();
+          this.drawColumn();
         });
       }
     },
@@ -71,9 +71,10 @@ export default {
             type: "pie",
             radius: "50%",
             data: [
-              { value: this.num, name: "地面安全事故（人员受损）" },
-              { value: this.num1, name: "地面安全事故（装备受损）" },
-              { value: this.num2, name: "保密安全风险" },
+              { value: this.pData.map((d)=>d.Pa), name: "人因安全事故（人员受损）" },
+              { value: this.pData.map((d)=>d.Pb), name: "物因安全事故（装备受损）" },
+              { value: this.pData.map((d)=>d.Pc), name: "环境安全风险" },
+              { value: this.pData.map((d)=>d.Pd), name: "管理安全风险" },
             ],
             emphasis: {
               itemStyle: {
@@ -134,26 +135,16 @@ export default {
           forecast_id: this.data.id,
         })
         .then((res) => {
-          console.log(res.data.data);
+          this.pData = res.data.data
+          // console.log(this.pData);
         });
     },
     Mathnum() {
-      this.num = Math.floor(Math.random() * (500 - 100)) + 100;
-      this.num1 = Math.floor(Math.random() * (500 - 100)) + 100;
-      this.num2 = Math.floor(Math.random() * (500 - 100)) + 100;
       this.num3 = Math.floor(Math.random() * (500 - 100)) + 100;
       this.num4 = Math.floor(Math.random() * (500 - 100)) + 100;
       this.num5 = Math.floor(Math.random() * (500 - 100)) + 100;
       this.num6 = Math.floor(Math.random() * (500 - 100)) + 100;
       this.num7 = Math.floor(Math.random() * (500 - 100)) + 100;
-      console.log(this.num);
-      console.log(this.num1);
-      console.log(this.num2);
-      console.log(this.num3);
-      console.log(this.num4);
-      console.log(this.num5);
-      console.log(this.num6);
-      console.log(this.num7);
     },
     // // 柱形图接口数据
     //   columnData(){},

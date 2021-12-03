@@ -282,7 +282,7 @@ export default {
       let num = 0;
       for (let i = 0; i < parse.length; i++) {
         const element = parse[i];
-        num += element.Score * 1;
+        num += element.Scoresum * 1;
       }
       // 数据里 itemcate_id 值 是不是 手风琴类型的id
       let list_id = parse[0].itemcate_id;
