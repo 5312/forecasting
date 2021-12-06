@@ -32,8 +32,8 @@ export default {
       num3: 145,
       num4: 356,
       num5: 234,
-      num6: 542,
-      num7: 543,
+      num6: 442,
+      num7: 243,
     };
   },
   watch: {
