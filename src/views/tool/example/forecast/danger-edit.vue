@@ -66,7 +66,7 @@
               ></el-input-number>
             </template>
             <template slot="score" slot-scope="{ row }">
-                {{row.Score*100}}%
+              {{ row.Score * 100 }}%
             </template>
             <!-- 操作列 -->
             <template slot="action" slot-scope="{ row }">
@@ -113,13 +113,13 @@ export default {
   name: "ForecastEdit",
   components: {
     Danger,
-    Manual
+    Manual,
   },
   props: {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object
+    data: Object,
   },
   data() {
     return {
@@ -129,39 +129,39 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left"
+          fixed: "left",
         },
         {
           prop: "id",
           label: "ID",
           width: 60,
           align: "center",
-          fixed: "left"
+          fixed: "left",
         },
         {
           prop: "title",
           label: "隐患行为",
           align: "center",
-          minWidth: 150
+          minWidth: 150,
         },
         {
           prop: "sums",
           label: "数量",
           width: 180,
           align: "center",
-          slot: "scortNum"
+          slot: "scortNum",
         },
         {
           prop: "Score",
           label: "资源赋值(R)",
           align: "center",
-          minWidth: 120
+          minWidth: 120,
         },
         {
           prop: "scoreTitle",
           label: "评价标准",
           width: 200,
-          align: "center"
+          align: "center",
         },
         // {
         //   prop: "Score",
@@ -173,7 +173,7 @@ export default {
         {
           prop: "sort",
           label: "排序",
-          align: "center"
+          align: "center",
         },
         {
           columnKey: "action",
@@ -182,8 +182,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right"
-        }
+          fixed: "right",
+        },
       ],
       // 表单数据
       form: Object.assign({}, this.data),
@@ -193,15 +193,15 @@ export default {
           {
             required: true,
             message: "请输入隐患因素",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
 
         forecastStime: [
-          { required: true, message: "请输入任务开始时间", trigger: "blur" }
+          { required: true, message: "请输入任务开始时间", trigger: "blur" },
         ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
       },
       // 提交状态
       loading: false,
@@ -219,13 +219,12 @@ export default {
       // 评分
       score: 0,
       // 完成 cols
-      colnums_all:[],
-      showhead:false
+      colnums_all: [],
+      showhead: false,
     };
   },
   mounted() {},
   watch: {
-    
     data() {
       if (this.data) {
         this.form = Object.assign({}, this.data);
@@ -241,19 +240,19 @@ export default {
       } else {
         this.typeData = [];
       }
-    }
+    },
   },
   computed: {},
   methods: {
-     // 数量加减
+    // 数量加减
     add(row, y) {
       this.$http
         .put("/hiddendangerlibrary/upsums", {
           id: row.id,
-          sums: row.sums
+          sums: row.sums,
         })
         .then(() => {
-          this.reload(y)
+          this.reload(y);
         });
     },
     // 模板
@@ -277,7 +276,10 @@ export default {
       return col_arr;
     },
     parseData_left(res) {
-      if(!res.data) return {code:0,data:[]}
+      if (!res.data) {
+        console.log();
+        return { code: 0, data: [] };
+      }
       let parse = res.data;
       let num = 0;
       for (let i = 0; i < parse.length; i++) {
@@ -288,16 +290,17 @@ export default {
       for (let i = 0; i < this.typeData.length; i++) {
         const element = this.typeData[i];
         if (element.id == list_id) {
-          element.score = num;
+          let nums = Math.round(num*100)/100
+          element.score = nums;
         }
       }
-      // return {
-      //   btype: 0,
-      //   code: 0,
-      //   count: 0,
-      //   data: parse,
-      //   msg: "操作成功"
-      // };
+      return {
+        btype: 0,
+        code: 0,
+        count: 0,
+        data: parse,
+        msg: "操作成功",
+      };
     },
     reload(i) {
       let table = `table${i}`;
@@ -308,14 +311,14 @@ export default {
       // 添加隐患因素
       if (this.tableIndex !== null) {
         let arr = this.typeData[x].temptlate;
-        let array = this.defaultColumns
+        let array = this.defaultColumns;
         array = JSON.stringify(array);
-        array = JSON.parse(array)
+        array = JSON.parse(array);
         for (let i = 0; i < arr.length; i++) {
           const element = arr[i];
-          array.push(element)
+          array.push(element);
         }
-        this.colnums_all = array
+        this.colnums_all = array;
         this.twoshow = true;
       }
       this.params_id = y;
@@ -323,7 +326,6 @@ export default {
     manualAdd(x) {
       // 展开项 下表标
       this.tableIndex = x;
-
       this.man = true;
     },
     saveTableData(array) {
@@ -336,19 +338,22 @@ export default {
 
     async remove(row, index) {
       this.tableIndex = index;
-      console.log(row)
       // 删除
-      const res = await this.$http.delete("/hiddendangerlibrary/delete/" + row.id);
+      const res = await this.$http.delete(
+        "/hiddendangerlibrary/delete/" + row.id
+      );
       if (res.data.code == 0) {
         this.reload(index);
+          const element = this.typeData[index];
+          element.score = 0;
       }
     },
     // 编辑的数据
     async index() {
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 2
-        }
+          item_id: 2,
+        },
       });
       if (res.data.code == 0) {
         let array = res.data.data;
@@ -358,14 +363,14 @@ export default {
             element.where = {
               forecast_id: this.form.id,
               itemcateid: element.id,
-              itemcatecid: null
+              itemcatecid: null,
             };
             // 模板接口
             const d = await this.$http.get("/configdata/list", {
               params: {
                 configId: element.id,
-                forecast_id: this.form.id
-              }
+                forecast_id: this.form.id,
+              },
             });
             element.temptlate = d.data.data;
             // 模板数据接口
@@ -381,14 +386,14 @@ export default {
     },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.loading = true;
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/hiddendanger/update" : "/hiddendanger/add",
             this.form
           )
-            .then(res => {
+            .then((res) => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -401,7 +406,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -414,8 +419,8 @@ export default {
     updateVisible(value) {
       this.$emit("update:visible", value);
     },
-    removeBatch() {}
-  }
+    removeBatch() {},
+  },
 };
 </script>
 
