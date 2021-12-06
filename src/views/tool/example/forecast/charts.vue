@@ -23,26 +23,28 @@ export default {
   data() {
     return {
       // 饼图数据
-      pData: [{Pa:0.2812500092200936,Pb:0.020000000596046452,Pc:0,Pd:0}],
+      pData: [],
       // 柱形图数据
       cData: [],
       // num: 0,
       // num1: 0,
       // num2: 0,
-      num3: 145,
-      num4: 356,
-      num5: 234,
-      num6: 442,
-      num7: 243,
+      num3: 0,
+      num4: 0,
+      num5: 0,
+      num6: 0,
+      num7: 0,
     };
   },
   watch: {
     visible(e) {
+      // console.log(e)
       if (e) {
         this.$nextTick(() => {
-          this.pieData();
+          this.pieData().then( ()=>{
+            this.drawPie();
+          });
           this.Mathnum();
-          this.drawPie();
           this.drawColumn();
         });
       }
@@ -71,10 +73,16 @@ export default {
             type: "pie",
             radius: "50%",
             data: [
-              { value: this.pData.map((d)=>d.Pa), name: "人因安全事故（人员受损）" },
-              { value: this.pData.map((d)=>d.Pb), name: "物因安全事故（装备受损）" },
-              { value: this.pData.map((d)=>d.Pc), name: "环境安全风险" },
-              { value: this.pData.map((d)=>d.Pd), name: "管理安全风险" },
+              {
+                value: this.pData.map((d) => d.Pa),
+                name: "人因安全事故（人员受损）",
+              },
+              {
+                value: this.pData.map((d) => d.Pb),
+                name: "物因安全事故（装备受损）",
+              },
+              { value: this.pData.map((d) => d.Pc), name: "环境安全风险" },
+              { value: this.pData.map((d) => d.Pd), name: "管理安全风险" },
             ],
             emphasis: {
               itemStyle: {
@@ -129,14 +137,13 @@ export default {
       });
     },
     // 饼图接口数据
-    pieData() {
-      this.$http
+    async pieData() {
+      await this.$http
         .get("/forecast/infodata", {
           forecast_id: this.data.id,
         })
         .then((res) => {
-          this.pData = res.data.data
-          // console.log(this.pData);
+          this.pData = res.data.data;
         });
     },
     Mathnum() {

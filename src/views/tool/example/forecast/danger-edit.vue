@@ -284,7 +284,6 @@ export default {
         const element = parse[i];
         num += element.Scoresum * 1;
       }
-      // 数据里 itemcate_id 值 是不是 手风琴类型的id
       let list_id = parse[0].itemcate_id;
       for (let i = 0; i < this.typeData.length; i++) {
         const element = this.typeData[i];
@@ -292,13 +291,13 @@ export default {
           element.score = num;
         }
       }
-      return {
-        btype: 0,
-        code: 0,
-        count: 0,
-        data: parse,
-        msg: "操作成功"
-      };
+      // return {
+      //   btype: 0,
+      //   code: 0,
+      //   count: 0,
+      //   data: parse,
+      //   msg: "操作成功"
+      // };
     },
     reload(i) {
       let table = `table${i}`;
@@ -337,6 +336,7 @@ export default {
 
     async remove(row, index) {
       this.tableIndex = index;
+      console.log(row)
       // 删除
       const res = await this.$http.delete("/hiddendangerlibrary/delete/" + row.id);
       if (res.data.code == 0) {
