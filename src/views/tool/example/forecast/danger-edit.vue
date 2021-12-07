@@ -290,7 +290,7 @@ export default {
       for (let i = 0; i < this.typeData.length; i++) {
         const element = this.typeData[i];
         if (element.id == list_id) {
-          let nums = Math.round(num*100)/100
+          let nums = Math.round(num * 100) / 100;
           element.score = nums;
         }
       }
@@ -344,8 +344,8 @@ export default {
       );
       if (res.data.code == 0) {
         this.reload(index);
-          const element = this.typeData[index];
-          element.score = 0;
+        const element = this.typeData[index];
+        element.score = 0;
       }
     },
     // 编辑的数据

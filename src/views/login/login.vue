@@ -52,7 +52,7 @@
       </div>
 
     </el-form>
-    <div class="login-copyright">copyright © 2021 中国人民解放军空军工程大学 all rights reserved.</div>
+    <div class="login-copyright">copyright © 2021  all rights reserved.</div>
     <!-- 多语言切换 -->
 
     <!-- 实际项目去掉这段 -->

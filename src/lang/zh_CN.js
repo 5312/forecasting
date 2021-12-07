@@ -87,7 +87,7 @@ export default {
       website: '',
       document: '',
       authorization: '',
-      copyright: 'Copyright © 2021 中国人民解放军空军工程大学 '
+      copyright: 'Copyright © 2021  '
     },
     logout: {
       title: '提示',

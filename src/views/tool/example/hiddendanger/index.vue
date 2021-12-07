@@ -72,6 +72,11 @@
                 </el-breadcrumb>
               </div>
             </el-row>
+            <el-row>
+              <div class="deduct">
+                <p>评价标准：{{pointData}}</p>
+              </div>
+            </el-row>
           </el-form>
           <!-- 数据表格 -->
           <ele-pro-table
@@ -89,10 +94,19 @@
                 :disabled="disabled"
                 size="small"
                 type="primary"
+                icon="el-icon-edit"
+                class="ele-btn-icon"
+                @click="openPrim(null)"
+                >扣分比例
+              </el-button>
+              <el-button
+                :disabled="disabled"
+                size="small"
+                type="primary"
                 icon="el-icon-plus"
                 class="ele-btn-icon"
                 @click="openEdit(null)"
-                >添加
+                >添加行为
               </el-button>
               <el-button
                 size="small"
@@ -108,7 +122,6 @@
               {{ Number(row.Score) * 100 + "%" }}
             </template>
             <!-- 操作列 -->
-
             <template slot="action" slot-scope="{ row }">
               <el-link
                 type="primary"
@@ -142,15 +155,22 @@
       :visible.sync="showEdit"
       @done="reload"
     />
+    <hiddendanger-prim
+      :data="current"
+      :visible.sync="showPrim"
+      @done="reload"
+      @point="point"
+    />
   </div>
 </template>
 
 <script>
 import HiddendangerEdit from "./hiddendanger-edit";
+import HiddendangerPrim from "./hiddendanger-prim"
 
 export default {
   name: "SystemHiddendanger",
-  components: { HiddendangerEdit },
+  components: { HiddendangerEdit,HiddendangerPrim },
   data() {
     return {
       getrowkeys(row) {
@@ -167,7 +187,7 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left"
+          fixed: "left",
         },
         {
           prop: "id",
@@ -175,7 +195,7 @@ export default {
           width: 60,
           align: "center",
           showOverflowTooltip: true,
-          fixed: "left"
+          fixed: "left",
         },
 
         // {
@@ -202,12 +222,20 @@ export default {
         //   align: "center"
         // },
 
+        // {
+        //   prop:"tit",
+        //   label:"隐患行为",
+        //   showOverflowTooltip: true,
+        //   minWidth: 200,
+        //   align: "center",
+        // },
+
         {
           prop: "title",
           label: "隐患行为",
           showOverflowTooltip: true,
           minWidth: 200,
-          align: "center"
+          align: "center",
         },
 
         {
@@ -215,7 +243,7 @@ export default {
           label: "评价标准",
           showOverflowTooltip: true,
           minWidth: 200,
-          align: "center"
+          align: "center",
         },
         {
           prop: "Score",
@@ -223,7 +251,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 100,
           align: "center",
-          slot: "percentage"
+          slot: "percentage",
         },
 
         {
@@ -231,7 +259,7 @@ export default {
           label: "排序",
           showOverflowTooltip: true,
           minWidth: 100,
-          align: "center"
+          align: "center",
         },
 
         {
@@ -243,7 +271,7 @@ export default {
           align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          }
+          },
         },
         {
           prop: "updateTime",
@@ -254,7 +282,7 @@ export default {
           align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          }
+          },
         },
         {
           columnKey: "action",
@@ -263,8 +291,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right"
-        }
+          fixed: "right",
+        },
       ],
 
       // 表格选中数据
@@ -273,9 +301,11 @@ export default {
       current: null,
       // 是否显示编辑弹窗
       showEdit: false,
+      // 是否显示提交弹窗
+      showPrim: false,
       // 左侧
       where_left: {
-        itemId: 2
+        itemId: 2,
       },
       url_left: "/itemcate/list",
       columns_left: [
@@ -283,12 +313,13 @@ export default {
           prop: "name",
           label: "栏目名称",
           showOverflowTooltip: true,
-          className: "cur"
-        }
+          className: "cur",
+        },
       ],
       current_left: null,
       disabled: true,
-      expand: [] //展开
+      expand: [], //展开
+      pointData:""
     };
   },
   watch: {
@@ -319,12 +350,12 @@ export default {
         }
       }
       this.reload();
-    }
+    },
   },
   computed: {
     where() {
       let where = {
-        itemcate_id: ""
+        itemcate_id: "",
       };
       if (this.current_left) {
         if (this.current_left.pid == 0) {
@@ -335,12 +366,16 @@ export default {
         }
       }
       return where;
-    }
+    },
   },
   methods: {
+    point(val){
+      this.pointData = val
+      console.log(this.pointData)
+    },
     rowclick(row) {
       if (this.expand.includes(row.id)) {
-        this.expand = this.expand.filter(val => val !== row.id);
+        this.expand = this.expand.filter((val) => val !== row.id);
       } else {
         this.expand.push(row.id);
       }
@@ -385,12 +420,30 @@ export default {
       this.current = obj;
       this.showEdit = true;
     },
+    /* 显示提交 */
+    openPrim(row) {
+      let obj = Object.assign({}, row);
+
+      if (!row) {
+        // 新建
+        obj.isUpdate = false;
+        if (this.current_left) {
+          obj.itemcate_id = this.current_left.pid;
+
+          obj.itemcate_cid = this.current_left.id;
+        }
+      } else {
+        obj.isUpdate = true;
+      }
+      this.current = obj;
+      this.showPrim = true;
+    },
     /* 删除 */
     remove(row) {
       const loading = this.$loading({ lock: true });
       this.$http
         .delete("/hiddendanger/delete/" + row.id)
-        .then(res => {
+        .then((res) => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -399,7 +452,7 @@ export default {
             this.$message.error(res.data.msg);
           }
         })
-        .catch(e => {
+        .catch((e) => {
           loading.close();
           this.$message.error(e.message);
         });
@@ -411,15 +464,16 @@ export default {
         return;
       }
       this.$confirm("确定要删除选中的隐患调查吗?", "提示", {
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           const loading = this.$loading({ lock: true });
           this.$http
             .delete(
-              "/hiddendanger/delete/" + this.selection.map(d => d.id).join(",")
+              "/hiddendanger/delete/" +
+                this.selection.map((d) => d.id).join(",")
             )
-            .then(res => {
+            .then((res) => {
               loading.close();
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -428,14 +482,14 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               loading.close();
               this.$message.error(e.message);
             });
         })
         .catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -445,5 +499,18 @@ export default {
 }
 .margin-bottom {
   margin-bottom: 10px;
+}
+.deduct {
+  width: 100%;
+  height: 35px;
+  margin-bottom: 10px;
+}
+.deduct p {
+  width: 49%;
+  height: 100%;
+  line-height: 35px;
+}
+.button {
+  height: 35px;
 }
 </style>
