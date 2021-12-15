@@ -121,18 +121,18 @@
       @saveTableData="saveTableData"
       :column="colnums_all"
     ></Danger>
-    <dangerPrim :visible.sync="man" @primData="primData"></dangerPrim>
+    <danger-prim :visible.sync="showPrim" @primData="primData"></danger-prim>
   </el-dialog>
 </template>
 
 <script>
 import Danger from "./danger.vue";
-import dangerPrim from "./danger-prim.vue";
+import DangerPrim from "./danger-prim.vue";
 export default {
   name: "ForecastEdit",
   components: {
     Danger,
-    dangerPrim,
+    DangerPrim,
   },
   props: {
     // 弹窗是否打开
@@ -241,6 +241,7 @@ export default {
       colnums_all: [],
       showhead: false,
       primData: [],
+      showPrim:false
     };
   },
   mounted() {},
@@ -344,9 +345,9 @@ export default {
       this.params_id = y;
     },
 
-    addPrim(i, j) {
-      this.man = true;
-      console.log(i, j);
+    addPrim() {
+      this.showPrim = true;
+      // console.log(i, j);
     },
     manualAdd(x) {
       // 展开项 下表标
@@ -409,7 +410,7 @@ export default {
               const ele = array[i];
               if (element.id == ele.pid) {
                 element.children.push(ele);
-                this.primData.push(ele)
+                this.primData.push(ele);
               }
             }
 
