@@ -25,6 +25,25 @@
                 <span class="scor">分</span>
               </p>
             </div>
+            <div>
+              <ul>
+                <li v-for="(i, j) in x.children" :key="j" :name="j">
+                  <span>{{ i.name }}</span
+                  >&nbsp;
+                  <span>{{ i.score }}</span>
+                  <span>分</span>
+                  <el-button
+                    icon="el-icon-plus"
+                    class="ele-btn-icons"
+                    style="float: right; padding: 2px 0; margin-left: 10px"
+                    type="primary"
+                    @click.stop="addPrim(j, i.id)"
+                    >评分标准</el-button
+                  >
+                </li>
+              </ul>
+              <!-- {{}} -->
+            </div>
           </template>
           <ele-pro-table
             v-if="x.show"
@@ -60,7 +79,7 @@
             <template slot="scortNum" slot-scope="{ row }">
               <el-input-number
                 size="mini"
-                :min="1"
+                :min="0"
                 v-model="row.sums"
                 @change="add(row, y)"
               ></el-input-number>
@@ -102,18 +121,18 @@
       @saveTableData="saveTableData"
       :column="colnums_all"
     ></Danger>
-    <Manual :visible.sync="man"></Manual>
+    <dangerPrim :visible.sync="man" @primData="primData"></dangerPrim>
   </el-dialog>
 </template>
 
 <script>
 import Danger from "./danger.vue";
-import Manual from "./manuals.vue";
+import dangerPrim from "./danger-prim.vue";
 export default {
   name: "ForecastEdit",
   components: {
     Danger,
-    Manual,
+    dangerPrim,
   },
   props: {
     // 弹窗是否打开
@@ -151,18 +170,18 @@ export default {
           align: "center",
           slot: "scortNum",
         },
-        {
-          prop: "Score",
-          label: "资源赋值(R)",
-          align: "center",
-          minWidth: 120,
-        },
-        {
-          prop: "scoreTitle",
-          label: "评价标准",
-          width: 200,
-          align: "center",
-        },
+        // {
+        //   prop: "Score",
+        //   label: "资源赋值(R)",
+        //   align: "center",
+        //   minWidth: 120,
+        // },
+        // {
+        //   prop: "scoreTitle",
+        //   label: "评价标准",
+        //   width: 200,
+        //   align: "center",
+        // },
         // {
         //   prop: "Score",
         //   label: "扣分比例(%)",
@@ -221,6 +240,7 @@ export default {
       // 完成 cols
       colnums_all: [],
       showhead: false,
+      primData: [],
     };
   },
   mounted() {},
@@ -323,6 +343,11 @@ export default {
       }
       this.params_id = y;
     },
+
+    addPrim(i, j) {
+      this.man = true;
+      console.log(i, j);
+    },
     manualAdd(x) {
       // 展开项 下表标
       this.tableIndex = x;
@@ -378,8 +403,18 @@ export default {
             element.url = "/hiddendangerlibrary/list";
             element.show = true;
             element.score = 0;
+            element.children = [];
+            // 1.id == c.pid
+            for (let i = 0; i < array.length; i++) {
+              const ele = array[i];
+              if (element.id == ele.pid) {
+                element.children.push(ele);
+                this.primData.push(ele)
+              }
+            }
 
             this.typeData.push(element);
+            // console.log(this.typeData)
           }
         }
       }
@@ -425,6 +460,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+ul {
+  width: 95%;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  margin-left: 50px;
+  li {
+    width: 195px;
+    button {
+      position: relative;
+      right: 15px;
+      top: 15px;
+    }
+  }
+}
 #score {
   float: right;
 }

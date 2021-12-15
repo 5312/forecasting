@@ -125,11 +125,11 @@ export default {
     async save() {
       let params = { data: this.selection };
       console.log(JSON.stringify(params));
-      return;
+      // return;
       const res = this.$http.post("/assetslibrary/add", {
         forecast_id: this.forecast
       });
-      return;
+      // return;
       if (res.data.code == 0) {
         this.$emit("saveTableData", this.selection);
       }

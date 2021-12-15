@@ -1,7 +1,7 @@
-<!-- 隐患调查编辑弹窗 -->
+<!-- 隐患调查弹窗 -->
 <template>
   <el-dialog
-    :title="isUpdate ? '修改隐患调查' : '添加隐患调查'"
+    :title="isUpdate ? '修改隐患评分' : '添加隐患评分'"
     :visible="visible"
     width="760px"
     :destroy-on-close="true"
@@ -10,61 +10,7 @@
     :close-on-click-modal="false"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
-      <!-- <el-form-item label="单位ID:" prop="dept_id">
-        <el-input-number
-          :min="0"
-          v-model="form.dept_id"
-          placeholder="请输入单位ID"
-          controls-position="right"
-          class="ele-fluid ele-text-left"
-        />
-      </el-form-item>
-
-      <el-form-item label="类别:" prop="itemcate_id">
-        <el-input-number
-          disabled
-          :min="0"
-          v-model="form.itemcate_id"
-          placeholder="请输入类别"
-          controls-position="right"
-          class="ele-fluid ele-text-left"
-        />
-      </el-form-item>
-
-      <el-form-item label="栏目:" prop="itemcate_cid">
-        <el-input-number
-          disabled
-          :min="0"
-          v-model="form.itemcate_cid"
-          placeholder="请输入栏目"
-          controls-position="right"
-          class="ele-fluid ele-text-left"
-        />
-      </el-form-item> -->
-
-      <el-form-item label="隐患行为:" prop="title">
-        <el-autocomplete
-          style="width:100%;"
-          popper-class="my-autocomplete"
-          v-model="form.title"
-          :fetch-suggestions="querySearch"
-          placeholder="请输入内容"
-          @select="handleSelect"
-        >
-          <i class="el-icon-edit el-input__icon" slot="suffix"> </i>
-          <template slot-scope="{ item }">
-            <div class="name">{{ item.title }}</div>
-          </template>
-        </el-autocomplete>
-        <!-- <el-input
-          :maxlength="20"
-          v-model="form.title"
-          placeholder="请输入隐患标题"
-          clearable
-        /> -->
-      </el-form-item>
-
-      <!-- <el-form-item label="评价标准:" prop="score_id">
+      <el-form-item label="评价标准:" prop="score_id">
         <el-popover
           placement="bottom"
           width="450"
@@ -88,7 +34,16 @@
             <template slot="percentage" slot-scope="{ row }">
               {{ Number(row.score) * 100 + "%" }}
             </template>
-          </ele-pro-table>  
+          </ele-pro-table>
+          <el-select v-model="value" clearable placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
           <el-input
             v-loading="popover"
             slot="reference"
@@ -100,15 +55,6 @@
           />
         </el-popover>
       </el-form-item>
-
-      <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
-      </el-form-item> -->
     </el-form>
     <div slot="footer">
       <el-button @click="updateVisible(false)">取消</el-button>
@@ -126,43 +72,24 @@ export default {
   props: {
     // 弹窗是否打开
     visible: Boolean,
+    primData:Array
     // 修改回显的数据
-    data: Object
+    // data: Object,
   },
   data() {
     return {
       // 表单数据
       form: Object.assign(
         {
-          score_id: ""
+          score_id: "",
         },
         this.data
       ),
       // 表单验证规则
       rules: {
-        // deptId: [{ required: true, message: "请输入单位ID", trigger: "blur" }],
-
-        // itemcateId: [
-        //   { required: true, message: "请输入类别", trigger: "blur" }
-        // ],
-
-        // itemcateCid: [
-        //   { required: true, message: "请输入栏目", trigger: "blur" }
-        // ],
-
-        title: [
-          {
-            required: true,
-            message: "请输入隐患行为",
-            trigger: ["blur", "change"]
-          }
+        scoreId: [
+          { required: true, message: "请输入评价标准", trigger: "blur" },
         ],
-
-        // scoreId: [
-        //   { required: true, message: "请输入评价标准", trigger: "blur" }
-        // ],
-
-        // sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       show: false,
       // 提交状态
@@ -174,17 +101,20 @@ export default {
       columns: [
         {
           prop: "title",
-          label: "评价标准"
+          label: "评价标准",
         },
         {
           prop: "score",
           label: "扣分比例(%)",
           width: 100,
-          slot: "percentage"
-        }
+          slot: "percentage",
+        },
       ],
       current: null,
-      popover: false
+      popover: false,
+      portion: [],
+      options:[],
+      value:""
     };
   },
   watch: {
@@ -197,16 +127,17 @@ export default {
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = true;
       } else {
+        this.Portion();
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = false;
       }
-    }
+    },
   },
   computed: {
     where() {
       let obj = {
         itemcate_id: "",
-        itemcate_cid: ""
+        itemcate_cid: "",
       };
       if (this.data) {
         obj.itemcate_id = this.data.itemcate_id;
@@ -221,53 +152,55 @@ export default {
       if (!this.table_data) return;
       if (typeof val == "number") {
         if (!this.table_data) return "";
-        this.table_data.forEach(obj => {
+        this.table_data.forEach((obj) => {
           if (Number(obj.id) == val) {
             title = obj.title;
           }
         });
       }
       return title;
-    }
+    },
   },
   methods: {
-    /* 标题 -- 威胁行为库 */
-    querySearch(queryString, cb) {
-      this.danger_do().then(res => {
-        cb(res);
-      });
-    },
-    handleSelect(item) {
-      this.form.title = item.title;
-    },
-    /* 隐患行为 */
-    async danger_do() {
-      const res = await this.$http.get("/hiddendangeraction/list", {
-        params: {
-          itemcate_id: this.data.itemcate_id,
-          itemcate_cid: this.data.itemcate_cid,
-          page: "1",
-          limit: "100"
-        }
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      return data;
-    },
     done(res) {
       this.table_data = res.data;
       this.popover = false;
     },
+
+    // 显示弹框添加或修改
+    Portion() {
+      this.$http
+        .get("/hiddendangerscore/list", {
+          params: {
+            itemcate_id: this.data.itemcate_id,
+            itemcate_cid: this.data.itemcate_cid,
+          },
+        })
+        .then((res) => {
+          this.protion = res.data.data;
+          if (this.protion == null) {
+            this.isUpdate = false;
+          } else {
+            this.isUpdate = true;
+            for (let i = 0; i < this.protion.length; i++) {
+              const element = this.protion[i];
+              this.form.id = element.id;
+            }
+          }
+        });
+    },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.form.id ? "put" : "post"](
-            this.isUpdate ? "/hiddendanger/update" : "/hiddendanger/add",
+          this.$http[this.isUpdate ? "put" : "post"](
+            this.isUpdate
+              ? "/hiddendangerscorelibrary/update"
+              : "/hiddendangerscorelibrary/add",
             this.form
           )
-            .then(res => {
+            .then((res) => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -280,7 +213,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -292,8 +225,8 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -74,7 +74,16 @@
             </el-row>
             <el-row>
               <div class="deduct">
-                <p>评价标准：{{pointData}}</p>
+                <p>
+                  <span>评价标准：</span>
+                  <span v-if="pointData" class="point">{{ pointData }}</span>
+                </p>
+                <p>
+                  <span>扣分比例：</span>
+                  <span v-if="poinTdata" class="point">{{
+                    Number(poinTdata) * 100 + "%"
+                  }}</span>
+                </p>
               </div>
             </el-row>
           </el-form>
@@ -118,11 +127,19 @@
               </el-button>
             </template>
             <!-- 扣分比例 -->
-            <template slot="percentage" slot-scope="{ row }">
+            <!-- <template slot="percentage" slot-scope="{ row }">
               {{ Number(row.Score) * 100 + "%" }}
-            </template>
+            </template> -->
             <!-- 操作列 -->
             <template slot="action" slot-scope="{ row }">
+              <!-- <el-link
+                :disabled="disabled"
+                type="primary"
+                :underline="false"
+                icon="el-icon-edit"
+                @click="openPrim(row)"
+                >修改评分
+              </el-link> -->
               <el-link
                 type="primary"
                 :underline="false"
@@ -159,18 +176,17 @@
       :data="current"
       :visible.sync="showPrim"
       @done="reload"
-      @point="point"
     />
   </div>
 </template>
 
 <script>
 import HiddendangerEdit from "./hiddendanger-edit";
-import HiddendangerPrim from "./hiddendanger-prim"
+import HiddendangerPrim from "./hiddendanger-prim";
 
 export default {
   name: "SystemHiddendanger",
-  components: { HiddendangerEdit,HiddendangerPrim },
+  components: { HiddendangerEdit, HiddendangerPrim },
   data() {
     return {
       getrowkeys(row) {
@@ -234,25 +250,25 @@ export default {
           prop: "title",
           label: "隐患行为",
           showOverflowTooltip: true,
-          minWidth: 200,
+          minWidth: 260,
           align: "center",
         },
 
-        {
-          prop: "scoreTitle",
-          label: "评价标准",
-          showOverflowTooltip: true,
-          minWidth: 200,
-          align: "center",
-        },
-        {
-          prop: "Score",
-          label: "扣分比例(%)",
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center",
-          slot: "percentage",
-        },
+        // {
+        //   prop: "scoreTitle",
+        //   label: "评价标准",
+        //   showOverflowTooltip: true,
+        //   minWidth: 200,
+        //   align: "center",
+        // },
+        // {
+        //   prop: "Score",
+        //   label: "扣分比例(%)",
+        //   showOverflowTooltip: true,
+        //   minWidth: 100,
+        //   align: "center",
+        //   slot: "percentage",
+        // },
 
         {
           prop: "sort",
@@ -319,14 +335,22 @@ export default {
       current_left: null,
       disabled: true,
       expand: [], //展开
-      pointData:""
+      // 评价标准
+      pointData: null,
+      // 扣分标准
+      poinTdata: null,
+      // 评价标准该项所存ID
+      Point: [],
+      // 评价标准ID
+      pointScore: 0,
+      // 扣分情况ID
+      scoreId: 0,
     };
   },
   watch: {
     current_left(obj) {
       if (obj.pid == 0) {
         this.disabled = true;
-
         // 面包屑
         const array = this.left_data;
         this.titlelist = [];
@@ -338,7 +362,6 @@ export default {
         }
       } else {
         this.disabled = false;
-
         // 面包屑
         const array = this.left_data;
         this.titlelist = [obj.name];
@@ -349,6 +372,7 @@ export default {
           }
         }
       }
+      this.point();
       this.reload();
     },
   },
@@ -369,9 +393,45 @@ export default {
     },
   },
   methods: {
-    point(val){
-      this.pointData = val
-      console.log(this.pointData)
+    // 获取评价标准ID
+    point() {
+      let itemId = this.current_left.pid;
+      let itemCid = this.current_left.id;
+      this.$http
+        .get("/hiddendangerscore/list", {
+          params: {
+            itemcate_id: itemId,
+            itemcate_cid: itemCid,
+          },
+        })
+        .then((res) => {
+          if (res.data.data != null) {
+            this.Point = res.data.data;
+            for (let i = 0; i < this.Point.length; i++) {
+              const element = this.Point[i];
+              this.pointScore = element.score_id;
+            }
+            this.pointText();
+          } else {
+            this.Point = null;
+            this.pointData = null;
+            this.poinTdata = null;
+          }
+        });
+    },
+    // 获取评价标准扣分情况
+    pointText() {
+      this.$http.get("/score/list").then((res) => {
+        let text = res.data.data;
+        for (let x = 0; x < text.length; x++) {
+          const ele = text[x];
+          this.scoreId = ele.id;
+          if (this.pointScore == this.scoreId) {
+            this.pointData = ele.title;
+            this.poinTdata = ele.score;
+          }
+        }
+      });
     },
     rowclick(row) {
       if (this.expand.includes(row.id)) {
@@ -395,6 +455,7 @@ export default {
     reload() {
       if (this.$refs.table) {
         this.$refs.table.reload({ page: 1, where: this.where });
+        this.point();
       }
     },
     /* 重置搜索 */
@@ -411,7 +472,6 @@ export default {
         obj.isUpdate = false;
         if (this.current_left) {
           obj.itemcate_id = this.current_left.pid;
-
           obj.itemcate_cid = this.current_left.id;
         }
       } else {
@@ -423,13 +483,11 @@ export default {
     /* 显示提交 */
     openPrim(row) {
       let obj = Object.assign({}, row);
-
       if (!row) {
         // 新建
         obj.isUpdate = false;
         if (this.current_left) {
           obj.itemcate_id = this.current_left.pid;
-
           obj.itemcate_cid = this.current_left.id;
         }
       } else {
@@ -501,16 +559,25 @@ export default {
   margin-bottom: 10px;
 }
 .deduct {
-  width: 100%;
+  width: 60%;
   height: 35px;
+  display: flex;
+  justify-content: space-around;
   margin-bottom: 10px;
+  float: right;
 }
 .deduct p {
   width: 49%;
   height: 100%;
   line-height: 35px;
 }
+.deduct p span {
+  font-size: 16px;
+}
 .button {
   height: 35px;
+}
+.deduct p .point {
+  font-size: 14px;
 }
 </style>

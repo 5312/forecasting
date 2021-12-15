@@ -1,7 +1,7 @@
 <!-- 隐患调查弹窗 -->
 <template>
   <el-dialog
-    title="隐患调查"
+    :title="isUpdate ? '修改隐患评分' : '添加隐患评分'"
     :visible="visible"
     width="760px"
     :destroy-on-close="true"
@@ -35,7 +35,6 @@
               {{ Number(row.score) * 100 + "%" }}
             </template>
           </ele-pro-table>
-          <!--   -->
           <el-input
             v-loading="popover"
             slot="reference"
@@ -46,15 +45,6 @@
             clearable
           />
         </el-popover>
-      </el-form-item>
-
-      <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -90,8 +80,6 @@ export default {
         scoreId: [
           { required: true, message: "请输入评价标准", trigger: "blur" },
         ],
-
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
       },
       show: false,
       // 提交状态
@@ -114,6 +102,7 @@ export default {
       ],
       current: null,
       popover: false,
+      portion: [],
     };
   },
   watch: {
@@ -126,6 +115,7 @@ export default {
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = true;
       } else {
+        this.Portion();
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = false;
       }
@@ -160,47 +150,45 @@ export default {
     },
   },
   methods: {
-    /* 标题 -- 威胁行为库 */
-    querySearch(queryString, cb) {
-      this.danger_do().then((res) => {
-        cb(res);
-      });
-    },
-    handleSelect(item) {
-      this.form.title = item.title;
-      this.form.score = item.score
-    },
-    /* 隐患行为 */
-    async danger_do() {
-      const res = await this.$http.get("/hiddendangeraction/list", {
-        params: {
-          itemcate_id: this.data.itemcate_id,
-          itemcate_cid: this.data.itemcate_cid,
-          page: "1",
-          limit: "100",
-        },
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      return data;
-    },
     done(res) {
       this.table_data = res.data;
       this.popover = false;
+    },
+
+    // 显示弹框添加或修改
+    Portion() {
+      this.$http
+        .get("/hiddendangerscore/list", {
+          params: {
+            itemcate_id: this.data.itemcate_id,
+            itemcate_cid: this.data.itemcate_cid,
+          },
+        })
+        .then((res) => {
+          this.protion = res.data.data;
+          if (this.protion == null) {
+            this.isUpdate = false;
+          } else {
+            this.isUpdate = true;
+            for (let i = 0; i < this.protion.length; i++) {
+              const element = this.protion[i];
+              this.form.id = element.id
+            }
+          }
+        });
     },
     /* 保存编辑 */
     save() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           this.loading = true;
-          this.$http[this.form.id ? "put" : "post"](
+          this.$http[this.isUpdate ? "put" : "post"](
             this.isUpdate
               ? "/hiddendangerscore/update"
               : "/hiddendangerscore/add",
             this.form
           )
             .then((res) => {
-              this.$emit("point", this.setId);
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);

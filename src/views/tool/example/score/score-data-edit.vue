@@ -277,13 +277,13 @@ export default {
       }
   },
   watch:{
-    itemId(e){
+    itemId(){
         this.reload()
     },
-    itemId1(e){
+    itemId1(){
         this.reload()
     },
-     itemId2(e){
+     itemId2(){
         this.reload()
     },
   },
