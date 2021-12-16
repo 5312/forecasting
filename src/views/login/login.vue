@@ -297,9 +297,10 @@ export default {
 .login-form-left .login-form {
   margin: 0 auto 0 15%;
 }
-/* .el-input__inner[DangerColor="danger"] {
-  background-color: rgba(0,0,0,.8)
-} */
+.el-input__inner {
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
 .login-form h4 {
   text-align: center;
   margin: 0 0 25px 0;
@@ -341,7 +342,7 @@ export default {
 /* 右侧文字 */
 .log-right {
   float: right;
-  margin-top: 260px;
+  margin-top: 250px;
   margin-right: 300px;
   padding: 20px 30px;
   width: 23%;

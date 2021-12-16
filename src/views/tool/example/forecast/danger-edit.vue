@@ -27,19 +27,20 @@
             <ul>
               <li v-for="(i, j) in x.children" :key="j" :name="j">
                 <span>{{ i.name }}</span>
-                <!-- <span>{{ i.score }}</span> -->
+                &nbsp;
+                <span>扣</span>
                 <span class="child_score">{{
-                  com_score(x.children_score, i)
+                  com_score(x.children_score, i) * 100 + "%"
                 }}</span>
-                <span>分</span>
-                <el-button
-                  icon="el-icon-minus"
-                  class="ele-btn-icons"
-                  style="padding: 2px 0;margin-left:5px;"
+                <el-link
+                  icon="el-icon-edit"
+                  class="ele-icons"
+                  style="padding: 2px 0; margin-left: 5px"
                   type="primary"
                   @click.stop="addPrim(i.pid, i.id)"
-                  >评分</el-button
                 >
+                  扣分
+                </el-link>
               </li>
             </ul>
           </template>
@@ -139,7 +140,7 @@ export default {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object
+    data: Object,
   },
   data() {
     return {
@@ -149,32 +150,32 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left"
+          fixed: "left",
         },
         {
           prop: "id",
           label: "ID",
           width: 60,
           align: "center",
-          fixed: "left"
+          fixed: "left",
         },
         {
           prop: "title",
           label: "隐患行为",
           align: "center",
-          minWidth: 150
+          minWidth: 150,
         },
         {
           prop: "sums",
           label: "数量",
           width: 180,
           align: "center",
-          slot: "scortNum"
+          slot: "scortNum",
         },
         {
           prop: "sort",
           label: "排序",
-          align: "center"
+          align: "center",
         },
         {
           columnKey: "action",
@@ -183,8 +184,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right"
-        }
+          fixed: "right",
+        },
       ],
       // 表单数据
       form: Object.assign({}, this.data),
@@ -194,15 +195,15 @@ export default {
           {
             required: true,
             message: "请输入隐患因素",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
 
         forecastStime: [
-          { required: true, message: "请输入任务开始时间", trigger: "blur" }
+          { required: true, message: "请输入任务开始时间", trigger: "blur" },
         ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
       },
       // 提交状态
       loading: false,
@@ -227,7 +228,7 @@ export default {
 
       primIndex: null,
       primID: null,
-      pData: {}
+      pData: {},
     };
   },
   mounted() {},
@@ -247,7 +248,7 @@ export default {
       } else {
         this.typeData = [];
       }
-    }
+    },
   },
   methods: {
     // 数量加减
@@ -255,7 +256,7 @@ export default {
       this.$http
         .put("/hiddendangerlibrary/upsums", {
           id: row.id,
-          sums: row.sums
+          sums: row.sums,
         })
         .then(() => {
           this.reload(y);
@@ -305,10 +306,12 @@ export default {
         code: 0,
         count: 0,
         data: parse,
-        msg: "操作成功"
+        msg: "操作成功",
       };
     },
     reload(i) {
+      this.typeData = [];
+      this.index()
       let table = `table${i}`;
       this.$refs[table][0].reload({ page: 1 });
     },
@@ -341,7 +344,7 @@ export default {
         lock: true,
         text: "Loading",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
+        background: "rgba(0, 0, 0, 0.7)",
       });
       //  改变data 要不多次点击可鞥不会改变
       this.pData = { isUpdate: false };
@@ -350,10 +353,10 @@ export default {
           params: {
             forecast_id: this.data.id, // 当前行id
             itemcate_id: this.primIndex, // 栏目id
-            itemcate_cid: this.primID
-          }
+            itemcate_cid: this.primID,
+          },
         })
-        .then(res => {
+        .then((res) => {
           loading.close();
           let obj = this.form;
           obj.tablerowid = this.data.id;
@@ -401,12 +404,12 @@ export default {
         lock: true,
         text: "Loading",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
+        background: "rgba(0, 0, 0, 0.7)",
       });
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 2
-        }
+          item_id: 2,
+        },
       });
       if (res.data.code == 0) {
         let table_item = res.data.data || [];
@@ -425,14 +428,14 @@ export default {
           element.where = {
             forecast_id: this.form.id,
             itemcateid: element.id,
-            itemcatecid: null
+            itemcatecid: null,
           };
           // 每个表格的 模板不一样
           const d = await this.$http.get("/configdata/list", {
             params: {
               configId: element.id,
-              forecast_id: this.form.id
-            }
+              forecast_id: this.form.id,
+            },
           });
           let temp = d.data.data;
           element.temptlate = temp || [];
@@ -449,8 +452,8 @@ export default {
             {
               params: {
                 forecast_id: this.data.id, // 当前行id
-                itemcate_id: element.id // 栏目id
-              }
+                itemcate_id: element.id, // 栏目id
+              },
             }
           );
           let num = children_score.data.data || [];
@@ -484,18 +487,18 @@ export default {
         const element = array[i];
         num += Number(element.Score);
       }
-      return num;
+      return Math.round(num*100)/100;
     },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           this.loading = true;
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/hiddendanger/update" : "/hiddendanger/add",
             this.form
           )
-            .then(res => {
+            .then((res) => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -508,7 +511,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch(e => {
+            .catch((e) => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -520,8 +523,8 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -553,6 +556,7 @@ ul {
   font-size: 18px;
   font-weight: 700;
   padding: 0 5px;
+  color: #f00;
 }
 .score {
   min-width: 100px;
