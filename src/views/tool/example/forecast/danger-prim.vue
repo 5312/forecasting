@@ -68,22 +68,22 @@ export default {
     // 修改回显的数据
     data: Object,
     primI: Number,
-    primD: Number,
+    primD: Number
   },
   data() {
     return {
       // 表单数据
       form: Object.assign(
         {
-          score_id: "",
+          score_id: ""
         },
         this.data
       ),
       // 表单验证规则
       rules: {
         scoreId: [
-          { required: true, message: "请输入评价标准", trigger: "blur" },
-        ],
+          { required: true, message: "请输入评价标准", trigger: "blur" }
+        ]
       },
       show: false,
       // 提交状态
@@ -95,19 +95,19 @@ export default {
       columns: [
         {
           prop: "title",
-          label: "评价标准",
+          label: "评价标准"
         },
         {
           prop: "score",
           label: "扣分比例(%)",
           width: 100,
-          slot: "percentage",
-        },
+          slot: "percentage"
+        }
       ],
       current: null,
       popover: false,
       portion: [],
-      prim: [],
+      prim: []
     };
   },
   watch: {
@@ -126,13 +126,13 @@ export default {
     },
     primD() {
       this.scoreData();
-    },
+    }
   },
   computed: {
     where() {
       let obj = {
         itemcate_id: "",
-        itemcate_cid: "",
+        itemcate_cid: ""
       };
       if (this.data) {
         obj.itemcate_id = this.data.itemcate_id;
@@ -147,14 +147,14 @@ export default {
       if (!this.table_data) return;
       if (typeof val == "number") {
         if (!this.table_data) return "";
-        this.table_data.forEach((obj) => {
+        this.table_data.forEach(obj => {
           if (Number(obj.id) == val) {
             title = obj.title;
           }
         });
       }
       return title;
-    },
+    }
   },
   mounted() {},
   methods: {
@@ -163,10 +163,10 @@ export default {
         .get("/score/list", {
           params: {
             itemcate_id: this.primI,
-            itemcate_cid: this.primD,
-          },
+            itemcate_cid: this.primD
+          }
         })
-        .then((res) => {
+        .then(res => {
           this.prim = res.data.data;
 
           //   this.form.id =
@@ -181,7 +181,7 @@ export default {
 
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.form.itemcate_id = this.primI;
           this.form.itemcate_cid = this.primD;
@@ -193,7 +193,7 @@ export default {
               : "/hiddendangerscorelibrary/add",
             this.form
           )
-            .then((res) => {
+            .then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -206,7 +206,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -218,8 +218,8 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    },
-  },
+    }
+  }
 };
 </script>
 

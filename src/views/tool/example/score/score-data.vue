@@ -26,12 +26,12 @@
       </el-col>
       <el-col :span="18">
         <!-- 数据表格 -->
-          <score-data-edit
-            v-if="select_item"
-            :item-id="itemId"
-            :item-id1="itemId1"
-            :item-id2="itemId2"
-          />
+        <score-data-edit
+          v-if="select_item"
+          :item-id="itemId"
+          :item-id1="itemId1"
+          :item-id2="itemId2"
+        />
       </el-col>
     </el-row>
   </div>
@@ -42,13 +42,11 @@ import ScoreDataEdit from "./score-data-edit";
 
 export default {
   name: "ItemCateEdit",
-  components:{ScoreDataEdit},
-  computed: {
-    ...mapGetters(["permission"]),
-  },
+  components: { ScoreDataEdit },
+
   props: {
     // 配置id
-    itemId: Number,
+    itemId: Number
   },
   data() {
     return {
@@ -59,13 +57,13 @@ export default {
         {
           prop: "name",
           label: "栏目名称",
-          showOverflowTooltip: true,
+          showOverflowTooltip: true
           // align: 'center'
-        },
+        }
       ],
       // 表格搜索条件
       where: {
-        itemId: this.itemId,
+        itemId: this.itemId
       },
       // 表格选中数据
       selection: [],
@@ -75,22 +73,23 @@ export default {
       // 是否显示编辑弹窗
       showEdit: false,
       // 全部栏目数据
-      cateList: [],
+      cateList: []
     };
   },
-  computed:{
-    itemId1(){
-      if(this.select_item.pid == 0){
-         return this.select_item.id
-      }else{
-         return this.select_item.pid
+  computed: {
+    ...mapGetters(["permission"]),
+    itemId1() {
+      if (this.select_item.pid == 0) {
+        return this.select_item.id;
+      } else {
+        return this.select_item.pid;
       }
     },
-    itemId2(){
-      if(this.select_item.pid == 0){
-        return null
-      }else{
-        return this.select_item.id
+    itemId2() {
+      if (this.select_item.pid == 0) {
+        return null;
+      } else {
+        return this.select_item.id;
       }
     }
   },
@@ -111,16 +110,15 @@ export default {
       res.data = this.$util.toTreeData(res.data, "id", "pid");
       this.cateList = res.data;
       return res;
-    },
+    }
   },
   watch: {
     // 监听配置id变化
     itemId() {
       this.where.itemId = this.itemId;
       this.reload();
-    },
- 
-  },
+    }
+  }
 };
 </script>
 <style scoped>
