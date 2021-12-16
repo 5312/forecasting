@@ -161,6 +161,7 @@ import DangerEdit from "./danger-edit";
 import ThreatenEdit from "./threaten-edit";
 import ForecastAdd from "./forecast-add";
 import Charts from "./charts";
+// import { addPageTab } from "@/utils/page-tab-util";
 
 export default {
   name: "SystemForecast",
@@ -176,7 +177,7 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "id",
@@ -184,7 +185,7 @@ export default {
           width: 60,
           align: "center",
           showOverflowTooltip: true,
-          fixed: "left",
+          fixed: "left"
         },
 
         {
@@ -192,7 +193,7 @@ export default {
           label: "安全分析预测标题",
           showOverflowTooltip: true,
           minWidth: 100,
-          align: "center",
+          align: "center"
         },
 
         {
@@ -200,7 +201,7 @@ export default {
           label: "任务开始时间",
           showOverflowTooltip: true,
           minWidth: 100,
-          align: "center",
+          align: "center"
         },
 
         {
@@ -209,7 +210,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 100,
           align: "center",
-          slot: "chart",
+          slot: "chart"
         },
 
         {
@@ -221,7 +222,7 @@ export default {
           align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
-          },
+          }
         },
 
         {
@@ -231,8 +232,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right",
-        },
+          fixed: "right"
+        }
       ],
       // 表格搜索条件
       where: {},
@@ -249,7 +250,7 @@ export default {
       // 添加/修改弹窗
       showAdd: false,
       // 图表弹窗
-      showChart: false,
+      showChart: false
     };
   },
   methods: {
@@ -275,28 +276,32 @@ export default {
     },
     // 添加威胁显示编辑
     threaten(row) {
-      // console.log(row)
       this.current = row;
       this.showThreaten = true;
     },
     // 添加/修改
     add(row) {
-      // console.log(row)
       this.current = row;
       this.showAdd = true;
     },
     // 图表
     tu(row) {
-      // console.log(row);
+      this.$router.push({
+        path: "/tool/example/forecast/charts",
+        query: {
+          data:row
+        }
+      });
+
       this.current = row;
-      this.showChart = true;
+      // this.showChart = true;
     },
     /* 删除 */
     remove(row) {
       const loading = this.$loading({ lock: true });
       this.$http
         .delete("/forecast/delete/" + row.id)
-        .then((res) => {
+        .then(res => {
           loading.close();
           if (res.data.code === 0) {
             this.$message.success(res.data.msg);
@@ -305,7 +310,7 @@ export default {
             this.$message.error(res.data.msg);
           }
         })
-        .catch((e) => {
+        .catch(e => {
           loading.close();
           this.$message.error(e.message);
         });
@@ -317,15 +322,15 @@ export default {
         return;
       }
       this.$confirm("确定要删除选中的安全分析预测吗?", "提示", {
-        type: "warning",
+        type: "warning"
       })
         .then(() => {
           const loading = this.$loading({ lock: true });
           this.$http
             .delete(
-              "/forecast/delete/" + this.selection.map((d) => d.id).join(",")
+              "/forecast/delete/" + this.selection.map(d => d.id).join(",")
             )
-            .then((res) => {
+            .then(res => {
               loading.close();
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -334,14 +339,14 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               loading.close();
               this.$message.error(e.message);
             });
         })
         .catch(() => {});
-    },
-  },
+    }
+  }
 };
 </script>
 
