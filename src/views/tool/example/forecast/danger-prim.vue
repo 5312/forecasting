@@ -10,15 +10,6 @@
     :close-on-click-modal="false"
     append-to-body
   >
-    <!-- <el-select v-model="value" clearable placeholder="请选择">
-      <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      >
-      </el-option>
-    </el-select> -->
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-form-item label="评价标准:" prop="score_id">
         <el-popover
@@ -124,7 +115,6 @@ export default {
       this.form.score_id = n.id;
     },
     data() {
-      // console.log(this.data)
       let sort = this.data.sort ? this.data.sort : 0;
       if (this.data.isUpdate) {
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
@@ -207,9 +197,9 @@ export default {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
-                if (!this.isUpdate) {
-                  this.form = { score_id: "" };
-                }
+                // if (!this.isUpdate) {
+                //   this.form = { score_id: "" };
+                // }
                 this.updateVisible(false);
                 this.$emit("done");
               } else {

@@ -34,12 +34,12 @@
                   <span>分</span>
                   <span>{{ i.id }}</span>
                   <el-button
-                    icon="el-icon-plus"
+                    icon="el-icon-minus"
                     class="ele-btn-icons"
                     style="float: right; padding: 2px 0; margin-left: 10px"
                     type="primary"
                     @click.stop="addPrim(i.pid, i.id)"
-                    >评分标准</el-button
+                    >评分</el-button
                   >
                 </li>
               </ul>
@@ -376,11 +376,11 @@ export default {
         .then((res) => {
           this.protion = res.data.data;
           console.log(this.protion);
-          if (this.protion == null) {
-            this.pData.isUpdate = false;
-          } else {
+          if (res.data.data != null) {
             this.pData.isUpdate = true;
             this.pData.id = this.protion[0].id;
+          } else {
+            this.pData.isUpdate = true;
           }
           this.showPrim = true;
         });
