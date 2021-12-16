@@ -1,14 +1,16 @@
-<template >
-  <el-dialog
+<template>
+  <div>
+    <!-- <el-dialog
     title="概况一览表"
     :visible="visible"
     :destroy-on-close="true"
     :lock-scroll="false"
     @update:visible="updateVisible"
-  >
+  > -->
     <div id="pie" :style="{ width: '700px', height: '300px' }"></div>
     <div id="column" :style="{ width: '700px', height: '300px' }"></div>
-  </el-dialog>
+    <!-- </el-dialog> -->
+  </div>
 </template>
 <script>
 import * as echarts from "echarts";
@@ -18,7 +20,7 @@ export default {
   props: {
     // 弹窗是否打开
     visible: Boolean,
-    data: Object,
+    data: Object
   },
   data() {
     return {
@@ -33,25 +35,25 @@ export default {
       num4: 0,
       num5: 0,
       num6: 0,
-      num7: 0,
+      num7: 0
     };
   },
   watch: {
     visible(e) {
-      // console.log(e)
       if (e) {
         this.$nextTick(() => {
-          this.pieData().then( ()=>{
+          this.pieData().then(() => {
             this.drawPie();
           });
           this.Mathnum();
           this.drawColumn();
         });
       }
-    },
+    }
   },
-  computed: {},
-  mounted() {},
+  mounted() {
+    console.log("12");
+  },
   methods: {
     drawPie() {
       let id = document.getElementById("pie");
@@ -59,14 +61,14 @@ export default {
       Pie.setOption({
         title: {
           text: "安全风险隐患",
-          left: "center",
+          left: "center"
         },
         tooltip: {
-          trigger: "item",
+          trigger: "item"
         },
         legend: {
           orient: "vertical",
-          left: "left",
+          left: "left"
         },
         series: [
           {
@@ -74,25 +76,25 @@ export default {
             radius: "50%",
             data: [
               {
-                value: this.pData.map((d) => d.Pa),
-                name: "人因安全事故（人员受损）",
+                value: this.pData.map(d => d.Pa),
+                name: "人因安全事故（人员受损）"
               },
               {
-                value: this.pData.map((d) => d.Pb),
-                name: "物因安全事故（装备受损）",
+                value: this.pData.map(d => d.Pb),
+                name: "物因安全事故（装备受损）"
               },
-              { value: this.pData.map((d) => d.Pc), name: "环境安全风险" },
-              { value: this.pData.map((d) => d.Pd), name: "管理安全风险" },
+              { value: this.pData.map(d => d.Pc), name: "环境安全风险" },
+              { value: this.pData.map(d => d.Pd), name: "管理安全风险" }
             ],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-          },
-        ],
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
       });
     },
     drawColumn() {
@@ -101,20 +103,20 @@ export default {
       Column.setOption({
         title: {
           text: "地面安全事故风险标准比照图",
-          left: "center",
+          left: "center"
         },
         tooltip: {
-          trigger: "item",
+          trigger: "item"
         },
         legend: {
           orient: "vertical",
-          left: "right",
+          left: "right"
         },
         xAxis: {
           axisLabel: {
             interval: 0,
             rotate: -10,
-            show: true,
+            show: true
           },
           type: "category",
           data: [
@@ -122,27 +124,27 @@ export default {
             "发生较大事故风险值（参照）",
             "发生重大事故风险值（参照）",
             "发生特大事故风险值（参照）",
-            "本次任务实际风险值",
-          ],
+            "本次任务实际风险值"
+          ]
         },
         yAxis: {
-          type: "value",
+          type: "value"
         },
         series: [
           {
             data: [this.num3, this.num4, this.num5, this.num6, this.num7],
-            type: "bar",
-          },
-        ],
+            type: "bar"
+          }
+        ]
       });
     },
     // 饼图接口数据
     async pieData() {
       await this.$http
         .get("/forecast/infodata", {
-          forecast_id: this.data.id,
+          forecast_id: this.data.id
         })
-        .then((res) => {
+        .then(res => {
           this.pData = res.data.data;
         });
     },
@@ -158,9 +160,8 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    },
-  },
+    }
+  }
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>
