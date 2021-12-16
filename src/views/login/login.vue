@@ -9,72 +9,74 @@
       <img src="~@/assets/junhui.png" />
       <p>安全分析预测暨风险评估系统</p>
     </div>
-   <div class="log-form">
+    <div class="log-form">
       <el-form
-      ref="form"
-      size="large"
-      :model="form"
-      :rules="rules"
-      class="login-form"
-      @keyup.enter.native="doSubmit"
-    >
-      <el-form-item prop="username">
-        <p>用户名：</p>
-        <el-input
-          clearable
-          v-model="form.username"
-          prefix-icon="el-icon-user"
-          :placeholder="$t('login.username')"
-        />
-      </el-form-item>
-      <el-form-item prop="password">
-        <p>密码：</p>
-        <el-input
-          show-password
-          v-model="form.password"
-          prefix-icon="el-icon-lock"
-          :placeholder="$t('login.password')"
-        />
-      </el-form-item>
-      <el-form-item prop="captcha">
-        <div class="login-input-group">
+        ref="form"
+        size="large"
+        :model="form"
+        :rules="rules"
+        class="login-form"
+        @keyup.enter.native="doSubmit"
+      >
+        <el-form-item prop="username">
+          <p>用户名：</p>
           <el-input
             clearable
-            v-model="form.captcha"
-            prefix-icon="el-icon-_vercode"
-            :placeholder="$t('login.captcha')"
+            v-model="form.username"
+            prefix-icon="el-icon-user"
+            :placeholder="$t('login.username')"
           />
-          <img
-            alt=""
-            v-if="captcha"
-            :src="captcha"
-            @click="changeCode"
-            class="login-captcha"
+        </el-form-item>
+        <el-form-item prop="password">
+          <p>密码：</p>
+          <el-input
+            show-password
+            v-model="form.password"
+            prefix-icon="el-icon-lock"
+            :placeholder="$t('login.password')"
           />
+        </el-form-item>
+        <el-form-item prop="captcha">
+          <div class="login-input-group">
+            <el-input
+              clearable
+              v-model="form.captcha"
+              prefix-icon="el-icon-_vercode"
+              :placeholder="$t('login.captcha')"
+            />
+            <img
+              alt=""
+              v-if="captcha"
+              :src="captcha"
+              @click="changeCode"
+              class="login-captcha"
+            />
+          </div>
+          <div class="el-form-item">
+            <el-checkbox v-model="form.remember">{{
+              $t("login.remember")
+            }}</el-checkbox>
+          </div>
+        </el-form-item>
+        <div class="el-form-item button">
+          <el-button
+            size="large"
+            type="primary"
+            class="login-btn"
+            :loading="loading"
+            @click="doSubmit"
+          >
+            {{ loading ? $t("login.loading") : $t("login.login") }}
+          </el-button>
         </div>
-        <div class="el-form-item">
-          <el-checkbox v-model="form.remember">{{
-            $t("login.remember")
-          }}</el-checkbox>
-        </div>
-      </el-form-item>
-      <div class="el-form-item button">
-        <el-button
-          size="large"
-          type="primary"
-          class="login-btn"
-          :loading="loading"
-          @click="doSubmit"
-        >
-          {{ loading ? $t("login.loading") : $t("login.login") }}
-        </el-button>
-      </div>
-    </el-form>
-   </div>
-   <div class="log-right">
-     <p>以习近平新时代中国特色社会主义思想为指导，坚持战斗力这个唯一标准，坚持底线思维和安全发展理念，
-            坚持预防为主的方针，遵循关口前移、层级负责、分级管控、依靠群众、突出重点、科学监管的原则。</p>
-   </div>
+      </el-form>
+    </div>
+    <div class="log-right">
+      <p>
+        以习近平新时代中国特色社会主义思想为指导，坚持战斗力这个唯一标准，坚持底线思维和安全发展理念，
+        坚持预防为主的方针，遵循关口前移、层级负责、分级管控、依靠群众、突出重点、科学监管的原则。
+      </p>
+    </div>
     <div class="login-copyright">copyright © 2021 all rights reserved.</div>
     <!-- 多语言切换 -->
 
@@ -231,24 +233,11 @@ export default {
 <style scoped>
 /* 背景 */
 .login-wrapper {
-  padding: 50px 20px;
-  position: relative;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   background-image: url("~@/assets/index-bg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
   min-height: 100vh;
-  font-family: PingFangSC-Regular, 微软雅黑, sans-serif;
-}
-
-.login-wrapper:before {
-  content: "";
-  background-color: rgba(0, 0, 0, 0.2);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 
 /* 标题 */
@@ -275,7 +264,7 @@ export default {
 
 /* 用户名密码 */
 .log-form {
-  width: 30%;
+  width: 20%;
   padding: 25px 30px;
   position: relative;
   left: 15%;
@@ -308,7 +297,9 @@ export default {
 .login-form-left .login-form {
   margin: 0 auto 0 15%;
 }
-
+/* .el-input__inner[DangerColor="danger"] {
+  background-color: rgba(0,0,0,.8)
+} */
 .login-form h4 {
   text-align: center;
   margin: 0 0 25px 0;
@@ -347,31 +338,30 @@ export default {
   width: 100%;
 }
 
-
 /* 右侧文字 */
 .log-right {
-        float: right;
-        margin-top: 260px;
-        margin-right: 300px;
-        padding: 20px 30px;
-        width: 23%;
-        min-width: 300px;
-        border: 1px solid #C5D6F8;
-        border-radius: 10px;
-        background-image: linear-gradient(to top, #021865 0%, #02227E 100%);
-        background-filter:alpha(Opacity=80);
-        -moz-opacity: 0.8;
-        opacity: 0.8;
-    }
-    .log-right p {
-        text-indent: 2em;
-        font-family: "楷体";
-        color: #FFFFFF;
-        line-height: 35px;
-        font-size: 20px;
-        background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);
-        -webkit-background-clip: text;
-    }
+  float: right;
+  margin-top: 260px;
+  margin-right: 300px;
+  padding: 20px 30px;
+  width: 23%;
+  min-width: 300px;
+  border: 1px solid #c5d6f8;
+  border-radius: 10px;
+  background-image: linear-gradient(to top, #021865 0%, #02227e 100%);
+  background-filter: alpha(Opacity=80);
+  -moz-opacity: 0.8;
+  opacity: 0.8;
+}
+.log-right p {
+  text-indent: 2em;
+  font-family: "楷体";
+  color: #ffffff;
+  line-height: 35px;
+  font-size: 20px;
+  background-image: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);
+  -webkit-background-clip: text;
+}
 
 /* 第三方登录图标 */
 .login-oauth-icon {
