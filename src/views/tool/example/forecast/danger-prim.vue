@@ -8,7 +8,17 @@
     :lock-scroll="false"
     @update:visible="updateVisible"
     :close-on-click-modal="false"
+    append-to-body
   >
+    <!-- <el-select v-model="value" clearable placeholder="请选择">
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select> -->
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-form-item label="评价标准:" prop="score_id">
         <el-popover
@@ -23,7 +33,7 @@
             placement="top"
             highlight-current-row
             :current.sync="current"
-            :datasource="url"
+            :datasource="prim"
             :columns="columns"
             :where="where"
             height="350px"
@@ -35,15 +45,6 @@
               {{ Number(row.score) * 100 + "%" }}
             </template>
           </ele-pro-table>
-          <el-select v-model="value" clearable placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
           <el-input
             v-loading="popover"
             slot="reference"
@@ -72,9 +73,11 @@ export default {
   props: {
     // 弹窗是否打开
     visible: Boolean,
-    primData:Array
+    // primData: Array,
     // 修改回显的数据
-    // data: Object,
+    data: Object,
+    primI: Number,
+    primD: Number,
   },
   data() {
     return {
@@ -97,7 +100,7 @@ export default {
       // 是否是修改
       isUpdate: false,
       //
-      url: "/score/list",
+      //   url: "/score/list",
       columns: [
         {
           prop: "title",
@@ -113,8 +116,7 @@ export default {
       current: null,
       popover: false,
       portion: [],
-      options:[],
-      value:""
+      prim: [],
     };
   },
   watch: {
@@ -122,15 +124,18 @@ export default {
       this.form.score_id = n.id;
     },
     data() {
+      // console.log(this.data)
       let sort = this.data.sort ? this.data.sort : 0;
       if (this.data.isUpdate) {
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = true;
       } else {
-        this.Portion();
         this.form = Object.assign({ score_id: "", sort: sort }, this.data);
         this.isUpdate = false;
       }
+    },
+    primD() {
+      this.scoreData();
     },
   },
   computed: {
@@ -161,38 +166,36 @@ export default {
       return title;
     },
   },
+  mounted() {},
   methods: {
+    scoreData() {
+      this.$http
+        .get("/score/list", {
+          params: {
+            itemcate_id: this.primI,
+            itemcate_cid: this.primD,
+          },
+        })
+        .then((res) => {
+          this.prim = res.data.data;
+
+          //   this.form.id =
+        });
+    },
     done(res) {
       this.table_data = res.data;
       this.popover = false;
     },
 
     // 显示弹框添加或修改
-    Portion() {
-      this.$http
-        .get("/hiddendangerscore/list", {
-          params: {
-            itemcate_id: this.data.itemcate_id,
-            itemcate_cid: this.data.itemcate_cid,
-          },
-        })
-        .then((res) => {
-          this.protion = res.data.data;
-          if (this.protion == null) {
-            this.isUpdate = false;
-          } else {
-            this.isUpdate = true;
-            for (let i = 0; i < this.protion.length; i++) {
-              const element = this.protion[i];
-              this.form.id = element.id;
-            }
-          }
-        });
-    },
+
     /* 保存编辑 */
     save() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
+          this.form.itemcate_id = this.primI;
+          this.form.itemcate_cid = this.primD;
+          this.form.forecast_id = this.form.tablerowid;
           this.loading = true;
           this.$http[this.isUpdate ? "put" : "post"](
             this.isUpdate

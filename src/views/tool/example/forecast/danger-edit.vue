@@ -32,12 +32,13 @@
                   >&nbsp;
                   <span>{{ i.score }}</span>
                   <span>分</span>
+                  <span>{{ i.id }}</span>
                   <el-button
                     icon="el-icon-plus"
                     class="ele-btn-icons"
                     style="float: right; padding: 2px 0; margin-left: 10px"
                     type="primary"
-                    @click.stop="addPrim(j, i.id)"
+                    @click.stop="addPrim(i.pid, i.id)"
                     >评分标准</el-button
                   >
                 </li>
@@ -121,19 +122,22 @@
       @saveTableData="saveTableData"
       :column="colnums_all"
     ></Danger>
-    <danger-prim :visible.sync="showPrim" @primData="primData"></danger-prim>
+    <Prim
+      :visible.sync="showPrim"
+      :data="pData"
+      :primI="primIndex"
+      :primD="primID"
+      @done="reload"
+    ></Prim>
   </el-dialog>
 </template>
 
 <script>
 import Danger from "./danger.vue";
-import DangerPrim from "./danger-prim.vue";
+import Prim from "./danger-prim.vue";
 export default {
   name: "ForecastEdit",
-  components: {
-    Danger,
-    DangerPrim,
-  },
+  components: { Danger, Prim },
   props: {
     // 弹窗是否打开
     visible: Boolean,
@@ -241,7 +245,11 @@ export default {
       colnums_all: [],
       showhead: false,
       primData: [],
-      showPrim:false
+      showPrim: false,
+
+      primIndex: null,
+      primID: null,
+      pData: {},
     };
   },
   mounted() {},
@@ -345,9 +353,37 @@ export default {
       this.params_id = y;
     },
 
-    addPrim() {
-      this.showPrim = true;
-      // console.log(i, j);
+    addPrim(i, j) {
+      this.primIndex = i;
+      this.primID = j;
+      this.Portion();
+    },
+    Portion() {
+      console.log(this.data.id);
+      console.log(this.primIndex);
+      console.log(this.primID);
+
+      this.pData = this.form;
+      this.pData.tablerowid = this.data.id;
+      this.$http
+        .get("/hiddendangerscorelibrary/list", {
+          params: {
+            forecast_id: this.data.id,
+            itemcate_id: this.primIndex,
+            itemcate_cid: this.primID,
+          },
+        })
+        .then((res) => {
+          this.protion = res.data.data;
+          console.log(this.protion);
+          if (this.protion == null) {
+            this.pData.isUpdate = false;
+          } else {
+            this.pData.isUpdate = true;
+            this.pData.id = this.protion[0].id;
+          }
+          this.showPrim = true;
+        });
     },
     manualAdd(x) {
       // 展开项 下表标
