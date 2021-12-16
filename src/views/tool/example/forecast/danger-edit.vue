@@ -15,36 +15,33 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item v-for="(x, y) in typeData" :key="y" :name="y">
           <template slot="title">
-            <!-- {{ x.name }} -->
             <div>
-              <p class="score">
+              <div class="score">
                 A
                 <span class="tit">{{ x.name }}</span>
-                &nbsp;
-                <span class="fen">{{ x.score }}</span>
+                <!-- {{ x.score }} -->
+                <span class="fen">{{ all_score(x.children_score) }}</span>
                 <span class="scor">分</span>
-              </p>
+              </div>
             </div>
-            <div>
-              <ul>
-                <li v-for="(i, j) in x.children" :key="j" :name="j">
-                  <span>{{ i.name }}</span
-                  >&nbsp;
-                  <span>{{ i.score }}</span>
-                  <span>分</span>
-                  <span>{{ i.id }}</span>
-                  <el-button
-                    icon="el-icon-minus"
-                    class="ele-btn-icons"
-                    style="float: right; padding: 2px 0; margin-left: 10px"
-                    type="primary"
-                    @click.stop="addPrim(i.pid, i.id)"
-                    >评分</el-button
-                  >
-                </li>
-              </ul>
-              <!-- {{}} -->
-            </div>
+            <ul>
+              <li v-for="(i, j) in x.children" :key="j" :name="j">
+                <span>{{ i.name }}</span>
+                <!-- <span>{{ i.score }}</span> -->
+                <span class="child_score">{{
+                  com_score(x.children_score, i)
+                }}</span>
+                <span>分</span>
+                <el-button
+                  icon="el-icon-minus"
+                  class="ele-btn-icons"
+                  style="padding: 2px 0;margin-left:5px;"
+                  type="primary"
+                  @click.stop="addPrim(i.pid, i.id)"
+                  >评分</el-button
+                >
+              </li>
+            </ul>
           </template>
           <ele-pro-table
             v-if="x.show"
@@ -142,7 +139,7 @@ export default {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object,
+    data: Object
   },
   data() {
     return {
@@ -152,51 +149,32 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "id",
           label: "ID",
           width: 60,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "title",
           label: "隐患行为",
           align: "center",
-          minWidth: 150,
+          minWidth: 150
         },
         {
           prop: "sums",
           label: "数量",
           width: 180,
           align: "center",
-          slot: "scortNum",
+          slot: "scortNum"
         },
-        // {
-        //   prop: "Score",
-        //   label: "资源赋值(R)",
-        //   align: "center",
-        //   minWidth: 120,
-        // },
-        // {
-        //   prop: "scoreTitle",
-        //   label: "评价标准",
-        //   width: 200,
-        //   align: "center",
-        // },
-        // {
-        //   prop: "Score",
-        //   label: "扣分比例(%)",
-        //   align: "center",
-        //   minWidth: 120,
-        //   slot:"score"
-        // },
         {
           prop: "sort",
           label: "排序",
-          align: "center",
+          align: "center"
         },
         {
           columnKey: "action",
@@ -205,8 +183,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right",
-        },
+          fixed: "right"
+        }
       ],
       // 表单数据
       form: Object.assign({}, this.data),
@@ -216,15 +194,15 @@ export default {
           {
             required: true,
             message: "请输入隐患因素",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
 
         forecastStime: [
-          { required: true, message: "请输入任务开始时间", trigger: "blur" },
+          { required: true, message: "请输入任务开始时间", trigger: "blur" }
         ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       // 提交状态
       loading: false,
@@ -249,7 +227,7 @@ export default {
 
       primIndex: null,
       primID: null,
-      pData: {},
+      pData: {}
     };
   },
   mounted() {},
@@ -269,16 +247,15 @@ export default {
       } else {
         this.typeData = [];
       }
-    },
+    }
   },
-  computed: {},
   methods: {
     // 数量加减
     add(row, y) {
       this.$http
         .put("/hiddendangerlibrary/upsums", {
           id: row.id,
-          sums: row.sums,
+          sums: row.sums
         })
         .then(() => {
           this.reload(y);
@@ -328,7 +305,7 @@ export default {
         code: 0,
         count: 0,
         data: parse,
-        msg: "操作成功",
+        msg: "操作成功"
       };
     },
     reload(i) {
@@ -341,6 +318,7 @@ export default {
       if (this.tableIndex !== null) {
         let arr = this.typeData[x].temptlate;
         let array = this.defaultColumns;
+        // 深拷贝
         array = JSON.stringify(array);
         array = JSON.parse(array);
         for (let i = 0; i < arr.length; i++) {
@@ -352,36 +330,43 @@ export default {
       }
       this.params_id = y;
     },
-
+    // 打开评分
     addPrim(i, j) {
       this.primIndex = i;
       this.primID = j;
       this.Portion();
     },
     Portion() {
-      console.log(this.data.id);
-      console.log(this.primIndex);
-      console.log(this.primID);
-
-      this.pData = this.form;
-      this.pData.tablerowid = this.data.id;
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      //  改变data 要不多次点击可鞥不会改变
+      this.pData = { isUpdate: false };
       this.$http
         .get("/hiddendangerscorelibrary/list", {
           params: {
-            forecast_id: this.data.id,
-            itemcate_id: this.primIndex,
-            itemcate_cid: this.primID,
-          },
-        })
-        .then((res) => {
-          this.protion = res.data.data;
-          console.log(this.protion);
-          if (res.data.data != null) {
-            this.pData.isUpdate = true;
-            this.pData.id = this.protion[0].id;
-          } else {
-            this.pData.isUpdate = true;
+            forecast_id: this.data.id, // 当前行id
+            itemcate_id: this.primIndex, // 栏目id
+            itemcate_cid: this.primID
           }
+        })
+        .then(res => {
+          loading.close();
+          let obj = this.form;
+          obj.tablerowid = this.data.id;
+
+          this.protion = res.data.data;
+          if (res.data.data) {
+            obj.isUpdate = true;
+            obj.id = this.protion[0].id;
+          } else {
+            obj.isUpdate = false;
+          }
+          this.pData = obj;
+          console.log("--:", obj.isUpdate);
           this.showPrim = true;
         });
     },
@@ -412,60 +397,105 @@ export default {
     },
     // 编辑的数据
     async index() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 2,
-        },
+          item_id: 2
+        }
       });
       if (res.data.code == 0) {
-        let array = res.data.data;
-        for (let index = 0; index < array.length; index++) {
-          const element = array[index];
-          if (element.pid == 0) {
-            element.where = {
-              forecast_id: this.form.id,
-              itemcateid: element.id,
-              itemcatecid: null,
-            };
-            // 模板接口
-            const d = await this.$http.get("/configdata/list", {
-              params: {
-                configId: element.id,
-                forecast_id: this.form.id,
-              },
-            });
-            element.temptlate = d.data.data;
-            // 模板数据接口
+        let table_item = res.data.data || [];
+        this.formate(table_item);
+      }
+      loading.close();
+    },
+    // 数据处理
+    async formate(data) {
+      let array = data;
+      // 生成手风琴 栏目项
+      for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        // pid == 0 顶级节点
+        if (element.pid == 0) {
+          element.where = {
+            forecast_id: this.form.id,
+            itemcateid: element.id,
+            itemcatecid: null
+          };
+          // 每个表格的 模板不一样
+          const d = await this.$http.get("/configdata/list", {
+            params: {
+              configId: element.id,
+              forecast_id: this.form.id
+            }
+          });
+          let temp = d.data.data;
+          element.temptlate = temp || [];
+          // 表格 数据 接口
+          element.url = "/hiddendangerlibrary/list";
+          element.show = true;
+          // 总分
+          element.score = 0;
+          element.children = [];
+          /*********/
 
-            element.url = "/hiddendangerlibrary/list";
-            element.show = true;
-            element.score = 0;
-            element.children = [];
-            // 1.id == c.pid
-            for (let i = 0; i < array.length; i++) {
-              const ele = array[i];
-              if (element.id == ele.pid) {
-                element.children.push(ele);
-                this.primData.push(ele);
+          const children_score = await this.$http.get(
+            "/hiddendangerscorelibrary/list",
+            {
+              params: {
+                forecast_id: this.data.id, // 当前行id
+                itemcate_id: element.id // 栏目id
               }
             }
-
-            this.typeData.push(element);
-            // console.log(this.typeData)
+          );
+          let num = children_score.data.data || [];
+          element.children_score = num;
+          // 1.id == c.pid 当前节点的子节点
+          for (let i = 0; i < array.length; i++) {
+            const ele = array[i];
+            if (element.id == ele.pid) {
+              element.children.push(ele);
+              this.primData.push(ele);
+            }
           }
+          /***********/
+          this.typeData.push(element);
         }
       }
     },
+    com_score(data, i) {
+      // 计算当前项 分数;
+      for (let index = 0; index < data.length; index++) {
+        const element = data[index];
+        if (element.itemcate_cid == i.id) {
+          return element.Score;
+        }
+      }
+      return 0;
+    },
+    all_score(array) {
+      let num = 0;
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        num += Number(element.Score);
+      }
+      return num;
+    },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.loading = true;
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/hiddendanger/update" : "/hiddendanger/add",
             this.form
           )
-            .then((res) => {
+            .then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -478,7 +508,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -490,27 +520,43 @@ export default {
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    },
-    removeBatch() {},
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 ul {
-  width: 95%;
+  width: 98%;
   list-style: none;
   display: flex;
-  justify-content: space-around;
-  margin-left: 50px;
+  justify-content: flex-start;
+  margin-left: 30px;
+  align-items: center;
+  flex-wrap: nowrap;
+  align-content: center;
+  flex-wrap: wrap;
   li {
-    width: 195px;
+    text-align: center;
+    line-height: 38px;
+    margin: 0 10px;
+    white-space: nowrap;
+    span {
+      vertical-align: middle;
+    }
     button {
-      position: relative;
-      right: 15px;
-      top: 15px;
+      vertical-align: middle;
     }
   }
+}
+.child_score {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 0 5px;
+}
+.score {
+  min-width: 100px;
+  white-space: nowrap;
 }
 #score {
   float: right;
