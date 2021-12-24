@@ -8,7 +8,7 @@
           <hr />
           <ul>
             <li v-for="(i, j) in typeData" :key="j">
-              <el-tag  class="name" v-if="i.show">{{ i.name }}:</el-tag>
+              <el-tag class="name" v-if="i.show">{{ i.name }}:</el-tag>
               <div class="data" v-if="i.show">
                 <p v-for="(x, y) in i.seData" :key="y">
                   <span>名称：{{ x.title }}</span>
@@ -24,89 +24,37 @@
           <p class="p">隐患因素</p>
           <hr />
           <ul>
-            <li>
-              <el-tag type="danger" class="name">人因隐患</el-tag>
+            <li v-for="(i, j) in typeData1" :key="j">
+              <el-tag type="danger" class="name">{{ i.name }}:</el-tag>
               <div class="data">
                 <div class="data">
-                  <span v-for="(q, w) in arr1" :key="w">
-                    {{ q.tit }}&nbsp;&nbsp;{{ q.tit1 }}&nbsp;&nbsp;{{ q.tit2 }},
+                  <span v-for="(x, y) in i.daData" :key="y">
+                    &nbsp;&nbsp;{{ x.title }}&nbsp;&nbsp;{{
+                      x.scoreTitle
+                    }}&nbsp;&nbsp;扣分：{{ x.Scoresum * 100 + "%" }}
                   </span>
                 </div>
-                <div class="data">
-                  <p v-for="(a, s) in arr7" :key="s">
-                    <span>{{ a.arr1 }}</span>
-                    <span>{{ a.arr2 }}</span>
+                <div class="data" v-if="i.show">
+                  <p v-for="(y, z) in i.chData" :key="z">
+                    <span>隐患行为：{{ y.title }}</span>
+                    <span>数量：{{ y.sums }}</span>
                   </p>
                 </div>
               </div>
             </li>
-            <li>
-              <el-tag type="danger" class="name">物因隐患</el-tag>
-              <div class="data">
-                <div class="data">
-                  <span v-for="(q, w) in arr2" :key="w">
-                    {{ q.tit }}&nbsp;&nbsp;{{ q.tit1 }}&nbsp;&nbsp;{{ q.tit2 }},
-                  </span>
-                </div>
-                <div class="data">
-                <p v-for="(a,s) in arr5" :key="s">
-                  <span>{{a.arr1}}</span>
-                  <span>{{a.arr2}}</span>
-                </p>
-              </div>
-              </div>
-            </li>
-            <li>
-              <el-tag type="danger" class="name">环境隐患</el-tag>
-              <div class="data">
-                <div class="data">
-                  <span v-for="(q, w) in arr3" :key="w">
-                    {{ q.tit }}&nbsp;&nbsp;{{ q.tit1 }}&nbsp;&nbsp;{{ q.tit2 }},
-                  </span>
-                </div>
-                <div class="data">
-                <p v-for="(a,s) in arr6" :key="s">
-                  <span>{{a.arr1}}</span>
-                  <span>{{a.arr2}}</span>
-                </p>
-              </div>
-              </div>
-            </li>
-            <li>
-              <el-tag type="danger" class="name">管理隐患</el-tag>
-              <div class="data">
-                <div class="data">
-                  <span v-for="(q, w) in arr4" :key="w">
-                    {{ q.tit }}&nbsp;&nbsp;{{ q.tit1 }}&nbsp;&nbsp;{{ q.tit2 }},
-                  </span>
-                </div>
-                <div class="data">
-                <p v-for="(a,s) in arr8" :key="s">
-                  <span>{{a.arr1}}</span>
-                  <span>{{a.arr2}}</span>
-                </p>
-              </div>
-              </div>
-            </li>
           </ul>
-          <!-- <ul>
-            <li v-for="(i, j) in typeData1" :key="j">
-              <div class="name">{{ i.name }}:</div>
-              <div class="data">
-                <p v-for="(x, y) in i.daData" :key="y">
-                  <span>名称：{{ x.title }}</span>
-                  <span>数量：{{ x.sums }}</span>
-                  <span>{{ x.scoreTitle }}</span>
-                  <span>扣分：{{ x.Scoresum * 100 + "%" }}</span>
-                </p>
-              </div>
-            </li>
-          </ul> -->
         </div>
         <div class="secur">
           <p class="p">威胁因素</p>
           <hr />
-          <div class="data1">个别人员近期出现异常&nbsp;&nbsp;&nbsp;&nbsp;极频繁&nbsp;&nbsp;&nbsp;&nbsp;人因隐患&nbsp;&nbsp;&nbsp;&nbsp;作战战备领域重大风险</div>
+          <div class="data">
+            <p class="seData" v-for="(i,j) in typeData2" :key="j">
+              <span>威胁行为：{{i.title}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>频率： {{i.scoreTitle}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>{{i.yinhuanTitle.name}}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+              <span>安全风险：{{i.riskdataTitle}}</span>
+            </p>
+          </div>
         </div>
       </div>
     </el-card>
@@ -128,134 +76,8 @@ export default {
       typeData: [],
       // 隐患因素数据
       typeData1: [],
-
-      arr: [
-        {
-          name: "人因隐患",
-        },
-        {
-          name: "物因隐患",
-        },
-        {
-          name: "环境隐患",
-        },
-        {
-          name: "管理隐患",
-        },
-      ],
-      arr1: [
-        {
-          tit: "思想状态",
-          tit1: "隐患严重扣20%",
-          tit2: "20%",
-        },
-        {
-          tit: "健康状态",
-          tit1: "隐患一般扣10%",
-          tit2: "10%",
-        },
-        {
-          tit: "安全观念",
-          tit1: "隐患严重扣15%",
-          tit2: "15%",
-        },
-        {
-          tit: "责任观念",
-          tit1: "隐患严重扣15%",
-          tit2: "15%",
-        },
-        {
-          tit: "能力素质",
-          tit1: "隐患一般扣5%",
-          tit2: "5%",
-        },
-      ],
-      arr2: [
-        {
-          tit: "质量技术状态",
-          tit1: "隐患严重扣25%",
-          tit2: "25%",
-        },
-        {
-          tit: "检查维护状态",
-          tit1: "隐患一般扣10%",
-          tit2: "10%",
-        },
-      ],
-      arr3: [
-        {
-          tit: "社会环境",
-          tit1: "隐患严重扣20%",
-          tit2: "20%",
-        },
-        {
-          tit: "地质环境",
-          tit1: "隐患一般扣10%",
-          tit2: "10%",
-        },
-        {
-          tit: "气候环境",
-          tit1: "隐患严重扣15%",
-          tit2: "15%",
-        },
-      ],
-      arr4: [
-        {
-          tit: "组织机构",
-          tit1: "隐患严重扣30%",
-          tit2: "30%",
-        },
-        {
-          tit: "指挥管理能力",
-          tit1: "隐患一般扣20%",
-          tit2: "20%",
-        },
-      ],
-      arr5: [
-        {
-          arr1: "质量技术存在重大缺陷",
-          arr2: 5,
-        },
-      ],
-      arr6: [
-        {
-          arr1: "存在赌博隐患",
-          arr2: 1,
-        },
-        {
-          arr1: "存在道路交通隐患",
-          arr2: 3,
-        },
-        {
-          arr1: "存在涉黄隐患",
-          arr2: 1,
-        },
-      ],
-      arr7: [
-        {
-          arr1: "思想不稳定",
-          arr2: 3,
-        },
-        {
-          arr1: "思想松懈",
-          arr2: 5,
-        },
-        {
-          arr1: "安全意识弱化",
-          arr2: 8,
-        },
-      ],
-      arr8: [
-        {
-          arr1: "管理体系不健全",
-          arr2: 3,
-        },
-        {
-          arr1: "各级责任分工不明确",
-          arr2: 5,
-        },
-      ],
-      arr9: [],
+      // 威胁因素数据
+      typeData2:[]
     };
   },
   watch: {},
@@ -267,6 +89,7 @@ export default {
       });
       this.securData();
       this.dangerData();
+      this.riskData()
     });
   },
   methods: {
@@ -291,19 +114,19 @@ export default {
             radius: "50%",
             data: [
               {
-                value: 23.4,
-                // value: this.pData.map((d) => d.Pa),
+                // value: 23.4,
+                value: this.pData.map((d) => d.Pa),
                 name: "人因安全事故（人员受损）",
               },
               {
-                value: 12.5,
-                // value: this.pData.map((d) => d.Pb),
+                // value: 12.5,
+                value: this.pData.map((d) => d.Pb),
                 name: "物因安全事故（装备受损）",
               },
-              { value: 15.3, name: "环境安全风险" },
-              { value: 18.5, name: "管理安全风险" },
-              // { value: this.pData.map((d) => d.Pc), name: "环境安全风险" },
-              // { value: this.pData.map((d) => d.Pd), name: "管理安全风险" },
+              // { value: 15.3, name: "环境安全风险" },
+              // { value: 18.5, name: "管理安全风险" },
+              { value: this.pData.map((d) => d.Pc), name: "环境安全风险" },
+              { value: this.pData.map((d) => d.Pd), name: "管理安全风险" },
             ],
             emphasis: {
               itemStyle: {
@@ -410,12 +233,13 @@ export default {
       });
       if (res.data.code == 0) {
         let array1 = res.data.data;
-        // console.log(array1);
         for (let index = 0; index < array1.length; index++) {
           const element = array1[index];
           if (element.pid == 0) {
             element.daData = [];
             element.children = [];
+            element.chData = [];
+            element.show = false;
             const children_score = await this.$http.get(
               "/hiddendangerscorelibrary/list",
               {
@@ -426,74 +250,44 @@ export default {
               }
             );
             element.daData = children_score.data.data;
-            // let num = children_score.data.data || [];
-            // element.children_score = num;
-            // 1.id == c.pid 当前节点的子节点
-            // for (let i = 0; i < array.length; i++) {
-            //   const ele = array[i];
-            //   if (element.id == ele.pid) {
-            //     element.children.push(ele);
-            //     console.log(element.children);
-            //   }
-            // }
-            // console.log(element.daData)
-            this.typeData1.push(element);
-            // console.log(this.typeData1);
-          }
-        }
-      }
-      // loading.close();
-    },
-    async formate(data) {
-      let array = data;
-      // 生成手风琴 栏目项
-      for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        // 表格 数据 接口
-        element.daData = [];
-        const a = await this.$http.get("/hiddendangerlibrary/list", {
-          params: {
-            forecast_id: this.$route.query.data.id,
-            itemcate_id: element.id,
-          },
-        });
-        console.log(a.data.data);
-        // element.url = "/hiddendangerlibrary/list";
-        element.show = true;
-        // 总分
-        element.score = 0;
-        element.children = [];
-        /*********/
 
-        const children_score = await this.$http.get(
-          "/hiddendangerscorelibrary/list",
-          {
-            params: {
-              forecast_id: this.data.id, // 当前行id
-              itemcate_id: element.id, // 栏目id
-            },
-          }
-        );
-        let num = children_score.data.data || [];
-        element.children_score = num;
-        // 1.id == c.pid 当前节点的子节点
-        for (let i = 0; i < array.length; i++) {
-          const ele = array[i];
-          if (element.id == ele.pid) {
-            element.children.push(ele);
-            this.primData.push(ele);
+            const childData = await this.$http.get(
+              "/hiddendangerlibrary/list",
+              {
+                params: {
+                  forecast_id: this.$route.query.id, // 当前行id
+                  itemcate_id: element.id, // 栏目id
+                },
+              }
+            );
+            if (childData.data.data) {
+              element.show = true;
+              element.chData = childData.data.data;
+            } else {
+              element.show = false;
+            }
+            this.typeData1.push(element);
           }
         }
-        /***********/
-        this.typeData1.push(element);
-        console.log(this.typeData1);
-        // }
       }
     },
-    // 隐患因素数据2
-    dangerDataTwo() {},
     // 威胁因素数据
-    riskData() {},
+    async riskData() {
+      const riData = await this.$http.get("/risklibrary/list",{
+        params:{
+          forecast_id: this.$route.query.id
+        }
+      })
+      this.typeData2 = riData.data.data
+      // for (let index = 0; index < this.typeData2.length; index++) {
+      //   const element = this.typeData2[index];
+      //   let ele = element.yinhuanTitle
+      //   for (let i = 0; i < ele.length; i++) {
+      //     const ele1 = ele[i];
+      //     console.log(ele1.name)
+      //   }
+      // }
+    },
     // Mathnum() {
     //   this.num3 = Math.floor(Math.random() * (500 - 100)) + 100;
     //   this.num4 = Math.floor(Math.random() * (500 - 100)) + 100;
@@ -556,5 +350,8 @@ ul li {
   top: 10px;
   left: 20px;
   margin-bottom: 20px;
+}
+.seData {
+  margin-left: 30px;
 }
 </style>

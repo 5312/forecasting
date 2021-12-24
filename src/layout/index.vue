@@ -49,7 +49,7 @@
   >
     <!-- logo图标 -->
     <template slot="logo">
-      <img src="@/assets/logo.png" alt="logo" />
+      <img src="@/assets/junhui.png" alt="logo" />
     </template>
     <!-- 顶栏右侧区域 -->
     <template slot="right">
