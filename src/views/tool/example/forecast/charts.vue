@@ -27,11 +27,17 @@
             <li v-for="(i, j) in typeData1" :key="j">
               <el-tag type="danger" class="name">{{ i.name }}:</el-tag>
               <div class="data">
-                <div class="data">
+                <div class="data da">
                   <span v-for="(x, y) in i.daData" :key="y">
-                    &nbsp;&nbsp;{{ x.title }}&nbsp;&nbsp;{{
-                      x.scoreTitle
-                    }}&nbsp;&nbsp;扣分：{{ x.Scoresum * 100 + "%" }}
+                    <!-- <el-tag type="success" v-for="(q, z) in i.children" :key="z"
+                      >{{ q.name }}
+                      &nbsp;&nbsp;{{ x.title }}&nbsp;&nbsp;
+                    </el-tag> -->
+                    <!-- <span> -->
+                      {{ x.scoreTitle }}&nbsp;&nbsp;扣分：{{
+                        x.Scoresum * 100 + "%"
+                      }}
+                    <!-- </span> -->
                   </span>
                 </div>
                 <div class="data" v-if="i.show">
@@ -48,11 +54,12 @@
           <p class="p">威胁因素</p>
           <hr />
           <div class="data">
-            <p class="seData" v-for="(i,j) in typeData2" :key="j">
-              <span>威胁行为：{{i.title}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>频率： {{i.scoreTitle}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>{{i.yinhuanTitle.name}}</span> &nbsp;&nbsp;&nbsp;&nbsp;
-              <span>安全风险：{{i.riskdataTitle}}</span>
+            <p class="seData" v-for="(i, j) in typeData2" :key="j">
+              <span>威胁行为：{{ i.title }}</span
+              >&nbsp;&nbsp;&nbsp;&nbsp; <span>频率： {{ i.scoreTitle }}</span
+              >&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>{{ i.yinhuanTitle.name }}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+              <span>安全风险：{{ i.riskdataTitle }}</span>
             </p>
           </div>
         </div>
@@ -77,7 +84,8 @@ export default {
       // 隐患因素数据
       typeData1: [],
       // 威胁因素数据
-      typeData2:[]
+      typeData2: [],
+      primData: [],
     };
   },
   watch: {},
@@ -89,7 +97,7 @@ export default {
       });
       this.securData();
       this.dangerData();
-      this.riskData()
+      this.riskData();
     });
   },
   methods: {
@@ -260,6 +268,16 @@ export default {
                 },
               }
             );
+            let num = childData.data.data || [];
+            element.childData = num;
+            for (let i = 0; i < array1.length; i++) {
+              const ele = array1[i];
+              if (element.id == ele.pid) {
+                element.children.push(ele);
+                this.primData.push(ele);
+                // console.log(element.children);
+              }
+            }
             if (childData.data.data) {
               element.show = true;
               element.chData = childData.data.data;
@@ -273,12 +291,12 @@ export default {
     },
     // 威胁因素数据
     async riskData() {
-      const riData = await this.$http.get("/risklibrary/list",{
-        params:{
-          forecast_id: this.$route.query.id
-        }
-      })
-      this.typeData2 = riData.data.data
+      const riData = await this.$http.get("/risklibrary/list", {
+        params: {
+          forecast_id: this.$route.query.id,
+        },
+      });
+      this.typeData2 = riData.data.data;
       // for (let index = 0; index < this.typeData2.length; index++) {
       //   const element = this.typeData2[index];
       //   let ele = element.yinhuanTitle
@@ -353,5 +371,8 @@ ul li {
 }
 .seData {
   margin-left: 30px;
+}
+.da {
+  margin-left: 20px;
 }
 </style>

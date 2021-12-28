@@ -146,12 +146,12 @@
     <!-- 添加/修改安全分析预测弹窗 -->
     <forecast-add :data="current" :visible.sync="showAdd" @done="reload" />
     <!-- 图表弹框 -->
-    <charts
+    <!-- <charts
       class="chart"
       :data="current"
       :visible.sync="showChart"
       @done="reload"
-    />
+    /> -->
   </div>
 </template>
 
@@ -160,12 +160,12 @@ import ForecastEdit from "./forecast-edit";
 import DangerEdit from "./danger-edit";
 import ThreatenEdit from "./threaten-edit";
 import ForecastAdd from "./forecast-add";
-import Charts from "./charts";
+// import Charts from "./charts";
 // import { addPageTab } from "@/utils/page-tab-util";
 
 export default {
   name: "SystemForecast",
-  components: { ForecastEdit, DangerEdit, ThreatenEdit, ForecastAdd, Charts },
+  components: { ForecastEdit, DangerEdit, ThreatenEdit, ForecastAdd },
   data() {
     return {
       // 表格数据接口
