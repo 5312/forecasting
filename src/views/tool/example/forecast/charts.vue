@@ -5,7 +5,7 @@
       <div class="tit">
         <div class="secur">
           <p class="p">安全资源</p>
-          <hr />
+          <hr>
           <ul>
             <li v-for="(i, j) in typeData" :key="j">
               <el-tag class="name" v-if="i.show">{{ i.name }}:</el-tag>
@@ -22,16 +22,17 @@
         </div>
         <div class="secur">
           <p class="p">隐患因素</p>
-          <hr />
+          <hr>
           <ul>
             <li v-for="(i, j) in typeData1" :key="j">
               <el-tag type="danger" class="name">{{ i.name }}:</el-tag>
               <div class="data">
-                <div class="data">
-                  <span v-for="(x, y) in i.daData" :key="y">
-                    &nbsp;&nbsp;{{ x.title }}&nbsp;&nbsp;{{
-                      x.scoreTitle
-                    }}&nbsp;&nbsp;扣分：{{ x.Scoresum * 100 + "%" }}
+                <div class="data da">
+                  <span v-for="(x, y) in i.daData" :key="y" class="danger">
+                    <el-tag class="tag">{{ getName(x.itemcate_cid) }}</el-tag>
+                    {{ x.scoreTitle }}&nbsp;&nbsp;扣分：{{
+                    x.Scoresum * 100 + "%"
+                    }}
                   </span>
                 </div>
                 <div class="data" v-if="i.show">
@@ -46,13 +47,12 @@
         </div>
         <div class="secur">
           <p class="p">威胁因素</p>
-          <hr />
+          <hr>
           <div class="data">
-            <p class="seData" v-for="(i,j) in typeData2" :key="j">
-              <span>威胁行为：{{i.title}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>频率： {{i.scoreTitle}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>{{i.yinhuanTitle.name}}</span> &nbsp;&nbsp;&nbsp;&nbsp;
-              <span>安全风险：{{i.riskdataTitle}}</span>
+            <p class="seData" v-for="(i, j) in typeData2" :key="j">
+              <span>威胁行为：{{ i.title }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>频率： {{ i.scoreTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>安全风险：{{ i.riskdataTitle }}</span>
             </p>
           </div>
         </div>
@@ -65,7 +65,6 @@ import * as echarts from "echarts";
 // 引入折线图组件
 export default {
   name: "Charts",
-
   data() {
     return {
       // 饼图数据
@@ -77,36 +76,36 @@ export default {
       // 隐患因素数据
       typeData1: [],
       // 威胁因素数据
-      typeData2:[]
+      typeData2: [],
     };
   },
   watch: {},
   mounted() {
-    console.log(this.$route.query.data);
     this.$nextTick(() => {
       this.pieData().then(() => {
         this.drawPie();
       });
       this.securData();
       this.dangerData();
-      this.riskData()
+      this.riskData();
     });
   },
   methods: {
+    // 饼图数据
     drawPie() {
       let id = document.getElementById("pie");
       let Pie = echarts.init(id);
       Pie.setOption({
         title: {
           text: "安全风险隐患",
-          left: "center",
+          left: "center"
         },
         tooltip: {
-          trigger: "item",
+          trigger: "item"
         },
         legend: {
           orient: "vertical",
-          left: "left",
+          left: "left"
         },
         series: [
           {
@@ -114,29 +113,25 @@ export default {
             radius: "50%",
             data: [
               {
-                // value: 23.4,
-                value: this.pData.map((d) => d.Pa),
-                name: "人因安全事故（人员受损）",
+                value: this.pData.map(d => d.Pa),
+                name: "人因安全事故（人员受损）"
               },
               {
-                // value: 12.5,
-                value: this.pData.map((d) => d.Pb),
-                name: "物因安全事故（装备受损）",
+                value: this.pData.map(d => d.Pb),
+                name: "物因安全事故（装备受损）"
               },
-              // { value: 15.3, name: "环境安全风险" },
-              // { value: 18.5, name: "管理安全风险" },
-              { value: this.pData.map((d) => d.Pc), name: "环境安全风险" },
-              { value: this.pData.map((d) => d.Pd), name: "管理安全风险" },
+              { value: this.pData.map(d => d.Pc), name: "环境安全风险" },
+              { value: this.pData.map(d => d.Pd), name: "管理安全风险" }
             ],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-          },
-        ],
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              }
+            }
+          }
+        ]
       });
     },
     // drawColumn() {
@@ -184,9 +179,9 @@ export default {
     async pieData() {
       await this.$http
         .get("/forecast/infodata", {
-          forecast_id: this.$route.query.data.id,
+          forecast_id: this.$route.query.data.id
         })
-        .then((res) => {
+        .then(res => {
           this.pData = res.data.data;
         });
     },
@@ -195,8 +190,8 @@ export default {
       this.typeData = [];
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 1,
-        },
+          item_id: 1
+        }
       });
       if (res.data.code == 0) {
         let array = res.data.data;
@@ -209,8 +204,8 @@ export default {
             const d = await this.$http.get("/assetslibrary/list", {
               params: {
                 forecast_id: this.$route.query.data.id,
-                itemcate_id: element.id,
-              },
+                itemcate_id: element.id
+              }
             });
             if (d.data.data) {
               element.show = true;
@@ -223,16 +218,29 @@ export default {
         }
       }
     },
+    // 隐患因素数据获取name
+    getName(cid) {
+      let array1 = this.alldanger;
+      for (let index = 0; index < array1.length; index++) {
+        const obj = array1[index];
+        if (cid == obj.id) {
+          return obj.name;
+        }
+      }
+    },
     // 隐患因素数据
     async dangerData() {
       this.typeData1 = [];
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 2,
-        },
+          item_id: 2
+        }
       });
       if (res.data.code == 0) {
         let array1 = res.data.data;
+        // 隐患因素
+        this.alldanger = array1;
+        const newdata = [];
         for (let index = 0; index < array1.length; index++) {
           const element = array1[index];
           if (element.pid == 0) {
@@ -240,68 +248,55 @@ export default {
             element.children = [];
             element.chData = [];
             element.show = false;
+            // 取扣分
             const children_score = await this.$http.get(
               "/hiddendangerscorelibrary/list",
               {
                 params: {
                   forecast_id: this.$route.query.id, // 当前行id
-                  itemcate_id: element.id, // 栏目id
-                },
+                  itemcate_id: element.id // 栏目id
+                }
               }
             );
             element.daData = children_score.data.data;
-
+            // 取隐患行为
             const childData = await this.$http.get(
               "/hiddendangerlibrary/list",
               {
                 params: {
                   forecast_id: this.$route.query.id, // 当前行id
-                  itemcate_id: element.id, // 栏目id
-                },
+                  itemcate_id: element.id // 栏目id
+                }
               }
             );
+            let num = childData.data.data || [];
+            element.childData = num;
             if (childData.data.data) {
               element.show = true;
               element.chData = childData.data.data;
             } else {
               element.show = false;
             }
-            this.typeData1.push(element);
+            newdata.push(element);
           }
         }
+        this.typeData1 = newdata;
       }
     },
     // 威胁因素数据
     async riskData() {
-      const riData = await this.$http.get("/risklibrary/list",{
-        params:{
+      const riData = await this.$http.get("/risklibrary/list", {
+        params: {
           forecast_id: this.$route.query.id
         }
-      })
-      this.typeData2 = riData.data.data
-      // for (let index = 0; index < this.typeData2.length; index++) {
-      //   const element = this.typeData2[index];
-      //   let ele = element.yinhuanTitle
-      //   for (let i = 0; i < ele.length; i++) {
-      //     const ele1 = ele[i];
-      //     console.log(ele1.name)
-      //   }
-      // }
+      });
+      this.typeData2 = riData.data.data;
     },
-    // Mathnum() {
-    //   this.num3 = Math.floor(Math.random() * (500 - 100)) + 100;
-    //   this.num4 = Math.floor(Math.random() * (500 - 100)) + 100;
-    //   this.num5 = Math.floor(Math.random() * (500 - 100)) + 100;
-    //   this.num6 = Math.floor(Math.random() * (500 - 100)) + 100;
-    //   this.num7 = Math.floor(Math.random() * (500 - 100)) + 100;
-    // },
-    // // 柱形图接口数据
-    //   columnData(){},
     /* 更新visible */
     updateVisible(value) {
       this.$emit("update:visible", value);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
@@ -353,5 +348,14 @@ ul li {
 }
 .seData {
   margin-left: 30px;
+}
+.da {
+  margin-left: 20px;
+}
+.danger {
+  padding: 10px 10px 10px 0;
+}
+.tag {
+  margin-right: 10px;
 }
 </style>
