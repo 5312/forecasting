@@ -256,7 +256,7 @@ export default {
   border-radius: 50%;
 }
 .log-title p {
-  font-size: 46px;
+  font-size: 34px;
   color: rgba(256, 256, 256, 0.7);
   line-height: 60px;
   font-family: "微软雅黑";
