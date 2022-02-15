@@ -62,7 +62,7 @@
 </template>
 <script>
 import * as echarts from "echarts";
-import { constants } from 'http';
+// import { constants } from 'http';
 // 引入折线图组件
 export default {
   name: "Charts",
@@ -292,11 +292,6 @@ export default {
         }
       });
       this.typeData2 = riData.data.data;
-      var newData = []
-      newData = this.typeData2
-      newData.forEach(ele => {
-        console.log(ele.yinhuanTitle)
-      });
     },
     /* 更新visible */
     updateVisible(value) {
