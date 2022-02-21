@@ -10,14 +10,44 @@
           <hr />
           <ul>
             <li v-for="(i, j) in typeData" :key="j">
-              <el-tag class="name" v-if="i.show">{{ i.name }}:</el-tag>
+              <el-tag class="name" v-if="i.show">{{ i.name }}</el-tag>
               <div class="data" v-if="i.show">
-                <p v-for="(x, y) in i.seData" :key="y">
+                <el-table :data="i.seData" border style="width: 100%">
+                  <el-table-column label="名称">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px;">{{
+                        scope.row.title
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="数量">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        scope.row.sums
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="内容">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        scope.row.scoreTitle
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="总赋值">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        scope.row.Scoresum
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <!-- <p v-for="(x, y) in i.seData" :key="y">
                   <span>名称：{{ x.title }}</span>
                   <span>数量：{{ x.sums }}</span>
                   <span>{{ x.scoreTitle }}</span>
                   <span>总赋值：{{ x.Scoresum }}</span>
-                </p>
+                </p> -->
               </div>
             </li>
           </ul>
@@ -27,9 +57,15 @@
           <hr />
           <ul>
             <li v-for="(i, j) in typeData1" :key="j">
-              <el-tag type="danger" class="name">{{ i.name }}:</el-tag>
+              <el-tag type="danger" class="name">{{ i.name }}</el-tag>
               <div class="data margin-left">
-                <el-table :data="i.daData" style="width: 100%" border>
+                <el-table
+                  :data="i.daData"
+                  style="width: 100%"
+                  border
+                  show-summary
+                  :summary-method="getSummaries"
+                >
                   <el-table-column label="排查内容" width="180">
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
@@ -46,8 +82,8 @@
                   </el-table-column>
                   <el-table-column prop="address" label="扣分">
                     <template slot-scope="scope">
-                      <span style="margin-left: 10px">{{
-                        scope.row.Scoresum * 100 + "%"
+                      <span style="margin-left: 10px;color:red;">{{
+                        "-" + scope.row.Scoresum * 100 + "%"
                       }}</span>
                     </template>
                   </el-table-column>
@@ -56,21 +92,19 @@
                 <div class="table_box" v-if="i.show">
                   <el-table :data="i.chData" border style="width: 100%">
                     <!--  :show-header="false" -->
-                    <el-table-column label="隐患内容" align="center">
-                      <el-table-column label="排查内容">
-                        <template slot-scope="scope">
-                          <span style="margin-left: 10px">{{
-                            scope.row.title
-                          }}</span>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="name" label="扣分项目">
-                        <template slot-scope="scope">
-                          <span style="margin-left: 10px">{{
-                            scope.row.sums
-                          }}</span>
-                        </template>
-                      </el-table-column>
+                    <el-table-column label="隐患行为">
+                      <template slot-scope="scope">
+                        <span style="margin-left: 10px;color:red;">{{
+                          scope.row.title
+                        }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="name" label="数量" width="80">
+                      <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{
+                          scope.row.sums
+                        }}</span>
+                      </template>
                     </el-table-column>
                   </el-table>
                 </div>
@@ -82,12 +116,38 @@
           <p class="p">威胁因素</p>
           <hr />
           <div class="data">
-            <p class="seData" v-for="(i, j) in typeData2" :key="j">
+            <el-table
+              class="seData"
+              :data="typeData2"
+              border
+              style="width: 100%"
+            >
+              <el-table-column label="威胁行为：">
+                <template slot-scope="scope">
+                  <span style="margin-left: 10px;">{{ scope.row.title }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="频率">
+                <template slot-scope="scope">
+                  <span style="margin-left: 10px">{{
+                    scope.row.scoreTitle
+                  }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="name" label="安全风险：">
+                <template slot-scope="scope">
+                  <span style="margin-left: 10px">{{
+                    scope.row.riskdataTitle
+                  }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!-- <p class="seData" v-for="(i, j) in typeData2" :key="j">
               <span>威胁行为：{{ i.title }}</span
               >&nbsp;&nbsp;&nbsp;&nbsp; <span>频率： {{ i.scoreTitle }}</span
               >&nbsp;&nbsp;&nbsp;&nbsp;
               <span>安全风险：{{ i.riskdataTitle }}</span>
-            </p>
+            </p> -->
           </div>
         </div>
       </div>
@@ -126,6 +186,32 @@ export default {
     });
   },
   methods: {
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "总价";
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index] += " 元";
+        } else {
+          sums[index] = "N/A";
+        }
+      });
+
+      return sums;
+    },
     // 饼图数据
     drawPie() {
       let id = document.getElementById("pie");
@@ -214,7 +300,6 @@ export default {
     },
     // 隐患因素数据获取name
     getName(cid) {
-      console.log(cid);
       let array1 = this.alldanger;
       for (let index = 0; index < array1.length; index++) {
         const obj = array1[index];
@@ -321,7 +406,7 @@ export default {
           display: flex;
           justify-content: space-between;
           .table_box {
-            margin: 10px 0;
+            // margin: 10px 0;
           }
         }
       }
