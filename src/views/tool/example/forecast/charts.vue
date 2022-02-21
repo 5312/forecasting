@@ -68,9 +68,10 @@
                     prop="itemcate_cid"
                     label="排查内容"
                     width="180"
+                    align="center"
                   >
                     <template slot-scope="scope">
-                      <span style="margin-left: 10px">{{
+                      <span style="margin-left: 10px;margin:auto;">{{
                         getName(scope.row.itemcate_cid)
                       }}</span>
                     </template>
@@ -436,6 +437,7 @@ export default {
     }
   }
 }
+
 .margin-left {
   margin-left: 15px;
 }
