@@ -65,6 +65,16 @@
         </template>
         <template slot="chart" slot-scope="{ row }">
           <el-link
+            v-if="row.mongxing == 0"
+            class="ico"
+            type="primary"
+            :underline="false"
+            icon="el-icon-pie-chart"
+            @click="tu(row)"
+          >
+          </el-link>
+          <el-link
+            v-else
             class="ico"
             type="primary"
             :underline="false"
@@ -72,6 +82,9 @@
             @click="tu(row)"
           >
           </el-link>
+        </template>
+        <template slot="type" slot-scope="{ row }">
+          {{ row.mongxing == 0 ? "分析预测" : "风险评估" }}
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
@@ -205,7 +218,14 @@ export default {
           align: "center",
           slot: "chart"
         },
-
+        {
+          prop: "mongxing",
+          label: "类型",
+          showOverflowTooltip: true,
+          minWidth: 100,
+          align: "center",
+          slot: "type"
+        },
         {
           prop: "createTime",
           label: "创建时间",
@@ -282,7 +302,9 @@ export default {
       this.$router.push({
         path: "/tool/example/forecast/charts",
         query: {
-          data: row
+          data: row,
+          id: row.id,
+          name: row.title
         }
       });
       this.current = row;

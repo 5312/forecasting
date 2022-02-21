@@ -1,10 +1,10 @@
 <template>
   <div class="wrap">
     <el-card>
-      <h1 class="title">{{ this.$route.query.data.title }}</h1>
+      <h1 class="title">{{ this.$route.query.name }}</h1>
       <div
         id="pie"
-        :style="{ width: '700px', height: '300px', marginTop: '60px' }"
+        :style="{ width: '100%', height: '300px', marginTop: '60px' }"
       ></div>
       <!-- </el-card>
     <el-card> -->
@@ -24,7 +24,7 @@
                       }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="name" label="数量">
+                  <el-table-column prop="name" label="数量" width="80">
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
                         scope.row.sums
@@ -38,7 +38,7 @@
                       }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="name" label="总赋值">
+                  <el-table-column prop="name" label="总赋值" width="80">
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
                         scope.row.Scoresum
@@ -46,6 +46,11 @@
                     </template>
                   </el-table-column>
                 </el-table>
+              </div>
+            </li>
+            <li class="j-end">
+              <div class="left">
+                得分(R):<span class="score">{{ all_anquanziyuan() }} </span>
               </div>
             </li>
           </ul>
@@ -61,8 +66,8 @@
                   class="el-table"
                   :data="i.daData"
                   style="width: 100%"
-                  show-summary
                   border
+                  show-summary
                   :summary-method="getSummaries"
                   :row-style="{ background: '#fff' }"
                   :cell-style="{ background: '#fff' }"
@@ -125,16 +130,22 @@
           </ul>
         </div>
         <div class="secur">
-          <el-table :data="typeData2" border style="width: 100%">
+          <el-table
+            :data="typeData2"
+            border
+            style="width: 100%"
+            show-summary
+            :summary-method="getSummaries_weixie"
+          >
             <el-table-column label="威胁因素" align="center">
-              <el-table-column label="威胁行为">
+              <el-table-column label="威胁行为" align="center">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px;color:red;">{{
                     scope.row.title
                   }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="频率">
+              <el-table-column prop="name" label="频率" align="center">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px">{{
                     scope.row.scoreTitle
@@ -175,7 +186,18 @@ export default {
     };
   },
   watch: {},
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.pieData().then(() => {
+        vm.drawPie();
+      });
+      vm.securData();
+      vm.dangerData();
+      vm.riskData();
+    });
+  },
   mounted() {
+    // console.log("11");
     this.$nextTick(() => {
       this.pieData().then(() => {
         this.drawPie();
@@ -186,6 +208,52 @@ export default {
     });
   },
   methods: {
+    getSummaries_weixie(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "得分(V)";
+          return;
+        }
+        if (index === 1) {
+          column.colSpan = 2;
+          const values = data.map(item => Number(item["score"]));
+          // console.log(values);
+          if (!values.every(value => isNaN(value))) {
+            let array = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            });
+            sums[index] = array;
+          } else {
+            sums[index] = "";
+          }
+        }
+        // console.log(data);
+        // if (!data) return (sums[index] = "x");
+        // const values = data.map(item => Number(item[column.property]));
+
+        // if (!values.every(value => isNaN(value))) {
+        //   let sum_math = values.reduce((prev, curr) => {
+        //     const value = Number(curr);
+        //     if (!isNaN(value)) {
+        //       return prev + curr;
+        //     } else {
+        //       return prev;
+        //     }
+        //   }, 0);
+        //   sums[index] = sum_math;
+        // } else {
+        //   sums[index] = "";
+        // }
+      });
+      return sums;
+    },
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
@@ -195,7 +263,8 @@ export default {
           column.colSpan = 2;
           return;
         }
-
+        // console.log(data);
+        if (!data) return (sums[index] = "x");
         const values = data.map(item => Number(item[column.property]));
 
         if (!values.every(value => isNaN(value))) {
@@ -236,9 +305,106 @@ export default {
     },
     // 饼图数据
     drawPie() {
-      let id = document.getElementById("pie");
-      let Pie = echarts.init(id);
+      // let id = document.getElementById("pie");
+      let Pie = echarts.getInstanceByDom(document.getElementById("pie"));
+      if (Pie == null) {
+        // 如果不存在，就进行初始化。
+        Pie = echarts.init(document.getElementById("pie"));
+      } else {
+        Pie.dispose();
+        Pie = echarts.init(document.getElementById("pie"));
+      }
+      // let Pie = echarts.init(id);
+      let type = {
+        0: "pie",
+        1: "bar"
+      };
+      const charts_data = this.pData;
+      const t = type[this.pData[0].mongxing];
+      let bar_x = {};
+      if (t == "bar") {
+        bar_x = {
+          xAxis: {
+            type: "category",
+            data: [
+              "发生特大事故风险值(参照)",
+              "发生重大事故风险值(参照)",
+              "发生较大事故风险值(参照)",
+              "发生一般事故风险值(参照)",
+              "本次任务实际风险值"
+            ]
+          },
+          yAxis: {
+            type: "value"
+          },
+          series: [
+            {
+              data: [
+                {
+                  value: charts_data[0].Pa,
+                  itemStyle: {
+                    color: "#990000"
+                  }
+                },
+                {
+                  value: charts_data[0].Pb,
+                  itemStyle: {
+                    color: "#CC0000"
+                  }
+                },
+                {
+                  value: charts_data[0].Pc,
+                  itemStyle: {
+                    color: "#FF6600"
+                  }
+                },
+                {
+                  value: charts_data[0].Pd,
+                  itemStyle: {
+                    color: "#FFCC00"
+                  }
+                },
+                charts_data[0].Pe
+              ],
+              type: "bar",
+              showBackground: true,
+              backgroundStyle: {
+                color: "rgba(180, 180, 180, 0.2)"
+              }
+            }
+          ]
+        };
+      } else {
+        bar_x = {
+          series: [
+            {
+              type: t,
+              radius: "50%",
+              data: [
+                {
+                  value: charts_data.map(d => d.Pa),
+                  name: "人因安全事故（人员受损）"
+                },
+                {
+                  value: charts_data.map(d => d.Pb),
+                  name: "物因安全事故（装备受损）"
+                },
+                { value: charts_data.map(d => d.Pc), name: "环境安全风险" },
+                { value: charts_data.map(d => d.Pd), name: "管理安全风险" }
+              ],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: "rgba(0, 0, 0, 0.5)"
+                }
+              }
+            }
+          ]
+        };
+      }
       Pie.setOption({
+        ...bar_x,
         title: {
           text: "安全风险隐患",
           left: "center"
@@ -249,47 +415,21 @@ export default {
         legend: {
           orient: "vertical",
           left: "left"
-        },
-        series: [
-          {
-            type: "pie",
-            radius: "50%",
-            data: [
-              {
-                value: this.pData.map(d => d.Pa),
-                name: "人因安全事故（人员受损）"
-              },
-              {
-                value: this.pData.map(d => d.Pb),
-                name: "物因安全事故（装备受损）"
-              },
-              { value: this.pData.map(d => d.Pc), name: "环境安全风险" },
-              { value: this.pData.map(d => d.Pd), name: "管理安全风险" }
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)"
-              }
-            }
-          }
-        ]
+        }
       });
     },
     // 饼图接口数据
     async pieData() {
       const res = await this.$http.get("/forecast/infodata", {
         params: {
-          forecast_id: this.$route.query.data.id
+          forecast_id: this.$route.query.id
         }
       });
       this.pData = res.data.data;
-      console.log(this.pData);
     },
     //安全资源数据
     async securData() {
-      this.typeData = [];
+      const array_data = [];
       const res = await this.$http.get("/itemcate/list", {
         params: {
           item_id: 1
@@ -305,7 +445,7 @@ export default {
             element.show = false;
             const d = await this.$http.get("/assetslibrary/list", {
               params: {
-                forecast_id: this.$route.query.data.id,
+                forecast_id: this.$route.query.id,
                 itemcate_id: element.id
               }
             });
@@ -315,10 +455,26 @@ export default {
             } else {
               element.show = false;
             }
-            this.typeData.push(element);
+            array_data.push(element);
           }
         }
       }
+      this.typeData = array_data;
+    },
+    all_anquanziyuan() {
+      let arr = this.typeData;
+      let r = 0;
+      for (let index = 0; index < arr.length; index++) {
+        const element = arr[index];
+        if (element.seData.length > 0) {
+          let child = element.seData;
+          for (let x = 0; x < child.length; x++) {
+            const children = child[x];
+            r += children.Score;
+          }
+        }
+      }
+      return r;
     },
     // 隐患因素数据获取name
     getName(cid) {
@@ -433,6 +589,13 @@ export default {
           justify-content: space-between;
           .table_box {
             // margin: 10px 0;
+          }
+        }
+        .j-end {
+          justify-content: flex-end;
+          .score {
+            font-size: 20px;
+            margin-left: 10px;
           }
         }
       }
