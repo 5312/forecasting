@@ -1,7 +1,11 @@
 <template>
   <div class="wrap">
     <el-card>
-      <div id="pie" :style="{ width: '700px', height: '300px' }"></div>
+      <h1 class="title">{{ this.$route.query.data.title }}</h1>
+      <div
+        id="pie"
+        :style="{ width: '700px', height: '300px', marginTop: '60px' }"
+      ></div>
       <!-- </el-card>
     <el-card> -->
       <div class="tit">
@@ -42,12 +46,6 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <!-- <p v-for="(x, y) in i.seData" :key="y">
-                  <span>名称：{{ x.title }}</span>
-                  <span>数量：{{ x.sums }}</span>
-                  <span>{{ x.scoreTitle }}</span>
-                  <span>总赋值：{{ x.Scoresum }}</span>
-                </p> -->
               </div>
             </li>
           </ul>
@@ -66,21 +64,29 @@
                   show-summary
                   :summary-method="getSummaries"
                 >
-                  <el-table-column label="排查内容" width="180">
+                  <el-table-column
+                    prop="itemcate_cid"
+                    label="排查内容"
+                    width="180"
+                  >
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
                         getName(scope.row.itemcate_cid)
                       }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="name" label="扣分项目" width="180">
+                  <el-table-column
+                    prop="scoreTitle"
+                    label="扣分项目"
+                    width="180"
+                  >
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
                         scope.row.scoreTitle
                       }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="address" label="扣分">
+                  <el-table-column prop="Scoresum" label="扣分">
                     <template slot-scope="scope">
                       <span style="margin-left: 10px;color:red;">{{
                         "-" + scope.row.Scoresum * 100 + "%"
@@ -113,18 +119,16 @@
           </ul>
         </div>
         <div class="secur">
-          <p class="p">威胁因素</p>
-          <hr />
-          <div class="data">
-            <el-table
-              class="seData"
-              :data="typeData2"
-              border
-              style="width: 100%"
-            >
-              <el-table-column label="威胁行为：">
+          <!-- <p class="p">威胁因素</p> -->
+          <!-- <hr /> -->
+          <!-- <div class="data"> -->
+          <el-table :data="typeData2" border style="width: 100%">
+            <el-table-column label="威胁因素" align="center">
+              <el-table-column label="威胁行为">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px;">{{ scope.row.title }}</span>
+                  <span style="margin-left: 10px;color:red;">{{
+                    scope.row.title
+                  }}</span>
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="频率">
@@ -134,21 +138,15 @@
                   }}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="name" label="安全风险：">
+              <el-table-column prop="name" label="安全风险">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px">{{
                     scope.row.riskdataTitle
                   }}</span>
                 </template>
               </el-table-column>
-            </el-table>
-            <!-- <p class="seData" v-for="(i, j) in typeData2" :key="j">
-              <span>威胁行为：{{ i.title }}</span
-              >&nbsp;&nbsp;&nbsp;&nbsp; <span>频率： {{ i.scoreTitle }}</span
-              >&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>安全风险：{{ i.riskdataTitle }}</span>
-            </p> -->
-          </div>
+            </el-table-column>
+          </el-table>
         </div>
       </div>
     </el-card>
@@ -191,12 +189,13 @@ export default {
       const sums = [];
       columns.forEach((column, index) => {
         if (index === 0) {
-          sums[index] = "总价";
+          sums[index] = "得分(A)";
           return;
         }
         const values = data.map(item => Number(item[column.property]));
+
         if (!values.every(value => isNaN(value))) {
-          sums[index] = values.reduce((prev, curr) => {
+          let sum_math = values.reduce((prev, curr) => {
             const value = Number(curr);
             if (!isNaN(value)) {
               return prev + curr;
@@ -204,9 +203,27 @@ export default {
               return prev;
             }
           }, 0);
-          sums[index] += " 元";
+
+          if (sum_math >= 0.9) {
+            sums[index] = 1;
+          }
+          if (sum_math < 0.9 && sum_math >= 0.8) {
+            sums[index] = 2;
+          }
+          if (sum_math < 0.8 && sum_math >= 0.7) {
+            sums[index] = 3;
+          }
+          if (sum_math < 0.7 && sum_math >= 0.6) {
+            sums[index] = 4;
+          }
+          if (sum_math < 0.6 && sum_math >= 0.5) {
+            sums[index] = 5;
+          }
+          if (sum_math < 0.5) {
+            sums[index] = 5;
+          }
         } else {
-          sums[index] = "N/A";
+          sums[index] = " ";
         }
       });
 
@@ -382,6 +399,10 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   padding: 15px;
+  .title {
+    margin: auto;
+    text-align: center;
+  }
   #pie {
     margin-top: 20px;
     margin: 0 auto;

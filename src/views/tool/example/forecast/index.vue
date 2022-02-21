@@ -145,13 +145,6 @@
     />
     <!-- 添加/修改安全分析预测弹窗 -->
     <forecast-add :data="current" :visible.sync="showAdd" @done="reload" />
-    <!-- 图表弹框 -->
-    <!-- <charts
-      class="chart"
-      :data="current"
-      :visible.sync="showChart"
-      @done="reload"
-    /> -->
   </div>
 </template>
 
@@ -289,10 +282,9 @@ export default {
       this.$router.push({
         path: "/tool/example/forecast/charts",
         query: {
-          data:row
+          data: row
         }
       });
-
       this.current = row;
       // this.showChart = true;
     },
