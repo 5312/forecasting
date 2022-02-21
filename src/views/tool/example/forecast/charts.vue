@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <div id="pie" :style="{ width: '700px', height: '300px' }"></div>
+  <div class="wrap">
     <el-card>
+      <div id="pie" :style="{ width: '700px', height: '300px' }"></div>
+      <!-- </el-card>
+    <el-card> -->
       <div class="tit">
         <div class="secur">
           <p class="p">安全资源</p>
-          <hr>
+          <hr />
           <ul>
             <li v-for="(i, j) in typeData" :key="j">
               <el-tag class="name" v-if="i.show">{{ i.name }}:</el-tag>
@@ -22,24 +24,55 @@
         </div>
         <div class="secur">
           <p class="p">隐患因素</p>
-          <hr>
+          <hr />
           <ul>
             <li v-for="(i, j) in typeData1" :key="j">
               <el-tag type="danger" class="name">{{ i.name }}:</el-tag>
-              <div class="data">
-                <div class="data da">
-                  <span v-for="(x, y) in i.daData" :key="y" class="danger">
-                    <el-tag class="tag">{{ getName(x.itemcate_cid) }}</el-tag>
-                    {{ x.scoreTitle }}&nbsp;&nbsp;扣分：{{
-                    x.Scoresum * 100 + "%"
-                    }}
-                  </span>
-                </div>
-                <div class="data" v-if="i.show">
-                  <p v-for="(y, z) in i.chData" :key="z">
-                    <span>隐患行为：{{ y.title }}</span>
-                    <span>数量：{{ y.sums }}</span>
-                  </p>
+              <div class="data margin-left">
+                <el-table :data="i.daData" style="width: 100%" border>
+                  <el-table-column label="排查内容" width="180">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        getName(scope.row.itemcate_cid)
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="扣分项目" width="180">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        scope.row.scoreTitle
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="address" label="扣分">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px">{{
+                        scope.row.Scoresum * 100 + "%"
+                      }}</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+
+                <div class="table_box" v-if="i.show">
+                  <el-table :data="i.chData" border style="width: 100%">
+                    <!--  :show-header="false" -->
+                    <el-table-column label="隐患内容" align="center">
+                      <el-table-column label="排查内容">
+                        <template slot-scope="scope">
+                          <span style="margin-left: 10px">{{
+                            scope.row.title
+                          }}</span>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="name" label="扣分项目">
+                        <template slot-scope="scope">
+                          <span style="margin-left: 10px">{{
+                            scope.row.sums
+                          }}</span>
+                        </template>
+                      </el-table-column>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
             </li>
@@ -47,11 +80,12 @@
         </div>
         <div class="secur">
           <p class="p">威胁因素</p>
-          <hr>
+          <hr />
           <div class="data">
             <p class="seData" v-for="(i, j) in typeData2" :key="j">
-              <span>威胁行为：{{ i.title }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-              <span>频率： {{ i.scoreTitle }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+              <span>威胁行为：{{ i.title }}</span
+              >&nbsp;&nbsp;&nbsp;&nbsp; <span>频率： {{ i.scoreTitle }}</span
+              >&nbsp;&nbsp;&nbsp;&nbsp;
               <span>安全风险：{{ i.riskdataTitle }}</span>
             </p>
           </div>
@@ -77,7 +111,7 @@ export default {
       // 隐患因素数据
       typeData1: [],
       // 威胁因素数据
-      typeData2: [],
+      typeData2: []
     };
   },
   watch: {},
@@ -135,47 +169,6 @@ export default {
         ]
       });
     },
-    // drawColumn() {
-    //   let id = document.getElementById("column");
-    //   let Column = echarts.init(id);
-    //   Column.setOption({
-    //     title: {
-    //       text: "地面安全事故风险标准比照图",
-    //       left: "center",
-    //     },
-    //     tooltip: {
-    //       trigger: "item",
-    //     },
-    //     legend: {
-    //       orient: "vertical",
-    //       left: "right",
-    //     },
-    //     xAxis: {
-    //       axisLabel: {
-    //         interval: 0,
-    //         rotate: -10,
-    //         show: true,
-    //       },
-    //       type: "category",
-    //       data: [
-    //         "发生一般事故风险值（参照）",
-    //         "发生较大事故风险值（参照）",
-    //         "发生重大事故风险值（参照）",
-    //         "发生特大事故风险值（参照）",
-    //         "本次任务实际风险值",
-    //       ],
-    //     },
-    //     yAxis: {
-    //       type: "value",
-    //     },
-    //     series: [
-    //       {
-    //         data: [this.num3, this.num4, this.num5, this.num6, this.num7],
-    //         type: "bar",
-    //       },
-    //     ],
-    //   });
-    // },
     // 饼图接口数据
     async pieData() {
       await this.$http
@@ -221,6 +214,7 @@ export default {
     },
     // 隐患因素数据获取name
     getName(cid) {
+      console.log(cid);
       let array1 = this.alldanger;
       for (let index = 0; index < array1.length; index++) {
         const obj = array1[index];
@@ -300,32 +294,42 @@ export default {
   }
 };
 </script>
-<style scoped>
-.secur {
-  border: 1px solid #aaa;
-  width: 80%;
-  margin-bottom: 30px;
-  margin-right: 20px;
-  margin-left: 10%;
+<style lang="scss" scoped>
+.wrap {
+  padding: 15px;
+  #pie {
+    margin-top: 20px;
+    margin: 0 auto;
+  }
+  .tit {
+    .secur {
+      border: 1px solid #aaa;
+      width: 80%;
+      margin: auto;
+      margin-bottom: 30px;
+      .p {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        height: 50px;
+        line-height: 50px;
+      }
+      ul {
+        padding: 10px 20px;
+        list-style: none;
+        li {
+          display: flex;
+          justify-content: space-between;
+          .table_box {
+            margin: 10px 0;
+          }
+        }
+      }
+    }
+  }
 }
-.secur .p {
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
-  height: 50px;
-  line-height: 50px;
-}
-#pie {
-  margin-top: 20px;
-  margin: 0 auto;
-}
-ul {
-  padding: 10px 20px;
-  list-style: none;
-}
-ul li {
-  display: flex;
-  justify-content: space-between;
+.margin-left {
+  margin-left: 15px;
 }
 .data {
   width: 93%;
