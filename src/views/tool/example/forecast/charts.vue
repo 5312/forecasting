@@ -97,7 +97,6 @@
 
                 <div class="table_box" v-if="i.show">
                   <el-table :data="i.chData" border style="width: 100%">
-                    <!--  :show-header="false" -->
                     <el-table-column label="隐患行为">
                       <template slot-scope="scope">
                         <span style="margin-left: 10px;color:red;">{{
@@ -119,9 +118,6 @@
           </ul>
         </div>
         <div class="secur">
-          <!-- <p class="p">威胁因素</p> -->
-          <!-- <hr /> -->
-          <!-- <div class="data"> -->
           <el-table :data="typeData2" border style="width: 100%">
             <el-table-column label="威胁因素" align="center">
               <el-table-column label="威胁行为">
@@ -154,7 +150,6 @@
 </template>
 <script>
 import * as echarts from "echarts";
-// import { constants } from 'http';
 // 引入折线图组件
 export default {
   name: "Charts",
@@ -190,8 +185,14 @@ export default {
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = "得分(A)";
+          column.colSpan = 2;
           return;
         }
+        // if (index === 1) {
+        //   column.show = false;
+        //   console.log(column);
+        //   // columns.split(index, 1);
+        // }
         const values = data.map(item => Number(item[column.property]));
 
         if (!values.every(value => isNaN(value))) {
@@ -223,10 +224,11 @@ export default {
             sums[index] = 5;
           }
         } else {
-          sums[index] = " ";
+          sums[index] = "x";
         }
       });
 
+      sums[1] = sums[2];
       return sums;
     },
     // 饼图数据
