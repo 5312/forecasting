@@ -18,6 +18,12 @@
           class="ele-fluid ele-text-left"
         />
       </el-form-item>
+      <el-form-item label="类型:" prop="mongxing">
+        <el-radio v-model="form.mongxing" label="0">分析预测</el-radio>
+        <el-radio v-model="form.mongxing" label="1"
+          >风险评估</el-radio
+        ></el-form-item
+      >
       <el-form-item label="开始时间:" prop="time">
         <el-date-picker
           v-model="form.forecast_stime"

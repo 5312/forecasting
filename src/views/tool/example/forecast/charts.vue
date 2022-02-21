@@ -53,22 +53,26 @@
         <div class="secur">
           <p class="p">隐患因素</p>
           <hr />
-          <ul>
+          <ul id="table">
             <li v-for="(i, j) in typeData1" :key="j">
               <el-tag type="danger" class="name">{{ i.name }}</el-tag>
               <div class="data margin-left">
                 <el-table
+                  class="el-table"
                   :data="i.daData"
                   style="width: 100%"
-                  border
                   show-summary
+                  border
                   :summary-method="getSummaries"
+                  :row-style="{ background: '#fff' }"
+                  :cell-style="{ background: '#fff' }"
                 >
                   <el-table-column
                     prop="itemcate_cid"
                     label="排查内容"
                     width="180"
                     align="center"
+                    class-name="cols"
                   >
                     <template slot-scope="scope">
                       <span style="margin-left: 10px;margin:auto;">{{
@@ -80,6 +84,7 @@
                     prop="scoreTitle"
                     label="扣分项目"
                     width="180"
+                    align="center"
                   >
                     <template slot-scope="scope">
                       <span style="margin-left: 10px">{{
@@ -87,11 +92,12 @@
                       }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="Scoresum" label="扣分">
+                  <el-table-column prop="Scoresum" label="扣分" align="center">
                     <template slot-scope="scope">
-                      <span style="margin-left: 10px;color:red;">{{
-                        "-" + scope.row.Scoresum * 100 + "%"
-                      }}</span>
+                      <span
+                        style="margin-left: 10px;color:red;text-align:cener;"
+                        >{{ "-" + scope.row.Scoresum * 100 + "%" }}</span
+                      >
                     </template>
                   </el-table-column>
                 </el-table>
@@ -189,11 +195,7 @@ export default {
           column.colSpan = 2;
           return;
         }
-        // if (index === 1) {
-        //   column.show = false;
-        //   console.log(column);
-        //   // columns.split(index, 1);
-        // }
+
         const values = data.map(item => Number(item[column.property]));
 
         if (!values.every(value => isNaN(value))) {
@@ -277,13 +279,13 @@ export default {
     },
     // 饼图接口数据
     async pieData() {
-      await this.$http
-        .get("/forecast/infodata", {
+      const res = await this.$http.get("/forecast/infodata", {
+        params: {
           forecast_id: this.$route.query.data.id
-        })
-        .then(res => {
-          this.pData = res.data.data;
-        });
+        }
+      });
+      this.pData = res.data.data;
+      console.log(this.pData);
     },
     //安全资源数据
     async securData() {
@@ -437,7 +439,9 @@ export default {
     }
   }
 }
-
+::v-deep .el-table .el-table__footer-wrapper tbody td {
+  background: #fff !important;
+}
 .margin-left {
   margin-left: 15px;
 }

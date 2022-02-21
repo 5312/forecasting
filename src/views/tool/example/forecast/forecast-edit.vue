@@ -15,10 +15,6 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item v-for="(x, y) in typeData" :key="y" :name="y">
           <template slot="title">
-            <!-- {{ x.name }} -->
-            <!-- <i class="header-icon el-icon-info"></i> -->
-            <!-- <p id="score"></p>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
             <div>
               <p class="score">
                 R
@@ -114,13 +110,13 @@ export default {
   name: "ForecastEdit",
   components: {
     SafeStatus,
-    Manual,
+    Manual
   },
   props: {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object,
+    data: Object
   },
   data() {
     return {
@@ -130,44 +126,44 @@ export default {
           type: "selection",
           width: 45,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "id",
           label: "ID",
           width: 60,
           align: "center",
-          fixed: "left",
+          fixed: "left"
         },
         {
           prop: "title",
           label: "名称",
           align: "center",
-          minWidth: 200,
+          minWidth: 200
         },
         {
           prop: "sums",
           label: "数量",
           width: 180,
           align: "center",
-          slot: "scortNum",
+          slot: "scortNum"
         },
         {
           prop: "scoreTitle",
           label: "评价标准",
           width: 300,
-          align: "center",
+          align: "center"
         },
         {
           prop: "Score",
           label: "资源赋值(R)",
           align: "center",
-          minWidth: 120,
+          minWidth: 120
         },
         {
           prop: "Scoresum",
           label: "总赋值",
-          align: "center",
+          align: "center"
         },
         {
           columnKey: "action",
@@ -176,8 +172,8 @@ export default {
           align: "center",
           resizable: false,
           slot: "action",
-          fixed: "right",
-        },
+          fixed: "right"
+        }
       ],
       // 表单数据
       form: Object.assign({}, this.data),
@@ -187,15 +183,15 @@ export default {
           {
             required: true,
             message: "请输入安全分析预测标题",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
 
         forecastStime: [
-          { required: true, message: "请输入任务开始时间", trigger: "blur" },
+          { required: true, message: "请输入任务开始时间", trigger: "blur" }
         ],
 
-        sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       // 提交状态
       loading: false,
@@ -214,7 +210,7 @@ export default {
       score: 0,
       // 完成 cols
       colnums_all: [],
-      showhead: false,
+      showhead: false
     };
   },
   mounted() {},
@@ -234,7 +230,7 @@ export default {
       } else {
         this.typeData = [];
       }
-    },
+    }
   },
   computed: {},
   methods: {
@@ -243,7 +239,7 @@ export default {
       this.$http
         .put("/assetslibrary/upsums", {
           id: row.id,
-          sums: row.sums,
+          sums: row.sums
         })
         .then(() => {
           this.reload(y);
@@ -300,7 +296,7 @@ export default {
         code: 0,
         count: 0,
         data: parse,
-        msg: "操作成功",
+        msg: "操作成功"
       };
     },
     reload(i) {
@@ -353,8 +349,8 @@ export default {
     async index() {
       const res = await this.$http.get("/itemcate/list", {
         params: {
-          item_id: 1,
-        },
+          item_id: 1
+        }
       });
       if (res.data.code == 0) {
         let array = res.data.data;
@@ -364,14 +360,14 @@ export default {
             element.where = {
               forecast_id: this.form.id,
               itemcateid: element.id,
-              itemcatecid: null,
+              itemcatecid: null
             };
             // 模板接口
             const d = await this.$http.get("/configdata/list", {
               params: {
                 configId: element.id,
-                forecast_id: this.form.id,
-              },
+                forecast_id: this.form.id
+              }
             });
             element.temptlate = d.data.data;
             // 模板数据接口
@@ -387,14 +383,14 @@ export default {
     },
     /* 保存编辑 */
     save() {
-      this.$refs["form"].validate((valid) => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           this.loading = true;
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/forecast/update" : "/forecast/add",
             this.form
           )
-            .then((res) => {
+            .then(res => {
               this.loading = false;
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg);
@@ -407,7 +403,7 @@ export default {
                 this.$message.error(res.data.msg);
               }
             })
-            .catch((e) => {
+            .catch(e => {
               this.loading = false;
               this.$message.error(e.message);
             });
@@ -420,8 +416,8 @@ export default {
     updateVisible(value) {
       this.$emit("update:visible", value);
     },
-    removeBatch() {},
-  },
+    removeBatch() {}
+  }
 };
 </script>
 
