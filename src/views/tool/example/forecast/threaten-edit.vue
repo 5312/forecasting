@@ -13,13 +13,14 @@
       <div class="title">{{ form.title }}</div>
       <!--  -->
       <ele-pro-table
+        v-if="visible"
         :ref="'table'"
         :where="where"
         :columns="defaultColumns"
         datasource="/risklibrary/list"
         :toolbar="true"
-        height="calc(100vh -800px)"
         :page-size="150"
+        :parse-data="parseData_left"
       >
         <!-- 表头工具栏 -->
         <template slot="toolbar">
@@ -72,6 +73,11 @@
           </el-popconfirm>
         </template>
       </ele-pro-table>
+      <div class="flex j-end">
+        <div class="left">
+          得分(R):<span class="score">{{ nums }} </span>
+        </div>
+      </div>
       <!--  -->
     </el-form>
     <div slot="footer">
@@ -213,7 +219,8 @@ export default {
       score: 0,
       // 完成 cols
       colnums_all: [],
-      showheader: false
+      showheader: false,
+      nums: 0 // 总分
     };
   },
   watch: {
@@ -230,7 +237,30 @@ export default {
       }
     }
   },
+
   methods: {
+    parseData_left(data) {
+      let array = data.data;
+      if (array && array.length != 0) {
+        const values = array.map(item => Number(item.score));
+
+        if (!values.every(value => isNaN(value))) {
+          let nums = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          });
+          this.nums = nums;
+        }
+      }
+      if (!array) {
+        data.data = [];
+      }
+      return data;
+    },
     reload() {
       let table = `table`;
       this.$refs[table].reload({ page: 1 });
@@ -305,6 +335,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.flex {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+.j-end {
+  justify-content: flex-end;
+  .score {
+    font-size: 20px;
+    margin-left: 10px;
+    color: rgb(84 112 198);
+    font-weight: 800;
+  }
+}
+::v-deep .el-table .el-table__footer-wrapper tbody td {
+  background-color: #fff !important;
+}
+::v-deep .el-table__fixed-footer-wrapper tbody td {
+  background: #fff !important;
+}
 #score {
   float: right;
 }

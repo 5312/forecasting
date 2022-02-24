@@ -70,7 +70,7 @@
                   show-summary
                   :summary-method="getSummaries"
                   :row-style="{ background: '#fff' }"
-                  :cell-style="{ background: '#fff' }"
+                  :cell-style="needStyle"
                 >
                   <el-table-column
                     prop="itemcate_cid"
@@ -131,7 +131,6 @@
         </div>
         <div class="secur">
           <el-table
-
             :data="typeData2"
             border
             style="width: 100%;"
@@ -209,6 +208,18 @@ export default {
     });
   },
   methods: {
+    // 行样式
+    needStyle(column) {
+      let cellStyle;
+      switch (column.column.property) {
+        default:
+          cellStyle = { background: "#fff" };
+
+          break;
+      }
+      return cellStyle;
+    },
+    // 威胁因素 合计计算
     getSummaries_weixie(param) {
       const { columns, data } = param;
       const sums = [];
@@ -219,8 +230,9 @@ export default {
         }
         if (index === 1) {
           column.colSpan = 2;
+          // 防止data未null
+          if (!data) return;
           const values = data.map(item => Number(item["score"]));
-          // console.log(values);
           if (!values.every(value => isNaN(value))) {
             let array = values.reduce((prev, curr) => {
               const value = Number(curr);
@@ -235,23 +247,6 @@ export default {
             sums[index] = "";
           }
         }
-        // console.log(data);
-        // if (!data) return (sums[index] = "x");
-        // const values = data.map(item => Number(item[column.property]));
-
-        // if (!values.every(value => isNaN(value))) {
-        //   let sum_math = values.reduce((prev, curr) => {
-        //     const value = Number(curr);
-        //     if (!isNaN(value)) {
-        //       return prev + curr;
-        //     } else {
-        //       return prev;
-        //     }
-        //   }, 0);
-        //   sums[index] = sum_math;
-        // } else {
-        //   sums[index] = "";
-        // }
       });
       return sums;
     },
@@ -260,11 +255,12 @@ export default {
       const sums = [];
       columns.forEach((column, index) => {
         if (index === 0) {
-          sums[index] = "得分(A)";
+          let str = ` 得分(  A  ) `;
+
+          sums[index] = str;
           column.colSpan = 2;
           return;
         }
-        // console.log(data);
         if (!data) return (sums[index] = "x");
         const values = data.map(item => Number(item[column.property]));
 
@@ -278,8 +274,7 @@ export default {
             }
           }, 0);
 
-
-          sum_math = 1-sum_math;
+          sum_math = 1 - sum_math;
           if (sum_math >= 0.9) {
             sums[index] = 1;
           }
@@ -302,13 +297,11 @@ export default {
           sums[index] = "x";
         }
       });
-
       sums[1] = sums[2];
       return sums;
     },
     // 饼图数据
     drawPie() {
-      // let id = document.getElementById("pie");
       let Pie = echarts.getInstanceByDom(document.getElementById("pie"));
       if (Pie == null) {
         // 如果不存在，就进行初始化。
@@ -473,7 +466,7 @@ export default {
           let child = element.seData;
           for (let x = 0; x < child.length; x++) {
             const children = child[x];
-            r += children.Score*children.sums;
+            r += children.Score * children.sums;
           }
         }
       }
@@ -520,6 +513,7 @@ export default {
               }
             );
             element.daData = children_score.data.data;
+
             // 取隐患行为
             const childData = await this.$http.get(
               "/hiddendangerlibrary/list",
@@ -571,6 +565,7 @@ export default {
     margin-top: 20px;
     margin: 0 auto;
   }
+
   .tit {
     .secur {
       border: 1px solid #aaa;
@@ -590,15 +585,14 @@ export default {
         li {
           display: flex;
           justify-content: space-between;
-          .table_box {
-            // margin: 10px 0;
-          }
         }
         .j-end {
           justify-content: flex-end;
           .score {
             font-size: 20px;
             margin-left: 10px;
+            color: rgb(84 112 198);
+            font-weight: 800;
           }
         }
       }
@@ -607,6 +601,11 @@ export default {
 }
 ::v-deep .el-table .el-table__footer-wrapper tbody td {
   background: #fff !important;
+}
+::v-deep .el-table .el-table__footer-wrapper tbody td:nth-child(2) .cell {
+  font-size: 20px !important;
+  color: red;
+  font-weight: 800;
 }
 .margin-left {
   margin-left: 15px;

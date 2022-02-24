@@ -485,7 +485,27 @@ export default {
         const element = array[i];
         num += Number(element.Score);
       }
-      return Math.round(num * 100) / 100;
+      let sum_math = 1 - Math.round(num * 100) / 100;
+      let r = 0;
+      if (sum_math >= 0.9) {
+        r = 1;
+      }
+      if (sum_math < 0.9 && sum_math >= 0.8) {
+        r = 2;
+      }
+      if (sum_math < 0.8 && sum_math >= 0.7) {
+        r = 3;
+      }
+      if (sum_math < 0.7 && sum_math >= 0.6) {
+        r = 4;
+      }
+      if (sum_math < 0.6 && sum_math >= 0.5) {
+        r = 5;
+      }
+      if (sum_math < 0.5) {
+        r = 5;
+      }
+      return r;
     },
     /* 保存编辑 */
     save() {
