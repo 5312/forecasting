@@ -458,7 +458,7 @@ export default {
           element.children_score = num;
           // 1.id == c.pid 当前节点的子节点
           for (let i = 0; i < array.length; i++) {
-            const ele = array[i]; 
+            const ele = array[i];
             if (element.id == ele.pid) {
               element.children.push(ele);
               this.primData.push(ele);

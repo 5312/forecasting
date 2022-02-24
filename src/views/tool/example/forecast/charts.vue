@@ -131,9 +131,10 @@
         </div>
         <div class="secur">
           <el-table
+
             :data="typeData2"
             border
-            style="width: 100%"
+            style="width: 100%;"
             show-summary
             :summary-method="getSummaries_weixie"
           >
@@ -277,6 +278,8 @@ export default {
             }
           }, 0);
 
+
+          sum_math = 1-sum_math;
           if (sum_math >= 0.9) {
             sums[index] = 1;
           }
@@ -470,7 +473,7 @@ export default {
           let child = element.seData;
           for (let x = 0; x < child.length; x++) {
             const children = child[x];
-            r += children.Score;
+            r += children.Score*children.sums;
           }
         }
       }

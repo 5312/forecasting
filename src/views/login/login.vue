@@ -242,13 +242,13 @@ export default {
 
 /* 标题 */
 .log-title {
-  width: 36%;
+  width: 28%;
   height: 60px;
   display: flex;
   justify-content: space-between;
   position: relative;
   top: 200px;
-  left: 15%;
+  left: 10%;
 }
 .log-title img {
   width: 60px;

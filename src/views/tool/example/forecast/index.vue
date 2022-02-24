@@ -16,7 +16,7 @@
               <el-input
                 clearable
                 v-model="where.title"
-                placeholder="请输入安全分析预测标题"
+                placeholder="请输入预测标题"
               />
             </el-form-item>
           </el-col>
@@ -84,7 +84,12 @@
           </el-link>
         </template>
         <template slot="type" slot-scope="{ row }">
-          {{ row.mongxing == 0 ? "分析预测" : "风险评估" }}
+
+          <el-tag v-if="row.mongxing === 1" type="warning" size="small">风险评估</el-tag>
+          <el-tag v-if="row.mongxing === 0" type="success" size="small">分析预测</el-tag>
+
+
+          <!--{{ row.mongxing == 0 ? "分析预测" : "风险评估" }} -->
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
@@ -161,6 +166,7 @@
   </div>
 </template>
 
+
 <script>
 import ForecastEdit from "./forecast-edit";
 import DangerEdit from "./danger-edit";
@@ -196,42 +202,36 @@ export default {
 
         {
           prop: "title",
-          label: "安全分析预测标题",
+          label: "标题",
           showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center"
+          minWidth: 150,
+          align: "left"
         },
 
-        {
-          prop: "forecast_stime",
-          label: "任务开始时间",
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center"
-        },
-
-        {
-          prop: "chart",
-          label: "结果",
-          showOverflowTooltip: true,
-          minWidth: 100,
-          align: "center",
-          slot: "chart"
-        },
         {
           prop: "mongxing",
           label: "类型",
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 50,
           align: "center",
           slot: "type"
         },
+
+        {
+          prop: "chart",
+          label: "分析结果",
+          showOverflowTooltip: true,
+          minWidth: 40,
+          align: "center",
+          slot: "chart"
+        },
+
         {
           prop: "createTime",
           label: "创建时间",
           sortable: "custom",
           showOverflowTooltip: true,
-          minWidth: 160,
+          minWidth: 70,
           align: "center",
           formatter: (row, column, cellValue) => {
             return this.$util.toDateString(cellValue);
@@ -241,7 +241,7 @@ export default {
         {
           columnKey: "action",
           label: "操作",
-          width: 500,
+          width: 600,
           align: "center",
           resizable: false,
           slot: "action",

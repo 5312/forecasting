@@ -99,6 +99,7 @@
           >
             <!-- 表头工具栏 -->
             <template slot="toolbar">
+              <!--
               <el-button
                 :disabled="disabled"
                 size="small"
@@ -108,6 +109,7 @@
                 @click="openPrim(null)"
                 >扣分比例
               </el-button>
+              -->
               <el-button
                 :disabled="disabled"
                 size="small"

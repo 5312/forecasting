@@ -288,8 +288,8 @@ export default {
       for (let i = 0; i < this.typeData.length; i++) {
         const element = this.typeData[i];
         if (element.id == list_id) {
-          element.score = num;
-        }
+           element.score = num;
+         }
       }
       return {
         btype: 0,

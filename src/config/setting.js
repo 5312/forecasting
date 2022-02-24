@@ -49,15 +49,15 @@ export default {
   // 首页路径, null会自动获取
   homePath: null,
   // 顶栏是否显示主题设置按钮
-  showSetting: true,
+  showSetting: false,
   // 开启多页签是否缓存组件
-  tabKeepAlive: true,
+  tabKeepAlive: false,
   // 是否折叠侧边栏
   collapse: false,
   // 侧边栏风格: light(亮色), dark(暗色)
   sideStyle: 'dark',
   // 顶栏风格: light(亮色), dark(暗色), primary(主色)
-  headStyle: 'light',
+  headStyle: 'dark',
   // 标签页风格: default(默认), dot(圆点), card(卡片)
   tabStyle: 'default',
   // 布局风格: side(默认), top(顶栏菜单), mix(混合菜单)
@@ -71,7 +71,7 @@ export default {
   // 是否固定主体
   fixedBody: true,
   // logo是否自适应宽度
-  logoAutoSize: false,
+  logoAutoSize: true,
   // 内容区域宽度是否铺满
   bodyFull: true,
   // 是否开启多标签
