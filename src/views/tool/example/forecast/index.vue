@@ -84,10 +84,12 @@
           </el-link>
         </template>
         <template slot="type" slot-scope="{ row }">
-
-          <el-tag v-if="row.mongxing === 1" type="warning" size="small">风险评估</el-tag>
-          <el-tag v-if="row.mongxing === 0" type="success" size="small">分析预测</el-tag>
-
+          <el-tag v-if="row.mongxing === 1" type="warning" size="small"
+            >风险评估</el-tag
+          >
+          <el-tag v-if="row.mongxing === 0" type="success" size="small"
+            >分析预测</el-tag
+          >
 
           <!--{{ row.mongxing == 0 ? "分析预测" : "风险评估" }} -->
         </template>
@@ -165,7 +167,6 @@
     <forecast-add :data="current" :visible.sync="showAdd" @done="reload" />
   </div>
 </template>
-
 
 <script>
 import ForecastEdit from "./forecast-edit";
@@ -265,6 +266,11 @@ export default {
       // 图表弹窗
       showChart: false
     };
+  },
+  activated() {
+    this.$nextTick(() => {
+      this.$refs.table.doLayout();
+    });
   },
   methods: {
     /* 刷新表格 */
