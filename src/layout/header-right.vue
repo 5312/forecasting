@@ -6,26 +6,26 @@
       <i :class="fullscreen ? 'el-icon-_screen-restore' : 'el-icon-_screen-full'"></i>
     </div>
     <!-- 语言切换 -->
-    <div class="ele-admin-header-tool-item">
-      <el-dropdown placement="bottom" @command="changeLanguage">
-        <i class="el-icon-_language"></i>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="en">
-            <span :class="{'ele-text-primary': language === 'en'}">English</span>
-          </el-dropdown-item>
-          <el-dropdown-item command="zh_CN">
-            <span :class="{'ele-text-primary': language === 'zh_CN'}">简体中文</span>
-          </el-dropdown-item>
-          <el-dropdown-item command="zh_TW">
-            <span :class="{'ele-text-primary': language === 'zh_TW'}">繁體中文</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </div>
+<!--    <div class="ele-admin-header-tool-item">-->
+<!--      <el-dropdown placement="bottom" @command="changeLanguage">-->
+<!--        <i class="el-icon-_language"></i>-->
+<!--        <el-dropdown-menu slot="dropdown">-->
+<!--          <el-dropdown-item command="en">-->
+<!--            <span :class="{'ele-text-primary': language === 'en'}">English</span>-->
+<!--          </el-dropdown-item>-->
+<!--          <el-dropdown-item command="zh_CN">-->
+<!--            <span :class="{'ele-text-primary': language === 'zh_CN'}">简体中文</span>-->
+<!--          </el-dropdown-item>-->
+<!--          <el-dropdown-item command="zh_TW">-->
+<!--            <span :class="{'ele-text-primary': language === 'zh_TW'}">繁體中文</span>-->
+<!--          </el-dropdown-item>-->
+<!--        </el-dropdown-menu>-->
+<!--      </el-dropdown>-->
+<!--    </div>-->
     <!-- 消息通知 -->
-    <div class="ele-admin-header-tool-item">
-      <ele-notice/>
-    </div>
+<!--    <div class="ele-admin-header-tool-item">-->
+<!--      <ele-notice/>-->
+<!--    </div>-->
     <!-- 用户信息 -->
     <div class="ele-admin-header-tool-item">
       <el-dropdown @command="onUserDropClick">
@@ -55,12 +55,14 @@
 </template>
 
 <script>
-import EleNotice from './notice';
+// import EleNotice from './notice';
 import {isFullscreen, toggleFullscreen} from 'ele-admin/packages/util';
 
 export default {
   name: 'EleHeaderRight',
-  components: {EleNotice},
+  components: {
+    // EleNotice
+  },
   emits: ['item-click', 'change-language'],
   props: {
     // 是否显示打开设置抽屉按钮
