@@ -72,7 +72,7 @@ export default {
       document: {_name: '案卷調整'},
       choose: {_name: '批量選擇'},
     },
-    'http://www.ydeshui.com': {_name: '獲取授權'}
+    // 'http://www.ydeshui.com': {_name: '獲取授權'}
   },
   layout: {
     home: '主頁',

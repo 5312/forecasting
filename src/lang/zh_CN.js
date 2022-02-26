@@ -73,7 +73,7 @@ export default {
       document: {_name: '案卷调整'},
       choose: {_name: '批量选择'},
     },
-    'http://www.ydeshui.com': {_name: '获取授权'}
+    // 'http://www.ydeshui.com': {_name: '获取授权'}
   },
   // 主框架
   layout: {

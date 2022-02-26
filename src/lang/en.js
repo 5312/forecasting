@@ -72,7 +72,7 @@ export default {
       document: {_name: 'Document'},
       choose: {_name: 'Choose'},
     },
-    'http://www.ydeshui.com': {_name: 'Authorization'}
+    // 'http://www.ydeshui.com': {_name: 'Authorization'}
   },
   layout: {
     home: 'Home',
