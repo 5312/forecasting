@@ -7,6 +7,76 @@
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= process.env.VUE_APP_NAME %></title>
   </head>
+  <script type="text/javascript">
+    // 获取浏览器版本
+    function browserVersion() {
+      var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+      var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+      var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //Edge浏览器
+      var isFirefox = userAgent.indexOf("Firefox") > -1; //Firefox浏览器
+      var isOpera = userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1; //Opera浏览器
+      var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Edge") == -1 && userAgent.indexOf("OPR") == -1; //Chrome浏览器
+      var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1 && userAgent.indexOf("Edge") == -1 && userAgent.indexOf("OPR") == -1; //Safari浏览器
+      if (isIE) {
+        var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+        reIE.test(userAgent);
+        var fIEVersion = parseFloat(RegExp["$1"]);
+        if (fIEVersion == 7) {
+          return 'IE:7';
+        } else if (fIEVersion == 8) {
+          return 'IE:8';
+        } else if (fIEVersion == 9) {
+          return 'IE:9';
+        } else if (fIEVersion == 10) {
+          return 'IE:10';
+        } else {
+          return 'IE:6'; //IE版本<7
+        }
+      } else if (isIE11) {
+        return 'IE:11';
+      } else if (isEdge) {
+        return 'Edge:' + userAgent.split('Edge/')[1].split('.')[0];
+      } else if (isFirefox) {
+        return 'Firefox:' + userAgent.split('Firefox/')[1].split('.')[0];
+      } else if (isOpera) {
+        return 'Opera:' + userAgent.split('OPR/')[1].split('.')[0];
+      } else if (isChrome) {
+        return 'Chrome:' + userAgent.split('Chrome/')[1].split('.')[0];
+      } else if (isSafari) {
+        return 'Safari:'; + userAgent.split('Safari/')[1].split('.')[0];
+      } else {
+        return -1; //不是ie浏览器
+      }
+    }
+    (function(window) {
+      var limitObj = {
+        // 'IE': 9,
+        'Edge': 79,
+        'Firefox': 78,
+        'Opera': 45,
+        'Chrome': 64,
+        'Safari': 12
+      }
+      var browserVersionStr = browserVersion().split(':');
+      var name = browserVersionStr[0];
+      var version = browserVersionStr[1];
+      console.log(browserVersionStr, name, version)
+      var theUA = window.navigator.userAgent.toLowerCase();
+      if (!limitObj[name] || limitObj[name] && version < limitObj[name]) {
+        var str = "当前浏览器版本较低，部分页面效果无法完全展示。<br>" +
+          "建议：<br/>如果使用的是双核浏览器（搜狗、360、QQ、火绒、猎豹等）,可以尝试切换到“极速模式”访问。<br/>" +
+          // "2、建议升级到高版本浏览器，<br/>" +
+          "如果以上建议都不可行，可下载安装系统中的任一高版本浏览器并使用 :";
+        var str2 = "<a href='<%= BASE_URL %>static/EdgeSetup.exe' target='_blank' style='color:blue;'>下载 Microsoft Edge</a> "
+          + "<a href='<%= BASE_URL %>static/ChromeSetup64.exe' target='_blank' style='color:blue;'>下载 Google Chrome</a>";
+        document.writeln("<pre style='text-align:center;color:#fff;background-color:#3878AC; height:100%;border:0;position:fixed;top:0;left:0;width:100%;z-index:1234;line-height:40px;'>" +
+          "<h2 style='padding-top:200px;margin:0'><strong>" + str + "<br/></strong></h2><h2>" +
+          str2);
+        document.execCommand("Stop");
+      };
+    })(window);
+  </script>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
