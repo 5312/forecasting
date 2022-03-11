@@ -62,9 +62,9 @@ export default {
     // 是否折叠侧边栏
     collapse: false,
     // 侧边栏风格: light(亮色), dark(暗色)
-    sideStyle: "dark",
+    sideStyle: "light",
     // 顶栏风格: light(亮色), dark(暗色), primary(主色)
-    headStyle: "dark",
+    headStyle: "primary",
     // 标签页风格: default(默认), dot(圆点), card(卡片)
     tabStyle: "default",
     // 布局风格: side(默认), top(顶栏菜单), mix(混合菜单)
