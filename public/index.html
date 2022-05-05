@@ -65,11 +65,12 @@
       var theUA = window.navigator.userAgent.toLowerCase();
       if (!limitObj[name] || limitObj[name] && version < limitObj[name]) {
         var str = "当前浏览器版本较低，部分页面效果无法完全展示。<br>" +
-          "建议：<br/>如果使用的是双核浏览器（搜狗、360、QQ、火绒、猎豹等）,可以尝试切换到“极速模式”访问。<br/>" +
+          "建议：<br/>如果使用的是双核浏览器（搜狗、QQ、360、火绒、猎豹等）,可以尝试切换到“极速模式”访问。<br/>" +
           // "2、建议升级到高版本浏览器，<br/>" +
           "如果以上建议都不可行，可下载安装系统中的任一高版本浏览器并使用 :";
-        var str2 = "<a href='<%= BASE_URL %>static/EdgeSetup.exe' target='_blank' style='color:blue;'>下载 Microsoft Edge</a> "
-          + "<a href='<%= BASE_URL %>static/ChromeSetup64.exe' target='_blank' style='color:blue;'>下载 Google Chrome</a>";
+        var str2 = "<a href='<%= BASE_URL %>static/搜狗浏览器安装包_11.0.1.34700_0000.exe' target='_blank' style='color:blue;'>下载 搜狗浏览器</a> "
+          + "<br/><a href='<%= BASE_URL %>static/QQ浏览器安装包_QB10_10026022.exe' target='_blank' style='color:blue;'>下载 QQ浏览器</a>"
+          + "<br/><a href='<%= BASE_URL %>static/360浏览器安装包_13.1.5360.0.exe' target='_blank' style='color:blue;'>下载 360浏览器</a>";
         document.writeln("<pre style='text-align:center;color:#fff;background-color:#3878AC; height:100%;border:0;position:fixed;top:0;left:0;width:100%;z-index:1234;line-height:40px;'>" +
           "<h2 style='padding-top:200px;margin:0'><strong>" + str + "<br/></strong></h2><h2>" +
           str2);
