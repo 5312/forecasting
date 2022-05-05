@@ -37,8 +37,7 @@ export default {
                 // 角色和权限信息, 需要为string数组类型
                 roles: res.data.roles ? res.data.roles.map(d => d.code) : [],
                 authorities: res.data.authorities ?
-                    res.data.authorities.map(d => d.permission) :
-                    []
+                    res.data.authorities.map(d => d.permission) : []
             });
         }
         return result;
@@ -62,7 +61,7 @@ export default {
     // 是否折叠侧边栏
     collapse: false,
     // 侧边栏风格: light(亮色), dark(暗色)
-    sideStyle: "light",
+    sideStyle: "dark",
     // 顶栏风格: light(亮色), dark(暗色), primary(主色)
     headStyle: "primary",
     // 标签页风格: default(默认), dot(圆点), card(卡片)
