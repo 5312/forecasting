@@ -72,7 +72,7 @@
                 </el-breadcrumb>
               </div>
             </el-row>
-            <el-row>
+            <!-- <el-row>
               <div class="deduct">
                 <p>
                   <span>评价标准：</span>
@@ -85,7 +85,7 @@
                   }}</span>
                 </p>
               </div>
-            </el-row>
+            </el-row> -->
           </el-form>
           <!-- 数据表格 -->
           <ele-pro-table
