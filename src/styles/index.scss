@@ -60,3 +60,7 @@ $--ele-font-path: "~ele-admin/packages/style/fonts";
 .ele-admin-sidebar .el-scrollbar__wrap {
     background: url(../assets/background-1.31e3a0ac.png) no-repeat!important;
 }
+
+.ele-admin-sidebar .el-scrollbar__wrap li {
+    color: #fff !important;
+}
