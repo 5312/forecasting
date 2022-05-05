@@ -44,7 +44,7 @@
 
       <el-form-item label="隐患行为:" prop="title">
         <el-autocomplete
-          style="width:100%;"
+          style="width: 100%"
           popper-class="my-autocomplete"
           v-model="form.title"
           :fetch-suggestions="querySearch"
@@ -129,12 +129,13 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  data() {
+  data () {
     return {
       // 表单数据
       form: Object.assign(
         {
-          score_id: ""
+          score_id: "",
+          sum: 1
         },
         this.data
       ),
@@ -185,63 +186,63 @@ export default {
       ],
       current: null,
       popover: false
-    };
+    }
   },
   watch: {
-    current(n) {
-      this.form.score_id = n.id;
+    current (n) {
+      this.form.score_id = n.id
     },
-    data() {
-      let sort = this.data.sort ? this.data.sort : 0;
+    data () {
+      let sort = this.data.sort ? this.data.sort : 0
       if (this.data.isUpdate) {
-        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
-        this.isUpdate = true;
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data)
+        this.isUpdate = true
       } else {
-        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
-        this.isUpdate = false;
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data)
+        this.isUpdate = false
       }
     }
   },
   computed: {
-    where() {
+    where () {
       let obj = {
         itemcate_id: "",
         itemcate_cid: ""
-      };
-      if (this.data) {
-        obj.itemcate_id = this.data.itemcate_id;
-        obj.itemcate_cid = this.data.itemcate_cid;
       }
-      return obj;
+      if (this.data) {
+        obj.itemcate_id = this.data.itemcate_id
+        obj.itemcate_cid = this.data.itemcate_cid
+      }
+      return obj
     },
     // 赋值ID显示
-    setId() {
-      let val = this.form.score_id * 1;
-      let title = "";
-      if (!this.table_data) return;
+    setId () {
+      let val = this.form.score_id * 1
+      let title = ""
+      if (!this.table_data) return
       if (typeof val == "number") {
-        if (!this.table_data) return "";
+        if (!this.table_data) return ""
         this.table_data.forEach(obj => {
           if (Number(obj.id) == val) {
-            title = obj.title;
+            title = obj.title
           }
-        });
+        })
       }
-      return title;
+      return title
     }
   },
   methods: {
     /* 标题 -- 威胁行为库 */
-    querySearch(queryString, cb) {
+    querySearch (queryString, cb) {
       this.danger_do().then(res => {
-        cb(res);
-      });
+        cb(res)
+      })
     },
-    handleSelect(item) {
-      this.form.title = item.title;
+    handleSelect (item) {
+      this.form.title = item.title
     },
     /* 隐患行为 */
-    async danger_do() {
+    async danger_do () {
       const res = await this.$http.get("/hiddendangeraction/list", {
         params: {
           itemcate_id: this.data.itemcate_id,
@@ -249,49 +250,49 @@ export default {
           page: "1",
           limit: "100"
         }
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      return data;
+      })
+      if (res.data.code != 0) return
+      let data = res.data.data
+      return data
     },
-    done(res) {
-      this.table_data = res.data;
-      this.popover = false;
+    done (res) {
+      this.table_data = res.data
+      this.popover = false
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/hiddendanger/update" : "/hiddendanger/add",
             this.form
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = { score_id: "" };
+                  this.form = { score_id: "" }
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     }
   }
 };
