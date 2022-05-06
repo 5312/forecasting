@@ -6,13 +6,10 @@
     :lock-scroll="false"
     :destroy-on-close="true"
     custom-class="ele-dialog-form"
-    :title="isUpdate?'修改会员':'添加会员'"
-    @update:visible="updateVisible">
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="rules"
-      label-width="82px">
+    :title="isUpdate ? '修改会员' : '添加会员'"
+    @update:visible="updateVisible"
+  >
+    <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-form-item label="会员头像：">
         <uploadImage :limit="1" v-model="form.avatar"></uploadImage>
       </el-form-item>
@@ -21,19 +18,20 @@
           <el-form-item label="会员姓名:" prop="realname">
             <el-input
               clearable
-              :maxlength="20"
               v-model="form.realname"
-              placeholder="请输入会员姓名"/>
+              placeholder="请输入会员姓名"
+            />
           </el-form-item>
           <el-form-item label="性别:" prop="gender">
             <el-select
               clearable
               class="ele-block"
               v-model="form.gender"
-              placeholder="请选择性别">
-              <el-option label="男" :value="1"/>
-              <el-option label="女" :value="2"/>
-              <el-option label="保密" :value="3"/>
+              placeholder="请选择性别"
+            >
+              <el-option label="男" :value="1" />
+              <el-option label="女" :value="2" />
+              <el-option label="保密" :value="3" />
             </el-select>
           </el-form-item>
           <el-form-item label="设备类型:" prop="device">
@@ -41,12 +39,13 @@
               clearable
               class="ele-block"
               v-model="form.device"
-              placeholder="请选择设备类型">
-              <el-option label="苹果" :value="1"/>
-              <el-option label="安卓" :value="2"/>
-              <el-option label="WAP站" :value="3"/>
-              <el-option label="PC站" :value="4"/>
-              <el-option label="后台" :value="5"/>
+              placeholder="请选择设备类型"
+            >
+              <el-option label="苹果" :value="1" />
+              <el-option label="安卓" :value="2" />
+              <el-option label="WAP站" :value="3" />
+              <el-option label="PC站" :value="4" />
+              <el-option label="后台" :value="5" />
             </el-select>
           </el-form-item>
           <el-form-item label="所在城市:" prop="city">
@@ -56,11 +55,11 @@
               class="ele-fluid"
               placeholder="请选择省市区"
               :options="regions.cityData"
-              popper-class="ele-pop-wrap-higher"/>
+              popper-class="ele-pop-wrap-higher"
+            />
           </el-form-item>
           <el-form-item label="状态:" prop="status">
-            <el-radio-group
-              v-model="form.status">
+            <el-radio-group v-model="form.status">
               <el-radio :label="1">在用</el-radio>
               <el-radio :label="2">禁用</el-radio>
             </el-radio-group>
@@ -68,19 +67,19 @@
           <el-form-item label="会员账号:" prop="username">
             <el-input
               clearable
-              :maxlength="20"
               :disabled="isUpdate"
               v-model="form.username"
-              placeholder="请输入会员账号"/>
+              placeholder="请输入会员账号"
+            />
           </el-form-item>
         </el-col>
         <el-col :sm="12">
           <el-form-item label="会员昵称:" prop="nickname">
             <el-input
               clearable
-              :maxlength="20"
               v-model="form.nickname"
-              placeholder="请输入会员昵称"/>
+              placeholder="请输入会员昵称"
+            />
           </el-form-item>
           <el-form-item label="出生日期:" prop="birthday">
             <el-date-picker
@@ -88,19 +87,21 @@
               class="ele-fluid"
               v-model="form.birthday"
               value-format="yyyy-MM-dd"
-              placeholder="请选择出生日期"/>
+              placeholder="请选择出生日期"
+            />
           </el-form-item>
           <el-form-item label="会员来源:" prop="source">
             <el-select
               clearable
               class="ele-block"
               v-model="form.source"
-              placeholder="请选择会员来源">
-              <el-option label="APP注册" :value="1"/>
-              <el-option label="小程序注册" :value="2"/>
-              <el-option label="网站注册" :value="3"/>
-              <el-option label="WAP站注册" :value="4"/>
-              <el-option label="马甲会员" :value="5"/>
+              placeholder="请选择会员来源"
+            >
+              <el-option label="APP注册" :value="1" />
+              <el-option label="小程序注册" :value="2" />
+              <el-option label="网站注册" :value="3" />
+              <el-option label="WAP站注册" :value="4" />
+              <el-option label="马甲会员" :value="5" />
             </el-select>
           </el-form-item>
           <el-form-item label="详细地址:" prop="address">
@@ -108,7 +109,8 @@
               clearable
               :maxlength="150"
               v-model="form.address"
-              placeholder="请输入详细地址"/>
+              placeholder="请输入详细地址"
+            />
           </el-form-item>
           <el-form-item label="会员等级:" prop="memberLevel">
             <el-select
@@ -117,18 +119,22 @@
               v-model="form.memberLevel"
               size="small"
               placeholder="-请选择会员等级-"
-              class="ele-block">
-              <el-option v-for="item in memberLevelList" :key="item.id" :label="item.name" :value="item.id"/>
+              class="ele-block"
+            >
+              <el-option
+                v-for="item in memberLevelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="登录密码:"
-            prop="password">
+          <el-form-item label="登录密码:" prop="password">
             <el-input
               show-password
-              :maxlength="20"
               v-model="form.password"
-              placeholder="请输入登录密码"/>
+              placeholder="请输入登录密码"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -139,7 +145,8 @@
           type="textarea"
           :maxlength="200"
           v-model="form.intro"
-          placeholder="请输入个人简介"/>
+          placeholder="请输入个人简介"
+        />
       </el-form-item>
       <el-form-item label="个人签名:">
         <el-input
@@ -148,17 +155,14 @@
           type="textarea"
           :maxlength="200"
           v-model="form.signature"
-          placeholder="请输入个人签名"/>
+          placeholder="请输入个人签名"
+        />
       </el-form-item>
     </el-form>
     <div slot="footer">
-      <el-button
-        @click="updateVisible(false)">取消
-      </el-button>
-      <el-button
-        type="primary"
-        :loading="loading"
-        @click="save">保存
+      <el-button @click="updateVisible(false)">取消 </el-button>
+      <el-button type="primary" :loading="loading" @click="save"
+        >保存
       </el-button>
     </div>
   </el-dialog>
@@ -166,7 +170,7 @@
 
 <script>
 import uploadImage from '@/components/uploadImage'
-import regions from 'ele-admin/packages/regions';
+import regions from 'ele-admin/packages/regions'
 
 export default {
   name: 'MemberEdit',
@@ -176,8 +180,8 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  components: {uploadImage},
-  data() {
+  components: { uploadImage },
+  data () {
     return {
       // 省市区数据
       regions: regions,
@@ -188,7 +192,7 @@ export default {
       // 选中的省
       province: [],
       // 表单数据
-      form: Object.assign({status: 1, gender: 1}, this.data),
+      form: Object.assign({ status: 1, gender: 1 }, this.data),
       // 表单验证规则
       rules: {
         username: [
@@ -198,51 +202,51 @@ export default {
             trigger: 'blur',
             validator: (rule, value, callback) => {
               if (!value) {
-                return callback(new Error('请输入会员账号'));
+                return callback(new Error('请输入会员账号'))
               }
               this.$http.get('/member/checkUser?username=' + value).then(res => {
                 if (res.data.code !== 0 || !res.data.data.length) {
-                  return callback();
+                  return callback()
                 }
                 if (this.isUpdate && res.data.data[0].username === this.data.username) {
-                  return callback();
+                  return callback()
                 }
-                callback(new Error('账号已经存在'));
+                callback(new Error('账号已经存在'))
               }).catch(() => {
-                callback();
-              });
+                callback()
+              })
             }
           }
         ],
         realname: [
-          {required: true, message: '请输入会员姓名', trigger: 'blur'}
+          { required: true, message: '请输入会员姓名', trigger: 'blur' }
         ],
         nickname: [
-          {required: true, message: '请输入会员名', trigger: 'blur'}
+          { required: true, message: '请输入会员名', trigger: 'blur' }
         ],
         gender: [
-          {required: true, message: '请选择性别', trigger: 'blur'}
+          { required: true, message: '请选择性别', trigger: 'blur' }
         ],
         birthday: [
-          {required: true, message: '请选择出生日期', trigger: 'blur'}
+          { required: true, message: '请选择出生日期', trigger: 'blur' }
         ],
         device: [
-          {required: true, message: '请选择设备类型', trigger: 'blur'}
+          { required: true, message: '请选择设备类型', trigger: 'blur' }
         ],
         source: [
-          {required: true, message: '请选择注册来源', trigger: 'blur'}
+          { required: true, message: '请选择注册来源', trigger: 'blur' }
         ],
         city: [
-          {required: true, message: '请选择省市区', trigger: 'blur'}
+          { required: true, message: '请选择省市区', trigger: 'blur' }
         ],
         status: [
-          {required: true, message: '请选择状态', trigger: 'blur'}
+          { required: true, message: '请选择状态', trigger: 'blur' }
         ],
         memberLevel: [
-          {required: true, message: '请选择会员等级', trigger: 'blur'}
+          { required: true, message: '请选择会员等级', trigger: 'blur' }
         ],
         password: [
-          {required: true, pattern: /^[\S]{5,18}$/, message: '密码必须为5-18位非空白字符', trigger: 'blur'}
+          { required: true, pattern: /^[\S]{5,18}$/, message: '密码必须为5-18位非空白字符', trigger: 'blur' }
         ]
       },
       // 提交状态
@@ -251,78 +255,78 @@ export default {
       isUpdate: false,
       // 会员等级列表
       memberLevelList: [],
-    };
+    }
   },
   watch: {
-    data() {
+    data () {
       if (this.data) {
         this.form = Object.assign({}, this.data, {
           // 清空密码
           password: "",
-        });
+        })
         // 取值赋予城市组件
-        this.city = this.data.city;
-        this.isUpdate = true;
+        this.city = this.data.city
+        this.isUpdate = true
       } else {
-        this.form = {};
-        this.isUpdate = false;
+        this.form = {}
+        this.isUpdate = false
         // 清空省市区控件
-        this.city = [];
+        this.city = []
       }
     }
   },
-  mounted() {
+  mounted () {
     // 获取职级列表
-    this.getMemberLevelList();
+    this.getMemberLevelList()
   },
   methods: {
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           // 城市数据处理
           this.form = Object.assign({}, this.form, {
             city: this.city
-          });
+          })
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/member/update' : '/member/add', this.form).then(res => {
-            this.loading = false;
+            this.loading = false
             if (res.data.code === 0) {
-              this.$message({type: 'success', message: res.data.msg});
+              this.$message({ type: 'success', message: res.data.msg })
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {}
               }
-              this.updateVisible(false);
-              this.$emit('done');
+              this.updateVisible(false)
+              this.$emit('done')
             } else {
-              this.$message.error(res.data.msg);
+              this.$message.error(res.data.msg)
             }
           }).catch(e => {
-            this.loading = false;
-            this.$message.error(e.message);
-          });
+            this.loading = false
+            this.$message.error(e.message)
+          })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit('update:visible', value);
+    updateVisible (value) {
+      this.$emit('update:visible', value)
     },
     /**
      * 获取会员等级列表
      */
-    getMemberLevelList() {
+    getMemberLevelList () {
       this.$http.get('/memberlevel/getMemberLevelList').then(res => {
         if (res.data.code === 0) {
-          this.memberLevelList = res.data.data;
+          this.memberLevelList = res.data.data
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch(e => {
-        this.$message.error(e.message);
-      });
+        this.$message.error(e.message)
+      })
     }
   }
 }

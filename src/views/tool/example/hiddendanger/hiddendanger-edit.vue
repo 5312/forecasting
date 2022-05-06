@@ -57,7 +57,7 @@
           </template>
         </el-autocomplete>
         <!-- <el-input
-          :maxlength="20"
+         
           v-model="form.title"
           placeholder="请输入隐患标题"
           clearable
@@ -92,7 +92,7 @@
           <el-input
             v-loading="popover"
             slot="reference"
-            :maxlength="20"
+           
             readonly=""
             v-model="setId"
             placeholder="请选择评价标准"
@@ -103,7 +103,7 @@
 
       <el-form-item label="排序:" prop="sort">
         <el-input
-          :maxlength="20"
+         
           v-model="form.sort"
           placeholder="请输入排序"
           clearable

@@ -28,7 +28,7 @@
         </el-autocomplete>
         <!-- <el-input
 
-          :maxlength="20"
+         
           v-model="form.title"
           placeholder="请输入标题"
           clearable
@@ -82,7 +82,7 @@
 
       <el-form-item label="引发隐患id:" prop="yinhuan_ids">
         <el-input
-          :maxlength="20"
+         
           v-model="form.yinhuan_ids"
           placeholder="请输入引发隐患id"
           clearable
@@ -91,7 +91,7 @@
 
       <el-form-item label="威胁安全资源id:" prop="ziyuan_ids">
         <el-input
-          :maxlength="20"
+         
           v-model="form.ziyuan_ids"
           placeholder="请输入威胁安全资源id"
           clearable
@@ -170,12 +170,7 @@
       </el-form-item> -->
 
       <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
+        <el-input v-model="form.sort" placeholder="请输入排序" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -397,7 +392,8 @@ export default {
                 if (!this.isUpdate) {
                   this.form = {
                     yinhuan_ids: [],
-                    ziyuan_ids: []
+                    ziyuan_ids: [],
+                    sort: 0
                   }
                 }
                 this.updateVisible(false)

@@ -52,21 +52,11 @@
       </el-form-item>
 
       <el-form-item label="隐患行为:" prop="title">
-        <el-input
-          :maxlength="20"
-          v-model="form.title"
-          placeholder="请输入隐患行为"
-          clearable
-        />
+        <el-input v-model="form.title" placeholder="请输入隐患行为" clearable />
       </el-form-item>
 
       <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
+        <el-input v-model="form.sort" placeholder="请输入排序" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -88,7 +78,7 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  data() {
+  data () {
     return {
       // 表单数据
       form: Object.assign(
@@ -118,71 +108,71 @@ export default {
       options: [],
       lanmu: [],
       tow_row_arr: []
-    };
+    }
   },
   watch: {
     "form.itemcate_id": {
-      handler(e) {
-        this.lanmufunc(e);
+      handler (e) {
+        this.lanmufunc(e)
       }
     },
-    data() {
+    data () {
       if (this.data) {
-        let sort = this.data.sort ? this.data.sort : 0;
-        this.form = Object.assign({ sort: sort }, this.data);
-        this.isUpdate = true;
+        let sort = this.data.sort ? this.data.sort : 0
+        this.form = Object.assign({ sort: sort }, this.data)
+        this.isUpdate = true
       } else {
-        this.form = { sort: 0 };
-        this.isUpdate = false;
+        this.form = { sort: 0 }
+        this.isUpdate = false
       }
     }
   },
-  mounted() {
-    this.leibie();
+  mounted () {
+    this.leibie()
   },
   computed: {},
   methods: {
-    async lanmufunc(index) {
-      let array = this.tow_row_arr;
-      let arr = [];
+    async lanmufunc (index) {
+      let array = this.tow_row_arr
+      let arr = []
       for (let i = 0; i < array.length; i++) {
-        const element = array[i];
+        const element = array[i]
         if (element.pid == index) {
-          arr.push(element);
+          arr.push(element)
         }
       }
-      this.lanmu = arr;
+      this.lanmu = arr
     },
-    async leibie() {
+    async leibie () {
       const res = await this.$http.get("/itemcate/list", {
         params: {
           itemId: 2
         }
-      });
+      })
       if (res.data.code == 0) {
-        let piddata = res.data.data;
-        let data = piddata ? piddata : [];
-        this.options = this.getRootPid(data);
-        this.tow_row_arr = data;
+        let piddata = res.data.data
+        let data = piddata ? piddata : []
+        this.options = this.getRootPid(data)
+        this.tow_row_arr = data
       }
     },
     /* 通用方法 pid = 0  */
-    getRootPid(list) {
-      if (!list) return;
-      let array = [];
+    getRootPid (list) {
+      if (!list) return
+      let array = []
       for (let i = 0; i < list.length; i++) {
-        const element = list[i];
+        const element = list[i]
         if (element.pid == 0) {
-          array.push(element);
+          array.push(element)
         }
       }
-      return array;
+      return array
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate
               ? "/hiddendangeraction/update"
@@ -190,30 +180,32 @@ export default {
             this.form
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {
+                    sort: 0
+                  }
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     }
   }
 };

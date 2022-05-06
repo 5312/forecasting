@@ -38,7 +38,6 @@
           <el-input
             v-loading="popover"
             slot="reference"
-            :maxlength="20"
             readonly=""
             v-model="setId"
             placeholder="请选择评价标准"
@@ -66,7 +65,7 @@ export default {
     // 修改回显的数据
     data: Object,
   },
-  data() {
+  data () {
     return {
       // 表单数据
       form: Object.assign(
@@ -103,60 +102,60 @@ export default {
       current: null,
       popover: false,
       portion: [],
-    };
+    }
   },
   watch: {
-    current(n) {
-      this.form.score_id = n.id;
+    current (n) {
+      this.form.score_id = n.id
     },
-    data() {
-      let sort = this.data.sort ? this.data.sort : 0;
+    data () {
+      let sort = this.data.sort ? this.data.sort : 0
       if (this.data.isUpdate) {
-        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
-        this.isUpdate = true;
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data)
+        this.isUpdate = true
       } else {
-        this.Portion();
-        this.form = Object.assign({ score_id: "", sort: sort }, this.data);
-        this.isUpdate = false;
+        this.Portion()
+        this.form = Object.assign({ score_id: "", sort: sort }, this.data)
+        this.isUpdate = false
       }
     },
   },
   computed: {
-    where() {
+    where () {
       let obj = {
         itemcate_id: "",
         itemcate_cid: "",
-      };
-      if (this.data) {
-        obj.itemcate_id = this.data.itemcate_id;
-        obj.itemcate_cid = this.data.itemcate_cid;
       }
-      return obj;
+      if (this.data) {
+        obj.itemcate_id = this.data.itemcate_id
+        obj.itemcate_cid = this.data.itemcate_cid
+      }
+      return obj
     },
     // 赋值ID显示
-    setId() {
-      let val = this.form.score_id * 1;
-      let title = "";
-      if (!this.table_data) return;
+    setId () {
+      let val = this.form.score_id * 1
+      let title = ""
+      if (!this.table_data) return
       if (typeof val == "number") {
-        if (!this.table_data) return "";
+        if (!this.table_data) return ""
         this.table_data.forEach((obj) => {
           if (Number(obj.id) == val) {
-            title = obj.title;
+            title = obj.title
           }
-        });
+        })
       }
-      return title;
+      return title
     },
   },
   methods: {
-    done(res) {
-      this.table_data = res.data;
-      this.popover = false;
+    done (res) {
+      this.table_data = res.data
+      this.popover = false
     },
 
     // 显示弹框添加或修改
-    Portion() {
+    Portion () {
       this.$http
         .get("/hiddendangerscore/list", {
           params: {
@@ -165,23 +164,23 @@ export default {
           },
         })
         .then((res) => {
-          this.protion = res.data.data;
+          this.protion = res.data.data
           if (this.protion == null) {
-            this.isUpdate = false;
+            this.isUpdate = false
           } else {
-            this.isUpdate = true;
+            this.isUpdate = true
             for (let i = 0; i < this.protion.length; i++) {
-              const element = this.protion[i];
+              const element = this.protion[i]
               this.form.id = element.id
             }
           }
-        });
+        })
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$http[this.isUpdate ? "put" : "post"](
             this.isUpdate
               ? "/hiddendangerscore/update"
@@ -189,30 +188,30 @@ export default {
             this.form
           )
             .then((res) => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = { score_id: "" };
+                  this.form = { score_id: "" }
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch((e) => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     },
   },
 };

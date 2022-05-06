@@ -10,20 +10,10 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-form-item label="标题:" prop="title">
-        <el-input
-          :maxlength="20"
-          v-model="form.title"
-          placeholder="请输入标题"
-          clearable
-        />
+        <el-input v-model="form.title" placeholder="请输入标题" clearable />
       </el-form-item>
       <el-form-item label="数量:" prop="sums">
-        <el-input
-          :maxlength="20"
-          v-model="form.sums"
-          placeholder="请输入数量"
-          clearable
-        />
+        <el-input v-model="form.sums" placeholder="请输入数量" clearable />
       </el-form-item>
 
       <el-form-item label="评价标准:" prop="score_id">
@@ -50,7 +40,6 @@
           <el-input
             v-loading="popover"
             slot="reference"
-            :maxlength="20"
             readonly=""
             v-model="setId"
             placeholder="请选择评价标准"
@@ -82,12 +71,7 @@
       </el-form-item> -->
 
       <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
+        <el-input v-model="form.sort" placeholder="请输入排序" clearable />
       </el-form-item>
       <template slot="number" slot-scope="{}">
         <el-input-number
@@ -328,7 +312,9 @@ export default {
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {}
+                  this.form = {
+                    sort: 0
+                  }
                 }
                 this.updateVisible(false)
                 this.$emit("done")

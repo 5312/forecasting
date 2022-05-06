@@ -10,12 +10,7 @@
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-form-item label="标题:" prop="title">
-        <el-input
-          :maxlength="20"
-          v-model="form.title"
-          placeholder="请输入标题"
-          clearable
-        />
+        <el-input v-model="form.title" placeholder="请输入标题" clearable />
       </el-form-item>
 
       <!-- <el-form-item label="状态:" prop="status">
@@ -27,12 +22,7 @@
       </el-form-item> -->
 
       <el-form-item label="排序:" prop="sort">
-        <el-input
-          :maxlength="20"
-          v-model="form.sort"
-          placeholder="请输入排序"
-          clearable
-        />
+        <el-input v-model="form.sort" placeholder="请输入排序" clearable />
       </el-form-item>
     </el-form>
     <div slot="footer">
@@ -142,7 +132,9 @@ export default {
               if (res.data.code === 0) {
                 this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {}
+                  this.form = {
+                    sort: 0
+                  }
                 }
                 this.updateVisible(false)
                 this.$emit("done")

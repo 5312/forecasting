@@ -1,11 +1,7 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never" header="基本信息">
-      <el-form
-        ref="form"
-        :model="form"
-        :rules="rules"
-        label-width="82px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="82px">
         <el-form-item label="头像：">
           <uploadImage :limit="1" v-model="form.avatar"></uploadImage>
         </el-form-item>
@@ -14,19 +10,20 @@
             <el-form-item label="用户姓名:" prop="realname">
               <el-input
                 clearable
-                :maxlength="20"
                 v-model="form.realname"
-                placeholder="请输入用户姓名"/>
+                placeholder="请输入用户姓名"
+              />
             </el-form-item>
             <el-form-item label="性别:" prop="gender">
               <el-select
                 clearable
                 class="ele-block"
                 v-model="form.gender"
-                placeholder="请选择性别">
-                <el-option label="男" :value="1"/>
-                <el-option label="女" :value="2"/>
-                <el-option label="保密" :value="3"/>
+                placeholder="请选择性别"
+              >
+                <el-option label="男" :value="1" />
+                <el-option label="女" :value="2" />
+                <el-option label="保密" :value="3" />
               </el-select>
             </el-form-item>
             <el-form-item label="邮箱:" prop="email">
@@ -34,7 +31,8 @@
                 clearable
                 :maxlength="100"
                 v-model="form.email"
-                placeholder="请输入邮箱"/>
+                placeholder="请输入邮箱"
+              />
             </el-form-item>
             <el-form-item label="职级：" prop="levelId">
               <el-select
@@ -43,8 +41,14 @@
                 v-model="form.levelId"
                 size="small"
                 placeholder="-请选择职级-"
-                class="ele-block">
-                <el-option v-for="item in levelList" :key="item.id" :label="item.name" :value="item.id"/>
+                class="ele-block"
+              >
+                <el-option
+                  v-for="item in levelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="所属部门:" prop="deptId">
@@ -53,7 +57,16 @@
                 :options="deptList"
                 placeholder="请选择所属部门"
                 :defaultExpandLevel="3"
-                :normalizer="(d)=>{return { id: d.id, label: d.name,children:d.children||undefined }}"/>
+                :normalizer="
+                  (d) => {
+                    return {
+                      id: d.id,
+                      label: d.name,
+                      children: d.children || undefined,
+                    };
+                  }
+                "
+              />
             </el-form-item>
             <el-form-item label="所在城市:" prop="city">
               <el-cascader
@@ -62,7 +75,8 @@
                 class="ele-fluid"
                 placeholder="请选择省市区"
                 :options="regions.cityData"
-                popper-class="ele-pop-wrap-higher"/>
+                popper-class="ele-pop-wrap-higher"
+              />
             </el-form-item>
             <el-form-item label="排序号:" prop="sort">
               <el-input-number
@@ -70,16 +84,17 @@
                 v-model="form.sort"
                 placeholder="请输入排序号"
                 controls-position="right"
-                class="ele-fluid ele-text-left"/>
+                class="ele-fluid ele-text-left"
+              />
             </el-form-item>
           </el-col>
           <el-col :sm="12">
             <el-form-item label="用户昵称:" prop="nickname">
               <el-input
                 clearable
-                :maxlength="20"
                 v-model="form.nickname"
-                placeholder="请输入用户昵称"/>
+                placeholder="请输入用户昵称"
+              />
             </el-form-item>
             <el-form-item label="出生日期:" prop="birthday">
               <el-date-picker
@@ -87,14 +102,16 @@
                 class="ele-fluid"
                 v-model="form.birthday"
                 value-format="yyyy-MM-dd"
-                placeholder="请选择出生日期"/>
+                placeholder="请选择出生日期"
+              />
             </el-form-item>
             <el-form-item label="手机号:" prop="mobile">
               <el-input
                 clearable
                 :maxlength="11"
                 v-model="form.mobile"
-                placeholder="请输入手机号"/>
+                placeholder="请输入手机号"
+              />
             </el-form-item>
             <el-form-item label="岗位：" prop="positionId">
               <el-select
@@ -103,13 +120,18 @@
                 v-model="form.positionId"
                 size="small"
                 placeholder="-请选择岗位-"
-                class="ele-block">
-                <el-option v-for="item in positionList" :key="item.id" :label="item.name" :value="item.id"/>
+                class="ele-block"
+              >
+                <el-option
+                  v-for="item in positionList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="status">
-              <el-radio-group
-                v-model="form.status">
+              <el-radio-group v-model="form.status">
                 <el-radio :label="1">在用</el-radio>
                 <el-radio :label="2">禁用</el-radio>
               </el-radio-group>
@@ -119,7 +141,8 @@
                 clearable
                 :maxlength="150"
                 v-model="form.address"
-                placeholder="请输入详细地址"/>
+                placeholder="请输入详细地址"
+              />
             </el-form-item>
             <el-form-item label="角色:" prop="roleIds">
               <el-select
@@ -127,12 +150,14 @@
                 clearable
                 class="ele-block"
                 v-model="form.roleIds"
-                placeholder="请选择角色">
+                placeholder="请选择角色"
+              >
                 <el-option
                   v-for="item in roleList"
                   :key="item.id"
                   :value="item.id"
-                  :label="item.name"/>
+                  :label="item.name"
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -144,13 +169,12 @@
             type="textarea"
             :maxlength="200"
             v-model="form.intro"
-            placeholder="请输入个人简介"/>
+            placeholder="请输入个人简介"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button
-            type="primary"
-            @click="save"
-            :loading="loading">保存更改
+          <el-button type="primary" @click="save" :loading="loading"
+            >保存更改
           </el-button>
         </el-form-item>
       </el-form>
@@ -159,16 +183,16 @@
 </template>
 
 <script>
-import {setPageTab} from '@/utils/page-tab-util';
-import validate from 'ele-admin/packages/validate';
+import { setPageTab } from '@/utils/page-tab-util'
+import validate from 'ele-admin/packages/validate'
 import uploadImage from '@/components/uploadImage'
 import Treeselect from '@riophae/vue-treeselect' // 下拉树
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import regions from 'ele-admin/packages/regions';
+import regions from 'ele-admin/packages/regions'
 
 export default {
   name: 'SystemUserInfo',
-  data() {
+  data () {
     return {
       // 省市区数据
       regions: regions,
@@ -183,46 +207,46 @@ export default {
       // 表单验证规则
       rules: {
         realname: [
-          {required: true, message: '请输入用户姓名', trigger: 'blur'}
+          { required: true, message: '请输入用户姓名', trigger: 'blur' }
         ],
         nickname: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         gender: [
-          {required: true, message: '请选择性别', trigger: 'blur'}
+          { required: true, message: '请选择性别', trigger: 'blur' }
         ],
         birthday: [
-          {required: true, message: '请选择出生日期', trigger: 'blur'}
+          { required: true, message: '请选择出生日期', trigger: 'blur' }
         ],
         levelId: [
-          {required: true, message: '请选择职级', trigger: 'blur'}
+          { required: true, message: '请选择职级', trigger: 'blur' }
         ],
         positionId: [
-          {required: true, message: '请选择岗位', trigger: 'blur'}
+          { required: true, message: '请选择岗位', trigger: 'blur' }
         ],
         deptId: [
-          {required: true, message: '请选择部门', trigger: 'blur'}
+          { required: true, message: '请选择部门', trigger: 'blur' }
         ],
         status: [
-          {required: true, message: '请选择状态', trigger: 'blur'}
+          { required: true, message: '请选择状态', trigger: 'blur' }
         ],
         city: [
-          {required: true, message: '请选择省市区', trigger: 'blur'}
+          { required: true, message: '请选择省市区', trigger: 'blur' }
         ],
         sort: [
-          {required: true, message: '请输入排序号', trigger: 'blur'}
+          { required: true, message: '请输入排序号', trigger: 'blur' }
         ],
         roleIds: [
-          {required: true, message: '请选择角色', trigger: 'blur'}
+          { required: true, message: '请选择角色', trigger: 'blur' }
         ],
         email: [
-          {pattern: validate.email, message: '邮箱格式不正确', trigger: 'blur'}
+          { pattern: validate.email, message: '邮箱格式不正确', trigger: 'blur' }
         ],
         password: [
-          {required: true, pattern: /^[\S]{5,18}$/, message: '密码必须为5-18位非空白字符', trigger: 'blur'}
+          { required: true, pattern: /^[\S]{5,18}$/, message: '密码必须为5-18位非空白字符', trigger: 'blur' }
         ],
         mobile: [
-          {pattern: validate.phone, message: '手机号格式不正确', trigger: 'blur'}
+          { pattern: validate.phone, message: '手机号格式不正确', trigger: 'blur' }
         ]
       },
       // 提交状态
@@ -237,131 +261,131 @@ export default {
       positionList: [],
       // 部门列表
       deptList: [],
-    };
+    }
   },
-  components: {uploadImage, Treeselect},
-  mounted() {
-    this.query(this.$route.query.id);
-    this.queryRoles();  // 查询角色列表
-    this.getLevelList(); // 查询职级列表
-    this.getPositionList(); // 查询岗位列表
-    this.getDeptList(); // 查询部门列表
+  components: { uploadImage, Treeselect },
+  mounted () {
+    this.query(this.$route.query.id)
+    this.queryRoles()  // 查询角色列表
+    this.getLevelList() // 查询职级列表
+    this.getPositionList() // 查询岗位列表
+    this.getDeptList() // 查询部门列表
   },
   methods: {
     /* 查询用户信息 */
-    query(id) {
+    query (id) {
       if (!id) {
-        return;
+        return
       }
-      this.loading = true;
+      this.loading = true
       this.$http.get('/user/detail?id=' + id).then((res) => {
-        this.loading = false;
+        this.loading = false
         if (res.data.code === 0) {
           this.form = Object.assign({}, res.data.data, {
             roleIds: res.data.data.roleList.map(d => d.id)
-          });
+          })
           // 取值赋予城市组件
-          this.city = this.form.city;
-          this.isUpdate = true;
+          this.city = this.form.city
+          this.isUpdate = true
           // 修改页签标题
           setPageTab({
             fullPath: this.$route.fullPath,
             title: this.form.realname + '的详情'
-          });
+          })
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch((e) => {
-        this.loading = false;
-        this.$message.error(e.message);
-      });
+        this.loading = false
+        this.$message.error(e.message)
+      })
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           // 城市数据处理
           this.form = Object.assign({}, this.form, {
             city: this.city
-          });
+          })
           this.$http[this.isUpdate ? 'put' : 'post'](this.isUpdate ? '/user/update' : '/user/add', this.form).then(res => {
-            this.loading = false;
+            this.loading = false
             if (res.data.code === 0) {
-              this.$message({type: 'success', message: res.data.msg});
+              this.$message({ type: 'success', message: res.data.msg })
               if (!this.isUpdate) {
-                this.form = {};
+                this.form = {}
               }
             } else {
-              this.$message.error(res.data.msg);
+              this.$message.error(res.data.msg)
             }
           }).catch(e => {
-            this.loading = false;
-            this.$message.error(e.message);
-          });
+            this.loading = false
+            this.$message.error(e.message)
+          })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 查询角色列表 */
-    queryRoles() {
+    queryRoles () {
       this.$http.get('/role/getRoleList').then(res => {
         if (res.data.code === 0) {
-          this.roleList = res.data.data;
+          this.roleList = res.data.data
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch(e => {
-        this.$message.error(e.message);
-      });
+        this.$message.error(e.message)
+      })
     },
     /**
      * 获取职级列表
      */
-    getLevelList() {
+    getLevelList () {
       this.$http.get('/level/getLevelList').then(res => {
         if (res.data.code === 0) {
-          this.levelList = res.data.data;
+          this.levelList = res.data.data
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch(e => {
-        this.$message.error(e.message);
-      });
+        this.$message.error(e.message)
+      })
     },
     /**
      * 获取岗位列表
      */
-    getPositionList() {
+    getPositionList () {
       this.$http.get('/position/getPositionList').then(res => {
         if (res.data.code === 0) {
-          this.positionList = res.data.data;
+          this.positionList = res.data.data
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch(e => {
-        this.$message.error(e.message);
-      });
+        this.$message.error(e.message)
+      })
     },
     /**
      * 获取部门列表
      */
-    getDeptList() {
+    getDeptList () {
       this.$http.get('/dept/getDeptList').then(res => {
         if (res.data.code === 0) {
-          this.deptList = this.$util.toTreeData(res.data.data, 'id', 'pid');
+          this.deptList = this.$util.toTreeData(res.data.data, 'id', 'pid')
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       }).catch(e => {
-        this.$message.error(e.message);
-      });
+        this.$message.error(e.message)
+      })
     }
   },
   watch: {
-    $route() {
-      this.query(this.$route.query.id);
+    $route () {
+      this.query(this.$route.query.id)
     }
   }
 }
