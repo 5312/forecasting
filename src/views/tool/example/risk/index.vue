@@ -22,7 +22,7 @@
           </el-col>
 
           <!-- 状态：1在用 2停用 -->
-          <el-col :lg="6" :md="12">
+          <!--   <el-col :lg="6" :md="12">
             <el-form-item label="状态:">
               <el-select
                 clearable
@@ -35,7 +35,7 @@
                 <el-option label="停用" value="2" />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
 
           <el-col :lg="6" :md="12">
             <div class="ele-form-actions">

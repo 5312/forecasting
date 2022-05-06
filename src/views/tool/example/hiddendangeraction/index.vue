@@ -98,12 +98,12 @@
 </template>
 
 <script>
-import HiddendangeractionEdit from "./hiddendangeraction-edit";
+import HiddendangeractionEdit from "./hiddendangeraction-edit"
 
 export default {
   name: "SystemHiddendangeraction",
   components: { HiddendangeractionEdit },
-  data() {
+  data () {
     return {
       // 表格数据接口
       url: "/hiddendangeraction/list",
@@ -145,7 +145,7 @@ export default {
           prop: "title",
           label: "隐患行为",
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 400,
           align: "center"
         },
 
@@ -165,7 +165,7 @@ export default {
           minWidth: 160,
           align: "center",
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            return this.$util.toDateString(cellValue)
           }
         },
         {
@@ -176,7 +176,7 @@ export default {
           minWidth: 160,
           align: "center",
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            return this.$util.toDateString(cellValue)
           }
         },
         {
@@ -197,73 +197,73 @@ export default {
       current: null,
       // 是否显示编辑弹窗
       showEdit: false
-    };
+    }
   },
   methods: {
     /* 刷新表格 */
-    reload() {
-      this.$refs.table.reload({ page: 1, where: this.where });
+    reload () {
+      this.$refs.table.reload({ page: 1, where: this.where })
     },
     /* 重置搜索 */
-    reset() {
-      this.where = {};
-      this.reload();
+    reset () {
+      this.where = {}
+      this.reload()
     },
     /* 显示编辑 */
-    openEdit(row) {
-      this.current = row;
-      this.showEdit = true;
+    openEdit (row) {
+      this.current = row
+      this.showEdit = true
     },
     /* 删除 */
-    remove(row) {
-      const loading = this.$loading({ lock: true });
+    remove (row) {
+      const loading = this.$loading({ lock: true })
       this.$http
         .delete("/hiddendangeraction/delete/" + row.id)
         .then(res => {
-          loading.close();
+          loading.close()
           if (res.data.code === 0) {
-            this.$message.success(res.data.msg);
-            this.reload();
+            this.$message.success(res.data.msg)
+            this.reload()
           } else {
-            this.$message.error(res.data.msg);
+            this.$message.error(res.data.msg)
           }
         })
         .catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
+          loading.close()
+          this.$message.error(e.message)
+        })
     },
     /* 批量删除 */
-    removeBatch() {
+    removeBatch () {
       if (!this.selection.length) {
-        this.$message.error("请至少选择一条数据");
-        return;
+        this.$message.error("请至少选择一条数据")
+        return
       }
       this.$confirm("确定要删除选中的隐患行为库吗?", "提示", {
         type: "warning"
       })
         .then(() => {
-          const loading = this.$loading({ lock: true });
+          const loading = this.$loading({ lock: true })
           this.$http
             .delete(
               "/hiddendangeraction/delete/" +
-                this.selection.map(d => d.id).join(",")
+              this.selection.map(d => d.id).join(",")
             )
             .then(res => {
-              loading.close();
+              loading.close()
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
-                this.reload();
+                this.$message.success(res.data.msg)
+                this.reload()
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              loading.close();
-              this.$message.error(e.message);
-            });
+              loading.close()
+              this.$message.error(e.message)
+            })
         })
-        .catch(() => {});
+        .catch(() => { })
     }
   }
 };

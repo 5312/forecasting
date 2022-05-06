@@ -48,7 +48,7 @@
               </el-col>
 
               <!-- 状态：1在用 2停用 -->
-              <el-col :lg="6" :md="12">
+              <!--        <el-col :lg="6" :md="12">
                 <el-form-item label="状态:">
                   <el-select
                     clearable
@@ -61,7 +61,7 @@
                     <el-option label="停用" value="2" />
                   </el-select>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
 
               <el-col :lg="6" :md="12">
                 <div class="ele-form-actions">
@@ -218,12 +218,12 @@
 </template>
 
 <script>
-import AssetsEdit from "./assets-edit";
+import AssetsEdit from "./assets-edit"
 
 export default {
   name: "SystemAssets",
   components: { AssetsEdit },
-  data() {
+  data () {
     return {
       disabled: true,
       // 表格数据接口
@@ -250,7 +250,7 @@ export default {
         {
           columnKey: "selection",
           type: "selection",
-          width: 45,  
+          width: 45,
           align: "center",
           fixed: "left"
         },
@@ -320,74 +320,74 @@ export default {
       templateList: [],
       load: false,
       keyData: {}
-    };
+    }
   },
   watch: {
-    current_left(obj) {
+    current_left (obj) {
       if (obj.pid == 0) {
-        this.where.itemcate_id = obj.id;
-        this.where.itemcate_cid = "";
-        this.disabled = true;
+        this.where.itemcate_id = obj.id
+        this.where.itemcate_cid = ""
+        this.disabled = true
         // 面包屑
-        const array = this.left_data;
-        this.titlelist = [];
+        const array = this.left_data
+        this.titlelist = []
         for (let index = 0; index < array.length; index++) {
-          const element = array[index];
+          const element = array[index]
           if (element.id == this.where.itemcate_id) {
-            this.titlelist.push(element.name);
+            this.titlelist.push(element.name)
           }
         }
         //
       } else {
-        this.where.itemcate_id = obj.pid;
+        this.where.itemcate_id = obj.pid
 
-        this.where.itemcate_cid = obj.id;
-        this.disabled = false;
+        this.where.itemcate_cid = obj.id
+        this.disabled = false
         // 面包屑
-        const array = this.left_data;
-        this.titlelist = [obj.name];
+        const array = this.left_data
+        this.titlelist = [obj.name]
         for (let index = 0; index < array.length; index++) {
-          const element = array[index];
+          const element = array[index]
           if (element.id == obj.pid) {
-            this.titlelist.unshift(element.name);
+            this.titlelist.unshift(element.name)
           }
         }
         //
       }
 
-      this.reload();
+      this.reload()
     }
   },
-  mounted() {
-    this.index();
+  mounted () {
+    this.index()
   },
   computed: {
-    data() {
-      let array = this.result;
-      let endArray = [];
+    data () {
+      let array = this.result
+      let endArray = []
       for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        let item_id = element.item_id;
-        let itemcate_cid = element.itemcate_cid;
-        let itemcate_id = element.itemcate_id;
+        const element = array[index]
+        let item_id = element.item_id
+        let itemcate_cid = element.itemcate_cid
+        let itemcate_id = element.itemcate_id
         // 公共 值
-        let id = element.id;
-        let templateData = element.assets_json;
-        let title = element.title;
-        let scoreTitle = element.scoreTitle;
-        let scoresum = element.scoresum;
-        let sums = element.sums;
-        let score_id = element.score_id;
-        let sort = element.sort;
-        let Score = element.Score;
-        let Scoresum = element.Scoresum;
-        let create_time = element.create_time;
-        let update_time = element.update_time;
+        let id = element.id
+        let templateData = element.assets_json
+        let title = element.title
+        let scoreTitle = element.scoreTitle
+        let scoresum = element.scoresum
+        let sums = element.sums
+        let score_id = element.score_id
+        let sort = element.sort
+        let Score = element.Score
+        let Scoresum = element.Scoresum
+        let create_time = element.create_time
+        let update_time = element.update_time
         //
-        let jsonData = JSON.parse(templateData);
-        let listData = jsonData.data;
+        let jsonData = JSON.parse(templateData)
+        let listData = jsonData.data
         if (listData) {
-          let columns = {};
+          let columns = {}
           listData.forEach(obj => {
             Object.assign(columns, obj, {
               id,
@@ -404,47 +404,47 @@ export default {
               item_id,
               itemcate_cid,
               itemcate_id
-            });
-          });
-          endArray.push(columns);
+            })
+          })
+          endArray.push(columns)
         }
       }
 
-      return endArray;
+      return endArray
     }
   },
   methods: {
     /* 初始化数据 */
-    index() {
-      this.load = true;
+    index () {
+      this.load = true
       this.$http
         .get("/assets/list", {
           params: this.where
         })
         .then(res => {
-          let result = res.data.data;
+          let result = res.data.data
           if (result) {
-            this.load = false;
+            this.load = false
             // 重要
-            this.templateList = JSON.stringify(result[0]);
+            this.templateList = JSON.stringify(result[0])
 
-            let columns = result[0].templateList;
-            this.templateFunc(columns);
-            this.result = result;
+            let columns = result[0].templateList
+            this.templateFunc(columns)
+            this.result = result
           } else {
             // 无数据时
-            this.result = [];
-            this.tempAjax();
+            this.result = []
+            this.tempAjax()
           }
-        });
+        })
     },
-    async tempAjax() {
+    async tempAjax () {
       const res = await this.$http.get("/configdata/list", {
         params: {
           configId: this.where.itemcate_id
         }
-      });
-      this.load = false;
+      })
+      this.load = false
       // 重要 新建时，添加公共值
       this.templateList = JSON.stringify({
         templateList: res.data.data,
@@ -452,25 +452,25 @@ export default {
         itemcate_cid: this.where.itemcate_cid,
         item_id: 1,
         score_id: null
-      });
-      let col = JSON.stringify(res.data.data);
-      this.templateFunc(JSON.parse(col));
+      })
+      let col = JSON.stringify(res.data.data)
+      this.templateFunc(JSON.parse(col))
     },
-    templateFunc(arr) {
-      this.columns = [...this.colDefault];
-      let columns = arr;
+    templateFunc (arr) {
+      this.columns = [...this.colDefault]
+      let columns = arr
       if (columns && columns.length > 0) {
         for (let index = 0; index < columns.length; index++) {
-          const element = columns[index];
+          const element = columns[index]
           let obj = {
             prop: element.code,
             label: element.title,
             type: element.type,
             showOverflowTooltip: true
-          };
-          Object.assign(element, obj);
+          }
+          Object.assign(element, obj)
         }
-        columns.unshift(...this.columns);
+        columns.unshift(...this.columns)
         columns.push(
           {
             prop: "update_time",
@@ -480,7 +480,7 @@ export default {
             minWidth: 160,
             align: "center",
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
+              return this.$util.toDateString(cellValue)
             }
           },
           {
@@ -491,153 +491,153 @@ export default {
             minWidth: 160,
             align: "center",
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
+              return this.$util.toDateString(cellValue)
             }
           }
-        );
-        this.columns = [...columns];
+        )
+        this.columns = [...columns]
       }
     },
     /* 刷新表格 */
-    reload() {
-      this.columns = [];
-      this.index();
+    reload () {
+      this.columns = []
+      this.index()
     },
     /* 重置搜索 */
-    reset() {
-      this.where = {};
-      this.reload();
+    reset () {
+      this.where = {}
+      this.reload()
     },
     /* 显示编辑 */
-    openEdit(row) {
+    openEdit (row) {
       if (row == null) {
-        const form = JSON.parse(this.templateList);
-        form.id = "";
-        form.title = "";
-        form.score_id = "";
-        form.sums = "";
+        const form = JSON.parse(this.templateList)
+        form.id = ""
+        form.title = ""
+        form.score_id = ""
+        form.sums = ""
 
-        this.current = form;
-        this.showEdit = true;
+        this.current = form
+        this.showEdit = true
       } else {
-        const rowData = JSON.stringify(row);
-        const form = JSON.parse(this.templateList);
+        const rowData = JSON.stringify(row)
+        const form = JSON.parse(this.templateList)
 
-        Object.assign(form, row);
-        form.id = JSON.parse(rowData).id;
-        delete rowData.id;
-        this.keyData = JSON.parse(rowData);
-        this.current = form;
+        Object.assign(form, row)
+        form.id = JSON.parse(rowData).id
+        delete rowData.id
+        this.keyData = JSON.parse(rowData)
+        this.current = form
 
-        this.showEdit = true;
+        this.showEdit = true
       }
     },
-    objKeyFor(form, tem, isUpload = false) {
-      let object = tem;
-      let arr = [];
+    objKeyFor (form, tem, isUpload = false) {
+      let object = tem
+      let arr = []
       for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
-          const element = object[key];
-          let arrIndexObj = {};
+          const element = object[key]
+          let arrIndexObj = {}
           if (isUpload) {
-            arrIndexObj[key] = element;
+            arrIndexObj[key] = element
           }
-          arr.push(arrIndexObj);
+          arr.push(arrIndexObj)
         }
       }
-      let json = JSON.stringify({ data: arr });
-      
+      let json = JSON.stringify({ data: arr })
+
       // 参数
-      delete form.assets_json;
+      delete form.assets_json
 
       let obj = {
         assets_json: json
-      };
-      let params = Object.assign(obj, form);
-      return params;
+      }
+      let params = Object.assign(obj, form)
+      return params
     },
     /* 删除 */
-    remove(row) {
-      const loading = this.$loading({ lock: true });
+    remove (row) {
+      const loading = this.$loading({ lock: true })
       this.$http
         .delete("/assets/delete/" + row.id)
         .then(res => {
-          loading.close();
+          loading.close()
           if (res.data.code === 0) {
-            this.$message.success(res.data.msg);
-            this.reload();
+            this.$message.success(res.data.msg)
+            this.reload()
           } else {
-            this.$message.error(res.data.msg);
+            this.$message.error(res.data.msg)
           }
         })
         .catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
+          loading.close()
+          this.$message.error(e.message)
+        })
     },
     /* 批量删除 */
-    removeBatch() {
+    removeBatch () {
       if (!this.selection.length) {
-        this.$message.error("请至少选择一条数据");
-        return;
+        this.$message.error("请至少选择一条数据")
+        return
       }
       this.$confirm("确定要删除选中的安全资源吗?", "提示", {
         type: "warning"
       })
         .then(() => {
-          const loading = this.$loading({ lock: true });
+          const loading = this.$loading({ lock: true })
           this.$http
             .delete("/assets/delete/" + this.selection.map(d => d.id).join(","))
             .then(res => {
-              loading.close();
+              loading.close()
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
-                this.reload();
+                this.$message.success(res.data.msg)
+                this.reload()
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              loading.close();
-              this.$message.error(e.message);
-            });
+              loading.close()
+              this.$message.error(e.message)
+            })
         })
-        .catch(() => {});
+        .catch(() => { })
     },
 
     /* 更改状态 */
-    editStatus(row) {
-      const loading = this.$loading({ lock: true });
-      let params = new FormData();
-      params.append("id", row.id);
-      params.append("status", row.status);
+    editStatus (row) {
+      const loading = this.$loading({ lock: true })
+      let params = new FormData()
+      params.append("id", row.id)
+      params.append("status", row.status)
       this.$http
         .put("/assets/status", params)
         .then(res => {
-          loading.close();
+          loading.close()
           if (res.data.code === 0) {
-            this.$message({ type: "success", message: res.data.msg });
+            this.$message({ type: "success", message: res.data.msg })
           } else {
-            row.status = !row.status ? 1 : 2;
-            this.$message.error(res.data.msg);
+            row.status = !row.status ? 1 : 2
+            this.$message.error(res.data.msg)
           }
         })
         .catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
+          loading.close()
+          this.$message.error(e.message)
+        })
     },
     /* 解析接口返回数据 */
-    parseData_left(res) {
-      this.left_data = res.data;
-      res.data = this.$util.toTreeData(res.data, "id", "pid");
-      this.cateList = res.data;
-      return res;
+    parseData_left (res) {
+      this.left_data = res.data
+      res.data = this.$util.toTreeData(res.data, "id", "pid")
+      this.cateList = res.data
+      return res
     },
     // 表格渲染完成回调
-    done_left(res) {
+    done_left (res) {
       if (res.data.length > 0) {
-        this.$refs.table_left.setCurrentRow(res.data[0]);
+        this.$refs.table_left.setCurrentRow(res.data[0])
       }
     }
   }

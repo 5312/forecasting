@@ -16,7 +16,7 @@
               <el-input
                 clearable
                 v-model="where.title"
-                placeholder="请输入标题"
+                placeholder="请输入安全风险"
               />
             </el-form-item>
           </el-col>
