@@ -11,7 +11,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-form-item label="威胁行为:" prop="title">
         <el-autocomplete
-          style="width:100%;"
+          style="width: 100%"
           popper-class="my-autocomplete"
           v-model="form.title"
           :fetch-suggestions="querySearch"
@@ -53,7 +53,7 @@
         <el-select
           v-model="form.score_id"
           placeholder="请选择活动区域"
-          style="width:100%;"
+          style="width: 100%"
         >
           <el-option
             v-for="item in options"
@@ -146,7 +146,7 @@
         prop="riskdata_id"
       >
         <el-select
-          style="width:100%;"
+          style="width: 100%"
           v-model="form.riskdata_id"
           placeholder="请选择活动区域"
         >
@@ -161,13 +161,13 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="状态:" prop="status" label-width="120px">
+      <!-- <el-form-item label="状态:" prop="status" label-width="120px">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">在用</el-radio>
 
           <el-radio :label="2">停用</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="排序:" prop="sort">
         <el-input
@@ -197,7 +197,7 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  data() {
+  data () {
     return {
       // 表单数据
       form: {
@@ -227,9 +227,9 @@ export default {
           { required: true, message: "请输入造成安全风险id", trigger: "change" }
         ],
 
-        status: [
-          { required: true, message: "请选择状态", trigger: ["blur", "change"] }
-        ],
+        // status: [
+        //   { required: true, message: "请选择状态", trigger: ["blur", "change"] }
+        // ],
 
         sort: [
           { required: true, message: "请输入排序", trigger: ["blur", "change"] }
@@ -243,60 +243,60 @@ export default {
       danger_arr: [],
       risk_arr: [],
       options: []
-    };
+    }
   },
   watch: {
-    data() {
-      console.log(this.data);
-      let sort = 0;
+    data () {
+      console.log(this.data)
+      let sort = 0
 
       if (this.data) {
-        sort = this.data.sort ? this.data.sort : 0;
+        sort = this.data.sort ? this.data.sort : 0
 
-        let obj = this.data;
-        let danger = obj.yinhuan_ids;
-        let safe = obj.ziyuan_ids;
+        let obj = this.data
+        let danger = obj.yinhuan_ids
+        let safe = obj.ziyuan_ids
         // console.log(danger);
         let yinhuan_ids = danger
           ? Array.isArray(danger)
             ? danger
             : danger.split(",")
-          : [];
+          : []
         let ziyuan_ids = safe
           ? Array.isArray(safe)
             ? safe
             : safe.split(",")
-          : [];
+          : []
 
-        obj.yinhuan_ids = yinhuan_ids;
-        obj.ziyuan_ids = ziyuan_ids;
+        obj.yinhuan_ids = yinhuan_ids
+        obj.ziyuan_ids = ziyuan_ids
 
-        this.form = Object.assign({ sort: sort }, obj);
+        this.form = Object.assign({ sort: sort }, obj)
 
-        this.isUpdate = true;
+        this.isUpdate = true
       } else {
         this.form = {
           sort: sort,
           yinhuan_ids: [],
           ziyuan_ids: []
-        };
-        this.isUpdate = false;
+        }
+        this.isUpdate = false
       }
     }
   },
-  mounted() {
+  mounted () {
     // 威胁安全资源
-    this.threat();
+    this.threat()
     // 引发隐患
-    this.danger();
+    this.danger()
     // 造成安全风险
-    this.safe_risk();
+    this.safe_risk()
     // 频次 -- 评分id
-    this.frequency();
+    this.frequency()
   },
   methods: {
     /* 频次 */
-    async frequency() {
+    async frequency () {
       const res = await this.$http.get("/score/list", {
         params: {
           itemId: 3,
@@ -304,124 +304,124 @@ export default {
           page: 1,
           limit: 100
         }
-      });
-      if (res.data.code != 0) return;
-      this.options = res.data.data;
-      return res.data.data;
+      })
+      if (res.data.code != 0) return
+      this.options = res.data.data
+      return res.data.data
     },
     /* 造成安全风险  */
-    async safe_risk() {
+    async safe_risk () {
       const res = await this.$http.get("/riskdata/list", {
         params: {
           page: 1,
           limit: 100
         }
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      this.risk_arr = data;
-      return data;
+      })
+      if (res.data.code != 0) return
+      let data = res.data.data
+      this.risk_arr = data
+      return data
     },
 
-    async threat() {
+    async threat () {
       const res = await this.$http.get("/itemcate/list", {
         params: {
           itemId: 1
         }
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      this.threat_arr = this.getRootPid(data);
+      })
+      if (res.data.code != 0) return
+      let data = res.data.data
+      this.threat_arr = this.getRootPid(data)
     },
     /* 引发隐患  */
-    async danger() {
+    async danger () {
       const result = await this.$http.get("/itemcate/list", {
         params: {
           itemId: 2
         }
-      });
-      if (result.data.code != 0) return;
-      let data = result.data.data;
+      })
+      if (result.data.code != 0) return
+      let data = result.data.data
       /* 只取顶级 pid = 0 */
-      let arr = this.getRootPid(data);
-      this.danger_arr = arr;
+      let arr = this.getRootPid(data)
+      this.danger_arr = arr
     },
     /* 标题 -- 威胁行为库 */
-    querySearch(queryString, cb) {
+    querySearch (queryString, cb) {
       this.threat_do().then(res => {
-        cb(res);
-      });
+        cb(res)
+      })
     },
-    handleSelect(item) {
-      this.form.title = item.title;
+    handleSelect (item) {
+      this.form.title = item.title
     },
-    async threat_do() {
+    async threat_do () {
       const res = await this.$http.get("/riskaction/list", {
         params: {
           page: 1,
           limit: 100
         }
-      });
-      if (res.data.code != 0) return;
-      let data = res.data.data;
-      return data;
+      })
+      if (res.data.code != 0) return
+      let data = res.data.data
+      return data
     },
 
     /* 通用方法 pid = 0  */
-    getRootPid(list) {
-      if (!list) return;
-      let array = [];
+    getRootPid (list) {
+      if (!list) return
+      let array = []
       for (let i = 0; i < list.length; i++) {
-        const element = list[i];
+        const element = list[i]
         if (element.pid == 0) {
-          array.push(element);
+          array.push(element)
         }
       }
-      return array;
+      return array
     },
     /* 保存编辑 */
-    save() {
-      let _this = this;
+    save () {
+      let _this = this
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.loading = true;
-          const params = _this.params();
+          this.loading = true
+          const params = _this.params()
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/risk/update" : "/risk/add",
             params
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
                   this.form = {
                     yinhuan_ids: [],
                     ziyuan_ids: []
-                  };
+                  }
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 参数处理 */
-    params() {
-      let params = this.form;
+    params () {
+      let params = this.form
       params.yinhuan_ids = params.yinhuan_ids
         ? params.yinhuan_ids.join(",")
-        : "";
-      params.ziyuan_ids = params.ziyuan_ids ? params.ziyuan_ids.join(",") : "";
+        : ""
+      params.ziyuan_ids = params.ziyuan_ids ? params.ziyuan_ids.join(",") : ""
       // for (const key in params) {
       //   if (Object.hasOwnProperty.call(params, key)) {
       //     const element = params[key];
@@ -430,11 +430,11 @@ export default {
       //     }
       //   }
       // }
-      return params;
+      return params
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     }
   }
 };

@@ -74,12 +74,12 @@
         >
         </Formtype>
       </el-form-item>
-      <el-form-item label="状态:" prop="status">
+      <!-- <el-form-item label="状态:" prop="status">
         <el-radio-group v-model="form.status">
           <el-radio :label="1">在用</el-radio>
           <el-radio :label="2">停用</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="排序:" prop="sort">
         <el-input
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import Formtype from "./Formtype/index";
+import Formtype from "./Formtype/index"
 export default {
   name: "AssetsEdit",
   components: {
@@ -121,7 +121,7 @@ export default {
     data: Object,
     keyData: Object
   },
-  data() {
+  data () {
     return {
       // 下拉表 加载
       popover: false,
@@ -166,7 +166,7 @@ export default {
           { required: true, message: "请输入资源数据集", trigger: "blur" }
         ],
 
-        status: [{ required: true, message: "请选择状态", trigger: "blur" }],
+        // status: [{ required: true, message: "请选择状态", trigger: "blur" }],
 
         sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
@@ -179,77 +179,77 @@ export default {
       // 单选
       current: null,
       show: false
-    };
+    }
   },
   watch: {
-    current(n) {
-      this.form.score_id = n.id;
+    current (n) {
+      this.form.score_id = n.id
     },
-    data() {
-      this.popover = true;
+    data () {
+      this.popover = true
       this.form = Object.assign(
         {
           sort: 0
         },
         this.data
-      );
+      )
 
       if (this.data.id != "") {
         // 修改
-        this.isUpdate = true;
+        this.isUpdate = true
       } else {
         // 新建
-        this.isUpdate = false;
+        this.isUpdate = false
       }
-      this.where.itemcate_id = this.form.itemcate_id;
-      this.where.itemcate_cid = this.form.itemcate_cid;
+      this.where.itemcate_id = this.form.itemcate_id
+      this.where.itemcate_cid = this.form.itemcate_cid
     }
   },
   computed: {
     // 赋值ID显示
-    setId() {
-      let val = this.form.score_id;
-      console.log(val);
-      let title = "";
+    setId () {
+      let val = this.form.score_id
+      console.log(val)
+      let title = ""
       if (typeof this.form.score_id == "number") {
         this.table_data.forEach(obj => {
           if (Number(obj.id) == val) {
-            title = obj.title;
+            title = obj.title
           }
-        });
+        })
       }
-      return title;
+      return title
     },
     // 字段
-    templates() {
-      let obj = {};
+    templates () {
+      let obj = {}
       if (this.form.templateList) {
-        let array = this.form.templateList;
+        let array = this.form.templateList
         for (let index = 0; index < array.length; index++) {
-          const element = array[index];
+          const element = array[index]
           // 数据字段 类型 判断
-          let a = this.keyData[element.code];
+          let a = this.keyData[element.code]
           switch (element.type) {
             case "checkbox":
               if (typeof a == "string") {
-                a = a.split(",");
+                a = a.split(",")
               }
               Object.assign(obj, {
                 [element.code]: a ? a : []
-              });
-              break;
+              })
+              break
             default:
               Object.assign(obj, {
                 [element.code]: a ? a : ""
-              });
-              break;
+              })
+              break
           }
         }
       }
-      return obj;
+      return obj
     },
     // 初始化富文本
-    initEditor() {
+    initEditor () {
       return {
         height: 300,
         branding: false,
@@ -263,91 +263,91 @@ export default {
           "fullscreen preview code | undo redo | forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | formatselect fontselect fontsizeselect | link image media emoticons charmap anchor pagebreak codesample | ltr rtl",
         toolbar_drawer: "sliding",
         images_upload_handler: (blobInfo, success, error) => {
-          let file = blobInfo.blob();
+          let file = blobInfo.blob()
           // 使用axios上传
-          const formData = new FormData();
-          formData.append("file", file, file.name);
+          const formData = new FormData()
+          formData.append("file", file, file.name)
           this.$http
             .post("/upload/uploadImage", formData)
             .then(res => {
               if (res.data.code == 0) {
-                success(res.data.data.fileUrl);
+                success(res.data.data.fileUrl)
               } else {
-                error(res.data.msg);
+                error(res.data.msg)
               }
             })
             .catch(e => {
-              console.error(e);
-              error(e.message);
-            });
+              console.error(e)
+              error(e.message)
+            })
         },
         file_picker_types: "media",
-        file_picker_callback: () => {}
-      };
+        file_picker_callback: () => { }
+      }
     }
   },
   methods: {
-    done(res) {
-      this.table_data = res.data;
-      this.popover = false;
+    done (res) {
+      this.table_data = res.data
+      this.popover = false
     },
-    objKeyFor() {
-      let object = this.templates;
-      let arr = [];
+    objKeyFor () {
+      let object = this.templates
+      let arr = []
       for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
-          const element = object[key];
-          let arrIndexObj = {};
-          arrIndexObj[key] = element;
+          const element = object[key]
+          let arrIndexObj = {}
+          arrIndexObj[key] = element
 
-          arr.push(arrIndexObj);
+          arr.push(arrIndexObj)
         }
       }
-      let json = JSON.stringify({ data: arr });
+      let json = JSON.stringify({ data: arr })
       // 参数
-      delete this.form.assets_json;
+      delete this.form.assets_json
 
       let obj = {
         assets_json: json
-      };
-      let params = Object.assign(obj, this.form);
-      return params;
+      }
+      let params = Object.assign(obj, this.form)
+      return params
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          let params = this.objKeyFor();
-          this.loading = true;
+          let params = this.objKeyFor()
+          this.loading = true
           this.$http[params.id ? "put" : "post"](
             this.isUpdate ? "/assets/update" : "/assets/add",
             params
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {}
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     }
   }
 };
