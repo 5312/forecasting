@@ -66,11 +66,9 @@ export default {
       // 表单验证规则
       rules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-
         // status: [
         //   { required: true, message: '请选择状态', trigger: 'blur' }
         // ],
-
         sort: [{ required: true, message: "请输入排序", trigger: "blur" }]
       },
       // 提交状态
