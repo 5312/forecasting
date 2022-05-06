@@ -87,7 +87,7 @@
       <!--  -->
     </el-form>
     <div slot="footer">
-      <el-button @click="updateVisible(false)">取消</el-button>
+      <!-- <el-button @click="updateVisible(false)">取消</el-button> -->
       <el-button type="primary" @click="updateVisible(false)" :loading="loading"
         >保存
       </el-button>
@@ -104,8 +104,8 @@
 </template>
 
 <script>
-import SafeStatus from "./safeStatus-edit.vue";
-import Manual from "./manuals.vue";
+import SafeStatus from "./safeStatus-edit.vue"
+import Manual from "./manuals.vue"
 export default {
   name: "ForecastEdit",
   components: {
@@ -118,7 +118,7 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  data() {
+  data () {
     return {
       defaultColumns: [
         {
@@ -211,85 +211,85 @@ export default {
       // 完成 cols
       colnums_all: [],
       showhead: false
-    };
+    }
   },
-  mounted() {},
+  mounted () { },
   watch: {
-    data() {
+    data () {
       if (this.data) {
-        this.form = Object.assign({}, this.data);
-        this.isUpdate = true;
+        this.form = Object.assign({}, this.data)
+        this.isUpdate = true
       } else {
-        this.form = {};
-        this.isUpdate = false;
+        this.form = {}
+        this.isUpdate = false
       }
     },
-    visible(val) {
+    visible (val) {
       if (val) {
-        this.index();
+        this.index()
       } else {
-        this.typeData = [];
+        this.typeData = []
       }
     }
   },
   computed: {},
   methods: {
     // 数量加减
-    add(row, y) {
+    add (row, y) {
       this.$http
         .put("/assetslibrary/upsums", {
           id: row.id,
           sums: row.sums
         })
         .then(() => {
-          this.reload(y);
-        });
+          this.reload(y)
+        })
     },
     // 模板
-    temp(arr) {
-      let array = arr;
-      if (!arr) return {};
-      const col = this.defaultColumns;
-      let col_arr = [];
+    temp (arr) {
+      let array = arr
+      if (!arr) return {}
+      const col = this.defaultColumns
+      let col_arr = []
       for (let index = 0; index < col.length; index++) {
-        const element = col[index];
-        col_arr.push(element);
+        const element = col[index]
+        col_arr.push(element)
       }
       for (let i = 0; i < array.length; i++) {
-        const element = array[i];
-        element.prop = element.code;
-        element.label = element.title;
-        element.align = "center";
-        element.width = 180;
-        col_arr.push(element);
+        const element = array[i]
+        element.prop = element.code
+        element.label = element.title
+        element.align = "center"
+        element.width = 180
+        col_arr.push(element)
       }
-      return col_arr;
+      return col_arr
     },
     // 数据
-    parseData_left(res) {
-      if (!res.data) return { code: 0, data: [] };
-      let parse = res.data;
-      let num = 0;
+    parseData_left (res) {
+      if (!res.data) return { code: 0, data: [] }
+      let parse = res.data
+      let num = 0
       for (let i = 0; i < parse.length; i++) {
-        const element = parse[i];
+        const element = parse[i]
         var ele = element.assets_json
           ? JSON.parse(element.assets_json)
-          : { data: [] };
+          : { data: [] }
 
-        let data = ele.data;
+        let data = ele.data
         for (let j = 0; j < data.length; j++) {
-          const obj = data[j];
-          Object.assign(element, obj);
+          const obj = data[j]
+          Object.assign(element, obj)
         }
-        num += element.Scoresum * 1;
+        num += element.Scoresum * 1
       }
       // 数据里 itemcate_id 值 是不是 手风琴类型的id
-      let list_id = parse[0].itemcate_id;
+      let list_id = parse[0].itemcate_id
       for (let i = 0; i < this.typeData.length; i++) {
-        const element = this.typeData[i];
+        const element = this.typeData[i]
         if (element.id == list_id) {
-           element.score = num;
-         }
+          element.score = num
+        }
       }
       return {
         btype: 0,
@@ -297,126 +297,126 @@ export default {
         count: 0,
         data: parse,
         msg: "操作成功"
-      };
+      }
     },
-    reload(i) {
-      let table = `table${i}`;
-      this.$refs[table][0].reload({ page: 1 });
+    reload (i) {
+      let table = `table${i}`
+      this.$refs[table][0].reload({ page: 1 })
     },
-    addSafeStatus(x, y) {
-      this.tableIndex = x;
+    addSafeStatus (x, y) {
+      this.tableIndex = x
       // 添加安全资源
       if (this.tableIndex !== null) {
-        let arr = this.typeData[x].temptlate;
-        let array = this.defaultColumns;
-        array = JSON.stringify(array);
-        array = JSON.parse(array);
+        let arr = this.typeData[x].temptlate
+        let array = this.defaultColumns
+        array = JSON.stringify(array)
+        array = JSON.parse(array)
         for (let i = 0; i < arr.length; i++) {
-          const element = arr[i];
-          array.push(element);
+          const element = arr[i]
+          array.push(element)
         }
-        this.colnums_all = array;
-        this.twoshow = true;
+        this.colnums_all = array
+        this.twoshow = true
       }
-      this.params_id = y;
+      this.params_id = y
     },
-    manualAdd(x) {
+    manualAdd (x) {
       // 展开项 下表标
-      this.tableIndex = x;
+      this.tableIndex = x
 
-      this.man = true;
+      this.man = true
     },
-    saveTableData(array) {
-      console.log(array);
+    saveTableData (array) {
+      console.log(array)
       // 添加时，选中的表格数据
-      let i = this.tableIndex;
-      this.reload(i);
-      this.twoshow = false;
+      let i = this.tableIndex
+      this.reload(i)
+      this.twoshow = false
       // this.tableIndex = null;
     },
 
-    async remove(row, index) {
-      this.tableIndex = index;
+    async remove (row, index) {
+      this.tableIndex = index
       // 删除
-      const res = await this.$http.delete("/assetslibrary/delete/" + row.id);
+      const res = await this.$http.delete("/assetslibrary/delete/" + row.id)
       if (res.data.code == 0) {
-        this.reload(index);
-        const element = this.typeData[index];
-        element.score = 0;
+        this.reload(index)
+        const element = this.typeData[index]
+        element.score = 0
       }
     },
     // 编辑的数据
-    async index() {
+    async index () {
       const res = await this.$http.get("/itemcate/list", {
         params: {
           item_id: 1
         }
-      });
+      })
       if (res.data.code == 0) {
-        let array = res.data.data;
+        let array = res.data.data
         for (let index = 0; index < array.length; index++) {
-          const element = array[index];
+          const element = array[index]
           if (element.pid == 0) {
             element.where = {
               forecast_id: this.form.id,
               itemcateid: element.id,
               itemcatecid: null
-            };
+            }
             // 模板接口
             const d = await this.$http.get("/configdata/list", {
               params: {
                 configId: element.id,
                 forecast_id: this.form.id
               }
-            });
-            element.temptlate = d.data.data;
+            })
+            element.temptlate = d.data.data
             // 模板数据接口
 
-            element.url = "/assetslibrary/list";
-            element.show = true;
-            element.score = 0;
+            element.url = "/assetslibrary/list"
+            element.show = true
+            element.score = 0
 
-            this.typeData.push(element);
+            this.typeData.push(element)
           }
         }
       }
     },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/forecast/update" : "/forecast/add",
             this.form
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {}
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     },
-    removeBatch() {}
+    removeBatch () { }
   }
 };
 </script>

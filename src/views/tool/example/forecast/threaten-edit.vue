@@ -81,7 +81,7 @@
       <!--  -->
     </el-form>
     <div slot="footer">
-      <el-button @click="updateVisible(false)">取消</el-button>
+      <!-- <el-button @click="updateVisible(false)">取消</el-button> -->
       <el-button type="primary" @click="updateVisible(false)" :loading="loading"
         >保存
       </el-button>
@@ -98,8 +98,8 @@
 </template>
 
 <script>
-import Threaten from "./threaten.vue";
-import Manual from "./manuals.vue";
+import Threaten from "./threaten.vue"
+import Manual from "./manuals.vue"
 export default {
   name: "ForecastEdit",
   components: {
@@ -112,7 +112,7 @@ export default {
     // 修改回显的数据
     data: Object
   },
-  data() {
+  data () {
     return {
       defaultColumns: [
         {
@@ -221,114 +221,114 @@ export default {
       colnums_all: [],
       showheader: false,
       nums: 0 // 总分
-    };
+    }
   },
   watch: {
-    data() {
+    data () {
       if (this.data) {
-        this.form = Object.assign({}, this.data);
+        this.form = Object.assign({}, this.data)
         this.where = {
           forecast_id: this.data.id
-        };
-        this.isUpdate = true;
+        }
+        this.isUpdate = true
       } else {
-        this.form = {};
-        this.isUpdate = false;
+        this.form = {}
+        this.isUpdate = false
       }
     }
   },
 
   methods: {
-    parseData_left(data) {
-      let array = data.data;
+    parseData_left (data) {
+      let array = data.data
       if (array && array.length != 0) {
-        const values = array.map(item => Number(item.score));
+        const values = array.map(item => Number(item.score))
 
         if (!values.every(value => isNaN(value))) {
           let nums = values.reduce((prev, curr) => {
-            const value = Number(curr);
+            const value = Number(curr)
             if (!isNaN(value)) {
-              return prev + curr;
+              return prev + curr
             } else {
-              return prev;
+              return prev
             }
-          });
-          this.nums = nums;
+          })
+          this.nums = nums
         }
       }
       if (!array) {
-        data.data = [];
+        data.data = []
       }
-      return data;
+      return data
     },
-    reload() {
-      let table = `table`;
-      this.$refs[table].reload({ page: 1 });
+    reload () {
+      let table = `table`
+      this.$refs[table].reload({ page: 1 })
     },
-    addSafeStatus() {
+    addSafeStatus () {
       // 添加隐患因素
-      let array = this.defaultColumns;
+      let array = this.defaultColumns
 
-      this.colnums_all = array;
-      this.twoshow = true;
+      this.colnums_all = array
+      this.twoshow = true
       //   this.params_id = y;
     },
-    manualAdd(x) {
+    manualAdd (x) {
       // 展开项 下表标
-      this.tableIndex = x;
+      this.tableIndex = x
 
-      this.man = true;
+      this.man = true
     },
-    saveTableData() {
+    saveTableData () {
       // 添加时，选中的表格数据
-      this.reload();
-      this.twoshow = false;
+      this.reload()
+      this.twoshow = false
     },
 
-    async remove(row, index) {
-      this.tableIndex = index;
+    async remove (row, index) {
+      this.tableIndex = index
       // 删除
-      const res = await this.$http.delete("/risklibrary/delete/" + row.id);
+      const res = await this.$http.delete("/risklibrary/delete/" + row.id)
       if (res.data.code == 0) {
-        this.reload(index);
+        this.reload(index)
       }
     },
     // 编辑的数据
-    async index() {},
+    async index () { },
     /* 保存编辑 */
-    save() {
+    save () {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$http[this.form.id ? "put" : "post"](
             this.isUpdate ? "/risklibrary/update" : "/risklibrary/add",
             this.form
           )
             .then(res => {
-              this.loading = false;
+              this.loading = false
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
+                this.$message.success(res.data.msg)
                 if (!this.isUpdate) {
-                  this.form = {};
+                  this.form = {}
                 }
-                this.updateVisible(false);
-                this.$emit("done");
+                this.updateVisible(false)
+                this.$emit("done")
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              this.loading = false;
-              this.$message.error(e.message);
-            });
+              this.loading = false
+              this.$message.error(e.message)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     }
   }
 };

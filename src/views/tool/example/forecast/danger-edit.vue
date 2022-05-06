@@ -106,7 +106,7 @@
       <!--  -->
     </el-form>
     <div slot="footer">
-      <el-button @click="updateVisible(false)">取消</el-button>
+      <!-- <el-button @click="updateVisible(false)">取消</el-button> -->
       <el-button type="primary" @click="updateVisible(false)" :loading="loading"
         >保存
       </el-button>

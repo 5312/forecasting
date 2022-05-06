@@ -24,14 +24,6 @@
           >风险评估</el-radio
         ></el-form-item
       >
-      <!-- <el-form-item label="开始时间:" prop="time">
-        <el-date-picker
-          v-model="form.forecast_stime"
-          type="date"
-          placeholder="请选择任务开始时间"
-        >
-        </el-date-picker>
-      </el-form-item> -->
       <el-form-item label="排序:" prop="sort">
         <el-input v-model="form.sort" placeholder="请输入排序号" clearable />
       </el-form-item>

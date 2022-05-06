@@ -22,7 +22,7 @@
       >
         <!-- 表格数据 -->
         <template slot="scortNum" slot-scope="{ row }">
-          {{row.sums}}
+          {{ row.sums }}
         </template>
         <!-- 操作列 -->
         <template slot="action" slot-scope="{ row }">
@@ -37,7 +37,7 @@
       </ele-pro-table>
       <el-input type="textarea" placeholder="请输入" v-model="inner"></el-input>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="updateVisible(false)">取 消</el-button>
+        <!-- <el-button @click="updateVisible(false)">取 消</el-button> -->
         <el-button type="primary" @click="save">确 定</el-button>
       </span>
     </el-dialog>
@@ -55,7 +55,7 @@ export default {
     forecast: Number,
     column: Array,
   },
-  data() {
+  data () {
     return {
       // 选中数据
       selection: [],
@@ -67,98 +67,100 @@ export default {
       isForeCast: "",
       disabled: false,
       num: 1,
-      sums:0
-    };
+      sums: 0
+    }
   },
   watch: {
-    visible(val) {
+    visible (val) {
       if (val) {
-        this.index();
+        this.index()
       } else {
-        this.data = [];
+        this.data = []
       }
     },
   },
   computed: {},
-  mounted() {},
+  mounted () { },
   methods: {
     // 弹框内数据
-    async index() {
-      this.load = true;
+    async index () {
+      this.load = true
       const res = await this.$http.get("assets/list?", {
         params: {
           forecast_id: this.forecast,
           itemcate_id: this.params,
           itemcate_cid: "",
         },
-      });
-      this.load = false;
+      })
+      this.load = false
       if (res.data.code == 0) {
-        this.data = res.data.data;
+        this.data = res.data.data
+        if (!this.data) return
         for (let i = 0; i < this.data.length; i++) {
-          const ele = this.data[i];
+          const ele = this.data[i]
           if (ele.isForecast == 1) {
-            this.data.splice(i, 1);
-            i--;
+            this.data.splice(i, 1)
+            i--
           }
         }
         this.parseData_left()
       }
     },
-    parseData_left() {
-      if (!this.data) return { code: 0, data: [] };
-      let parse = this.data;
+    parseData_left () {
+      if (!this.data) return { code: 0, data: [] }
+      let parse = this.data
       for (let i = 0; i < parse.length; i++) {
-        const element = parse[i];
+        const element = parse[i]
         var ele = element.assets_json
           ? JSON.parse(element.assets_json)
-          : { data: [] };
-        let data = ele.data;
+          : { data: [] }
+        let data = ele.data
         for (let j = 0; j < data.length; j++) {
-          const obj = data[j];
-          Object.assign(element, obj);
+          const obj = data[j]
+          Object.assign(element, obj)
         }
       }
-        return {
-          btype: 0,
-          code: 0,
-          count: 0,
-          data: parse,
-          msg: "操作成功",
-        };
+      return {
+        btype: 0,
+        code: 0,
+        count: 0,
+        data: parse,
+        msg: "操作成功",
+      }
     },
     // 点击添加触发
-    async openEdit(row) {
-      let param = row;
+    async openEdit (row) {
+      let param = row
       Object.assign(param, {
         forecast_id: this.forecast,
         assets_id: row.id,
-      });
-      const res = await this.$http.post("/assetslibrary/add", param);
+      })
+      const res = await this.$http.post("/assetslibrary/add", param)
       if (res.data.code == 0) {
-        this.$emit("saveTableData", this.selection);
+        this.$emit("saveTableData", this.selection)
       }
-      this.updateVisible(true);
-      this.index();
+      this.updateVisible(true)
+      this.index()
     },
     // 保存
-    async save() {
-      let params = { data: this.selection };
-      console.log(JSON.stringify(params));
-      const inn = await this.$http.post("/assetslibrary/addall", {
+    async save () {
+      let params = { data: this.selection }
+      console.log(JSON.stringify(params))
+      await this.$http.post("/assetslibrary/addall", {
         inner: this.inner,
-      });
-      console.log(inn);
+      })
+
       const res = await this.$http.post("/assetslibrary/add", {
         forecast_id: this.forecast,
-      });
+      })
+      this.$emit("update:visible", false)
       if (res.data.code == 0) {
-        this.$emit("saveTableData", this.selection);
+        this.$emit("saveTableData", this.selection)
       }
     },
     /* 更新visible */
-    updateVisible(value) {
-      this.$emit("update:visible", value);
+    updateVisible (value) {
+      this.$emit("update:visible", value)
     },
   },
 };
