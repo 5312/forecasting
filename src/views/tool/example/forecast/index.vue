@@ -169,17 +169,17 @@
 </template>
 
 <script>
-import ForecastEdit from "./forecast-edit";
-import DangerEdit from "./danger-edit";
-import ThreatenEdit from "./threaten-edit";
-import ForecastAdd from "./forecast-add";
+import ForecastEdit from "./forecast-edit"
+import DangerEdit from "./danger-edit"
+import ThreatenEdit from "./threaten-edit"
+import ForecastAdd from "./forecast-add"
 // import Charts from "./charts";
 // import { addPageTab } from "@/utils/page-tab-util";
 
 export default {
   name: "SystemForecast",
   components: { ForecastEdit, DangerEdit, ThreatenEdit, ForecastAdd },
-  data() {
+  data () {
     return {
       // 表格数据接口
       url: "/forecast/list",
@@ -235,7 +235,7 @@ export default {
           minWidth: 70,
           align: "center",
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            return this.$util.toDateString(cellValue)
           }
         },
 
@@ -265,106 +265,107 @@ export default {
       showAdd: false,
       // 图表弹窗
       showChart: false
-    };
+    }
   },
-  activated() {
+  activated () {
     this.$nextTick(() => {
-      this.$refs.table.doLayout();
-    });
+      this.$refs.table.doLayout()
+    })
   },
   methods: {
     /* 刷新表格 */
-    reload() {
-      this.$refs.table.reload({ page: 1, where: this.where });
+    reload () {
+      this.$refs.table.reload({ page: 1, where: this.where })
     },
     /* 重置搜索 */
-    reset() {
-      this.where = {};
-      this.reload();
+    reset () {
+      this.where = {}
+      this.reload()
     },
     /* 安全分析显示编辑 */
-    openEdit(row) {
-      this.current = row;
-      this.showEdit = true;
+    openEdit (row) {
+      this.current = row
+      this.showEdit = true
     },
     // 添加隐患显示编辑
-    danger(row) {
+    danger (row) {
       // console.log(row)
-      this.current = row;
-      this.showDanger = true;
+      this.current = row
+      this.showDanger = true
     },
     // 添加威胁显示编辑
-    threaten(row) {
-      this.current = row;
-      this.showThreaten = true;
+    threaten (row) {
+      this.current = row
+      this.showThreaten = true
     },
     // 添加/修改
-    add(row) {
-      this.current = row;
-      this.showAdd = true;
+    add (row) {
+      this.current = row
+      this.showAdd = true
     },
     // 图表
-    tu(row) {
+    tu (row) {
       this.$router.push({
         path: "/tool/example/forecast/charts",
         query: {
           data: row,
           id: row.id,
-          name: row.title
+          name: row.title,
+          mongxing: row.mongxing == 0 ? '分析预测' : '风险评估'
         }
-      });
-      this.current = row;
+      })
+      this.current = row
       // this.showChart = true;
     },
     /* 删除 */
-    remove(row) {
-      const loading = this.$loading({ lock: true });
+    remove (row) {
+      const loading = this.$loading({ lock: true })
       this.$http
         .delete("/forecast/delete/" + row.id)
         .then(res => {
-          loading.close();
+          loading.close()
           if (res.data.code === 0) {
-            this.$message.success(res.data.msg);
-            this.reload();
+            this.$message.success(res.data.msg)
+            this.reload()
           } else {
-            this.$message.error(res.data.msg);
+            this.$message.error(res.data.msg)
           }
         })
         .catch(e => {
-          loading.close();
-          this.$message.error(e.message);
-        });
+          loading.close()
+          this.$message.error(e.message)
+        })
     },
     /* 批量删除 */
-    removeBatch() {
+    removeBatch () {
       if (!this.selection.length) {
-        this.$message.error("请至少选择一条数据");
-        return;
+        this.$message.error("请至少选择一条数据")
+        return
       }
       this.$confirm("确定要删除选中的安全分析预测吗?", "提示", {
         type: "warning"
       })
         .then(() => {
-          const loading = this.$loading({ lock: true });
+          const loading = this.$loading({ lock: true })
           this.$http
             .delete(
               "/forecast/delete/" + this.selection.map(d => d.id).join(",")
             )
             .then(res => {
-              loading.close();
+              loading.close()
               if (res.data.code === 0) {
-                this.$message.success(res.data.msg);
-                this.reload();
+                this.$message.success(res.data.msg)
+                this.reload()
               } else {
-                this.$message.error(res.data.msg);
+                this.$message.error(res.data.msg)
               }
             })
             .catch(e => {
-              loading.close();
-              this.$message.error(e.message);
-            });
+              loading.close()
+              this.$message.error(e.message)
+            })
         })
-        .catch(() => {});
+        .catch(() => { })
     }
   }
 };
